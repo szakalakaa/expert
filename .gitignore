@@ -1,9 +1,9 @@
 keyS
-Libraries
-Logs
-Profiles
-Services
-Images
-Files
-Shared Projects
+Libraries/*
+Logs/*
+Profiles/*
+Services/*
+Images/*
+Files/*
+Shared Projects/*
 mql5.index

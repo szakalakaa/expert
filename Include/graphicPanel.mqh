@@ -33,8 +33,8 @@
 input group "====Panel Inputs====";
 static  int InpPanelWidth=260;    //width in pixel
 static  int InpPanelHeight=400;    //height in pixel
-static input int InpPanelFontSize=10;    //width in pixel
-static input int InpPanelTextColor=clrWhiteSmoke;    //text clr
+static  int InpPanelFontSize=10;    //width in pixel
+static  int InpPanelTextColor=clrWhiteSmoke;    //text clr
 
 
 //+------------------------------------------------------------------+
@@ -66,6 +66,7 @@ public:
    void              CGraphicalPanel();
    void             ~CGraphicalPanel();
    bool              Oninit();
+     void Update();
 
    //chart event handler lparam ->as a refference
    void              PanelChartEvent(const int id, const long &lparam, const double &dparam, const string &sparam);
@@ -84,7 +85,6 @@ void CGraphicalPanel::~CGraphicalPanel(void) {}
 //+------------------------------------------------------------------+
 bool CGraphicalPanel::Oninit(void)
   {
-
 //create panel
    if(!this.CreatePanel())
      {
@@ -99,7 +99,18 @@ bool CGraphicalPanel::Oninit(void)
 
   }
 
+  void CGraphicalPanel::Update(void){
 
+        tma_signal.Text("tma signal:       "+(string)TMA_signal);
+        stoch_signal.Text("stoch signal: "+(string)stochSignal);
+              lastV.Text("last: "+(string)last);
+              
+              
+              spreadLabel.Text("spread: "+(string)spread);
+
+                 spreadLabel.Color(clrWheat);
+    return;
+  }
 
 //+------------------------------------------------------------------+
 //|                                                                  |
