@@ -5,5 +5,11 @@ Profiles/*
 Services/*
 Images/*
 Files/*
+Scripts/*
+Profiles/*
 Shared Projects/*
+Experts/Advisors/MASTER.ex5
+Experts/Advisors/*.ex5
+Experts/Advisors/*.log
 mql5.index
+experts.dat
