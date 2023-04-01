@@ -8,8 +8,9 @@ Files/*
 Scripts/*
 Profiles/*
 Shared Projects/*
-Experts/Advisors/MASTER.ex5
 Experts/Advisors/*.ex5
 Experts/Advisors/*.log
+Experts/Advisors/MASTER.ex5
+Files/*
 mql5.index
 experts.dat

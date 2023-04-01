@@ -1,7 +1,37 @@
 #include <Trade\Trade.mqh>
 
+// FirstPrice is price closer to last
+void shiftStoplosses(double firstPrice, double secPrice, string &type_positionL, double stoplossL, CTrade &tradeL)
+{
+    if (OrdersTotal() == 2)
+    {
+        ulong orderTicket1 = OrderGetTicket(0);
+        double orderPrice1 = OrderGetDouble(ORDER_PRICE_OPEN);
+        ulong orderTicket2 = OrderGetTicket(1);
+        double orderPrice2 = OrderGetDouble(ORDER_PRICE_OPEN);
+
+        if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
+        {
+            double newPrice1 = MathMax(orderPrice1, firstPrice);
+            double newPrice2 = MathMax(orderPrice2, secPrice);
+
+            tradeL.OrderModify(OrderGetTicket(0), newPrice1, 0, 0, ORDER_TIME_GTC, 0, 0);
+            tradeL.OrderModify(OrderGetTicket(1), newPrice2, 0, 0, ORDER_TIME_GTC, 0, 0);
+        }
+        if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
+        {
+            double newPrice1 = MathMin(orderPrice1, firstPrice);
+            double newPrice2 = MathMin(orderPrice2, secPrice);
+
+            tradeL.OrderModify(OrderGetTicket(0), newPrice1, 0, 0, ORDER_TIME_GTC, 0, 0);
+            tradeL.OrderModify(OrderGetTicket(1), newPrice2, 0, 0, ORDER_TIME_GTC, 0, 0);
+        }
+    }
+}
+
 void fitstStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
 {
+    // ADD FIRST STOPLOSS
     if ((PositionsTotal() != 0) && (OrdersTotal() == 0))
     {
         if (Symbol() == PositionGetSymbol(0))
@@ -34,6 +64,30 @@ void fitstStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
             }
         }
     }
+    // SELLSTOP SUPPLEMENT
+    if ((PositionsTotal() != 0) && (OrdersTotal() == 1))
+    {
+        OrderGetTicket(0);
+        PositionSelect(_Symbol);
+        double posVolume = PositionGetDouble(POSITION_VOLUME);
+        double orderVolume = OrderGetDouble(ORDER_VOLUME_CURRENT);
+        double orderPrice = OrderGetDouble(ORDER_PRICE_OPEN);
+        double difVolume = posVolume - orderVolume;
+
+        if (difVolume>0.001)
+        {
+            if (type_positionL == "LONG")
+            {
+                if (!tradeL.SellStop(difVolume, orderPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop supplement"))
+                    Print("---ERROR: SellStop supplement on the price: " + (string)orderPrice);
+            }
+            if (type_positionL == "SHORT")
+            {
+                if (!tradeL.BuyStop(difVolume, orderPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "BuyStop supplement"))
+                    Print("---ERROR: BuyStop supplement on the price: " + (string)orderPrice);
+            }
+        }
+    }
 }
 
 // add new stoploss on the secPrice and shift the primary SL to the half way between sl and op
@@ -41,43 +95,48 @@ void secondStoploss(double secPrice, CTrade &tradeL)
 {
     if ((PositionsTotal() == 1) && (OrdersTotal() == 1))
     {
-        // TODO: probably positionSelect i order select wystarczy
         PositionSelect(_Symbol);
-        string posSymbol = PositionGetSymbol(0);
-        Print("posSymbol " + posSymbol);
         ulong orderTicket = OrderGetTicket(0);
-        Print("orderTicket " + orderTicket);
 
         double posVolume = NormalizeDouble(PositionGetDouble(POSITION_VOLUME) / 2, 3);
         double posPrice = PositionGetDouble(POSITION_PRICE_OPEN);
         double orderPrice = OrderGetDouble(ORDER_PRICE_OPEN);
 
+        // INFO: for buy 1. order has higher price
         if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
         {
             double shiftedPrice = NormalizeDouble((orderPrice + posPrice) / 2, 0);
+            double orderHigher = MathMax(secPrice, shiftedPrice);
+            double orderLower = MathMin(secPrice, shiftedPrice);
 
-            if (tradeL.SellStop(posVolume, secPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop in halfprice added"))
-                Print("Successfull SellStop1 added on the new price: " + secPrice);
+            if (!tradeL.OrderDelete(orderTicket))
+                Print("---ERROR: Order:  " + (string)orderTicket + " was closed ");
 
-            if (tradeL.OrderDelete(orderTicket))
-                Print("Order:  " + orderTicket + " was closed ");
+            if (!tradeL.SellStop(posVolume, orderHigher, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop orderHigher")) // invalid price
+                Print("---ERROR: SellStop on the orderHigher price: " + (string)orderHigher);
 
-            if (tradeL.SellStop(posVolume, shiftedPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop after closing order added"))
-                Print("Successfull SellStop2 added on the new price: " + shiftedPrice);
+            if (!tradeL.SellStop(posVolume, orderLower, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop orderLower"))
+                Print("---ERROR: SellStop on the orderLower price: " + (string)orderLower);
+
             else
                 Print("secondStoploss on BUY failed");
         }
 
+        // INFO: for sell 1 order has lower price
         if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
         {
             double shiftedPrice = NormalizeDouble((orderPrice + posPrice) / 2, 0);
+            double orderHigher = MathMax(secPrice, shiftedPrice);
+            double orderLower = MathMin(secPrice, shiftedPrice);
 
-            if (tradeL.BuyStop(posVolume, secPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "BuyStop  in halfprice triggered"))
-                Print("Successfull BuyStop1 added on the new price: " + secPrice);
-            if (tradeL.OrderDelete(orderTicket))
-                Print("Order:  " + orderTicket + " was closed ");
-            if (tradeL.BuyStop(posVolume, shiftedPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "BuyStop after closing order added"))
-                Print("Successfull BuyStop2 added on the new price: " + secPrice);
+            if (!tradeL.OrderDelete(orderTicket))
+                Print("---ERROR: Order: " + (string)orderTicket + " was closed ");
+
+            if (!tradeL.BuyStop(posVolume, orderLower, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "BuyStop orderLower"))
+                Print("---ERROR: BuyStop on the orderLower price: " + (string)orderLower);
+
+            if (!tradeL.BuyStop(posVolume, orderHigher, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "BuyStop orderHigher"))
+                Print("---ERROR: BuyStop on the orderHigher price: " + (string)orderHigher);
             else
                 Print("secondStoploss on SELL failed");
         }
@@ -86,8 +145,8 @@ void secondStoploss(double secPrice, CTrade &tradeL)
 
         // TODO: check amount of orders
 
-        Print("OrderGetTicket(0) ", OrderGetTicket(0));
-        Print("OrderGetTicket(1) ", OrderGetTicket(1));
+        // Print("OrderGetTicket(0) ", OrderGetTicket(0));
+        // Print("OrderGetTicket(1) ", OrderGetTicket(1));
     }
     else
         Print("secondStoploss failed. One position and one order required!");
@@ -102,7 +161,7 @@ void createObject(datetime time, double price, int iconCode, color clr, string t
     if (ObjectCreate(0, objName, OBJ_ARROW, 0, time, price))
     {
         ObjectSetInteger(0, objName, OBJPROP_ARROWCODE, iconCode);
-        Print("createObject: objName" + objName + " iconCode: " + iconCode + " clr: " + clr);
+        // Print("createObject: objName" + objName + " iconCode: " + iconCode + " clr: " + clr);
     }
     else
         Print("createObject went wrong!");

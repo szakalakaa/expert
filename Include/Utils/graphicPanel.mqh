@@ -51,6 +51,9 @@ private:
   CLabel lastV;
   CLabel spreadLabel;
   CLabel type_positionLabel;
+  CLabel securelPartAfterTMAMiddleFlagLabel;
+  CLabel shiftStopLossFlagLabel;
+
   // buttons
   CButton m_bChangeColor;
 
@@ -100,7 +103,8 @@ void CGraphicalPanel::Update(void)
   lastV.Text("last: " + (string)last);
   type_positionLabel.Text("type_position: " + (string)type_position);
   spreadLabel.Text("spread: " + (string)spread);
-
+  securelPartAfterTMAMiddleFlagLabel.Text("securelPartAfterTMAMiddle: " + (string)securelPartAfterTMAMiddleFlag);
+  shiftStopLossFlagLabel.Text("shiftStopLossFlag: " + (string)shiftStopLossFlag);
   spreadLabel.Color(clrWheat);
   return;
 }
@@ -179,17 +183,25 @@ bool CGraphicalPanel::CreatePanel(void)
   lastV.FontSize(InpPanelFontSize);
   this.Add(lastV);
 
-  lastV.Create(NULL, "last2", 0, 10, 105, 1, 1);
-  lastV.Text("last: " + (string)last);
-  lastV.Color(clrWheat);
-  lastV.FontSize(InpPanelFontSize);
-  this.Add(lastV);
 
   type_positionLabel.Create(NULL, "type_positionLabel", 0, 10, 125, 1, 1);
   type_positionLabel.Text("type_position: " + (string)type_position);
   type_positionLabel.Color(clrWheat);
   type_positionLabel.FontSize(InpPanelFontSize);
   this.Add(type_positionLabel);
+
+  // flags
+  securelPartAfterTMAMiddleFlagLabel.Create(NULL, "securelPartAfterTMAMiddleFlagLabel", 0, 10, 145, 1, 1);
+  securelPartAfterTMAMiddleFlagLabel.Text("securelPartAfterTMAMiddle: " + (string)securelPartAfterTMAMiddleFlag);
+  securelPartAfterTMAMiddleFlagLabel.Color(clrWheat);
+  securelPartAfterTMAMiddleFlagLabel.FontSize(InpPanelFontSize);
+  this.Add(securelPartAfterTMAMiddleFlagLabel);
+
+  shiftStopLossFlagLabel.Create(NULL, "shiftStopLossFlagLabel", 0, 10, 165, 1, 1);
+  shiftStopLossFlagLabel.Text("shiftStopLossFlag: " + (string)shiftStopLossFlag);
+  shiftStopLossFlagLabel.Color(clrWheat);
+  shiftStopLossFlagLabel.FontSize(InpPanelFontSize);
+  this.Add(shiftStopLossFlagLabel);
 
   m_bChangeColor.Create(NULL, "bChangeColor", 0, 10, 210, 140, 240);
   m_bChangeColor.Text("Change color:");
