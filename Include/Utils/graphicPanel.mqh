@@ -28,7 +28,7 @@
 //| Inputs                                                             |
 //+------------------------------------------------------------------+
 // input group "====Panel Inputs====";
-static int InpPanelWidth = 260;               // width in pixel
+static int InpPanelWidth = 300;               // width in pixel
 static int InpPanelHeight = 400;              // height in pixel
 static int InpPanelFontSize = 10;             // width in pixel
 static int InpPanelTextColor = clrWhiteSmoke; // text clr
@@ -44,15 +44,16 @@ private:
   // labels
   CLabel main_header;
   CLabel tma_period;
+  CLabel dTMAl;
   CLabel stop_loss;
   CLabel tma_multiplayer;
   CLabel tma_signal;
   CLabel stoch_signal;
-  CLabel lastV;
   CLabel spreadLabel;
   CLabel type_positionLabel;
   CLabel securelPartAfterTMAMiddleFlagLabel;
   CLabel shiftStopLossFlagLabel;
+  CLabel valueLabel;
 
   // buttons
   CButton m_bChangeColor;
@@ -100,12 +101,25 @@ void CGraphicalPanel::Update(void)
 
   tma_signal.Text("tma signal:       " + (string)TMA_signal);
   stoch_signal.Text("stoch signal: " + (string)stochSignal);
-  lastV.Text("last: " + (string)last);
+  dTMAl.Text(dTMA);
   type_positionLabel.Text("type_position: " + (string)type_position);
   spreadLabel.Text("spread: " + (string)spread);
-  securelPartAfterTMAMiddleFlagLabel.Text("securelPartAfterTMAMiddle: " + (string)securelPartAfterTMAMiddleFlag);
-  shiftStopLossFlagLabel.Text("shiftStopLossFlag: " + (string)shiftStopLossFlag);
-  spreadLabel.Color(clrWheat);
+
+  securelPartAfterTMAMiddleFlagLabel.Text("securelPartAfterTMAMiddleFlag");
+   if (securelPartAfterTMAMiddleFlag) securelPartAfterTMAMiddleFlagLabel.Color(C'146,146,224');
+  else  securelPartAfterTMAMiddleFlagLabel.Color(C'255,166,166');
+
+  shiftStopLossFlagLabel.Text("shiftStopLossFlag");
+  if (shiftStopLossFlag) shiftStopLossFlagLabel.Color(C'146,146,224');
+  else  shiftStopLossFlagLabel.Color(C'255,166,166');
+
+  PositionSelect(_Symbol);
+  valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) *last,0))+" USD");
+
+
+  if (spread>40)  spreadLabel.Color(clrRed);
+  if (spread<15)  spreadLabel.Color(C'43,255,0');
+  else spreadLabel.Color(clrWheat);
   return;
 }
 
@@ -153,6 +167,12 @@ bool CGraphicalPanel::CreatePanel(void)
   tma_period.FontSize(InpPanelFontSize);
   this.Add(tma_period);
 
+  dTMAl.Create(NULL, "dTMA", 0, InpPanelWidth-50, 20, 1, 1);
+  dTMAl.Text(dTMA);
+  dTMAl.Color(clrWhite);
+  dTMAl.FontSize(InpPanelFontSize);
+  this.Add(dTMAl);
+
   tma_multiplayer.Create(NULL, "tma_multiplayer", 0, 10, 35, 1, 1);
   tma_multiplayer.Text("tma multiplayer:  " + (string)atr_multiplier);
   tma_multiplayer.Color(clrWheat);
@@ -177,13 +197,6 @@ bool CGraphicalPanel::CreatePanel(void)
   stoch_signal.FontSize(InpPanelFontSize);
   this.Add(stoch_signal);
 
-  lastV.Create(NULL, "last2", 0, 10, 105, 1, 1);
-  lastV.Text("last: " + (string)last);
-  lastV.Color(clrWheat);
-  lastV.FontSize(InpPanelFontSize);
-  this.Add(lastV);
-
-
   type_positionLabel.Create(NULL, "type_positionLabel", 0, 10, 125, 1, 1);
   type_positionLabel.Text("type_position: " + (string)type_position);
   type_positionLabel.Color(clrWheat);
@@ -192,13 +205,13 @@ bool CGraphicalPanel::CreatePanel(void)
 
   // flags
   securelPartAfterTMAMiddleFlagLabel.Create(NULL, "securelPartAfterTMAMiddleFlagLabel", 0, 10, 145, 1, 1);
-  securelPartAfterTMAMiddleFlagLabel.Text("securelPartAfterTMAMiddle: " + (string)securelPartAfterTMAMiddleFlag);
+  securelPartAfterTMAMiddleFlagLabel.Text("securelPartAfterTMAMiddle");
   securelPartAfterTMAMiddleFlagLabel.Color(clrWheat);
   securelPartAfterTMAMiddleFlagLabel.FontSize(InpPanelFontSize);
   this.Add(securelPartAfterTMAMiddleFlagLabel);
 
   shiftStopLossFlagLabel.Create(NULL, "shiftStopLossFlagLabel", 0, 10, 165, 1, 1);
-  shiftStopLossFlagLabel.Text("shiftStopLossFlag: " + (string)shiftStopLossFlag);
+  shiftStopLossFlagLabel.Text("shiftStopLossFlag");
   shiftStopLossFlagLabel.Color(clrWheat);
   shiftStopLossFlagLabel.FontSize(InpPanelFontSize);
   this.Add(shiftStopLossFlagLabel);
@@ -210,11 +223,17 @@ bool CGraphicalPanel::CreatePanel(void)
   m_bChangeColor.FontSize(InpPanelFontSize);
   this.Add(m_bChangeColor);
 
-  spreadLabel.Create(NULL, "spread", 0, InpPanelWidth - 120, InpPanelHeight - 80, 1, 1);
+  spreadLabel.Create(NULL, "spread", 0, InpPanelWidth - 100, InpPanelHeight - 80, 1, 1);
   spreadLabel.Text("spread: " + (string)spread);
   spreadLabel.Color(clrWheat);
   spreadLabel.FontSize(InpPanelFontSize);
   this.Add(spreadLabel);
+
+  valueLabel.Create(NULL, "valueLabel", 0, 10, InpPanelHeight - 80, 1, 1);
+  valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) *last,0))+" USD");
+  valueLabel.Color(clrWheat);
+  valueLabel.FontSize(InpPanelFontSize);
+  this.Add(valueLabel);
 
   // run panel
   if (!Run())

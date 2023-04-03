@@ -37,19 +37,10 @@ void fitstStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
         if (Symbol() == PositionGetSymbol(0))
         {
             if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
-            {
-                if (PositionGetDouble(POSITION_VOLUME) > 0.03)
-                    tradeL.SellStop(PositionGetDouble(POSITION_VOLUME), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 - stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss triggered");
-                else
-                    tradeL.Sell(PositionGetDouble(POSITION_VOLUME), NULL, 0, 0, 0, "remove rest  buy order");
-            }
+                tradeL.SellStop(PositionGetDouble(POSITION_VOLUME), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 - stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss triggered");
+
             if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
-            {
-                if (PositionGetDouble(POSITION_VOLUME) > 0.03)
-                    tradeL.BuyStop(PositionGetDouble(POSITION_VOLUME), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 + stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss triggered");
-                else
-                    tradeL.Buy(PositionGetDouble(POSITION_VOLUME), NULL, 0, 0, 0, "remove rest  sell order"); // ok
-            }
+                tradeL.BuyStop(PositionGetDouble(POSITION_VOLUME), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 + stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss triggered");
         }
     }
     if (PositionsTotal() == 0)
@@ -74,17 +65,17 @@ void fitstStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
         double orderPrice = OrderGetDouble(ORDER_PRICE_OPEN);
         double difVolume = posVolume - orderVolume;
 
-        if (difVolume>0.001)
+        if (difVolume > 0.001)
         {
             if (type_positionL == "LONG")
             {
                 if (!tradeL.SellStop(difVolume, orderPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop supplement"))
-                    Print("---ERROR: SellStop supplement on the price: " + (string)orderPrice);
+                    Print("---ERROR: SellStop supplement ", (string)difVolume, "lots on the price: " + (string)orderPrice);
             }
             if (type_positionL == "SHORT")
             {
                 if (!tradeL.BuyStop(difVolume, orderPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "BuyStop supplement"))
-                    Print("---ERROR: BuyStop supplement on the price: " + (string)orderPrice);
+                    Print("---ERROR: BuyStop supplement ", (string)difVolume, "lots on the price: " + (string)orderPrice);
             }
         }
     }
@@ -145,8 +136,6 @@ void secondStoploss(double secPrice, CTrade &tradeL)
 
         // TODO: check amount of orders
 
-        // Print("OrderGetTicket(0) ", OrderGetTicket(0));
-        // Print("OrderGetTicket(1) ", OrderGetTicket(1));
     }
     else
         Print("secondStoploss failed. One position and one order required!");
