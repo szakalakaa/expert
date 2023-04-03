@@ -8,6 +8,7 @@ Files/*
 Scripts/*
 Profiles/*
 Shared Projects/*
+Experts/*.ex5
 Experts/Advisors/*.ex5
 Experts/Advisors/*.log
 Experts/Advisors/MASTER.ex5

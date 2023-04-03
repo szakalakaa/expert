@@ -37,10 +37,12 @@ void fitstStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
         if (Symbol() == PositionGetSymbol(0))
         {
             if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
-                tradeL.SellStop(PositionGetDouble(POSITION_VOLUME), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 - stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss triggered");
+                if (!tradeL.SellStop(PositionGetDouble(POSITION_VOLUME), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 - stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss triggered"))
+                    Print("--ERROR 7 on sell stop loss triggered");
 
             if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
-                tradeL.BuyStop(PositionGetDouble(POSITION_VOLUME), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 + stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss triggered");
+                if (!tradeL.BuyStop(PositionGetDouble(POSITION_VOLUME), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 + stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss triggered"))
+                    Print("--ERROR 8 on buy stop loss triggered");
         }
     }
     if (PositionsTotal() == 0)
@@ -51,7 +53,8 @@ void fitstStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
             ulong ticket = 0;
             for (int i = 0; i < OrdersTotal(); i++)
             {
-                tradeL.OrderDelete(OrderGetTicket(i));
+                if (!tradeL.OrderDelete(OrderGetTicket(i)))
+                    Print("--ERROR 9");
             }
         }
     }
@@ -63,10 +66,11 @@ void fitstStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
         double posVolume = PositionGetDouble(POSITION_VOLUME);
         double orderVolume = OrderGetDouble(ORDER_VOLUME_CURRENT);
         double orderPrice = OrderGetDouble(ORDER_PRICE_OPEN);
-        double difVolume = posVolume - orderVolume;
+        double difVolume = NormalizeDouble(posVolume - orderVolume,5);
 
-        if (difVolume > 0.001)
+        if (difVolume > 0.0001)
         {
+            Print("difVolume: ",difVolume, "   type_positionL: ",type_positionL);
             if (type_positionL == "LONG")
             {
                 if (!tradeL.SellStop(difVolume, orderPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop supplement"))
@@ -110,7 +114,7 @@ void secondStoploss(double secPrice, CTrade &tradeL)
                 Print("---ERROR: SellStop on the orderLower price: " + (string)orderLower);
 
             else
-                Print("secondStoploss on BUY failed");
+                return;
         }
 
         // INFO: for sell 1 order has lower price
@@ -129,13 +133,12 @@ void secondStoploss(double secPrice, CTrade &tradeL)
             if (!tradeL.BuyStop(posVolume, orderHigher, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "BuyStop orderHigher"))
                 Print("---ERROR: BuyStop on the orderHigher price: " + (string)orderHigher);
             else
-                Print("secondStoploss on SELL failed");
+                return;
         }
         else
-            Print("secondStoploss failed. No type position detected");
+            return;
 
         // TODO: check amount of orders
-
     }
     else
         Print("secondStoploss failed. One position and one order required!");
@@ -154,4 +157,17 @@ void createObject(datetime time, double price, int iconCode, color clr, string t
     }
     else
         Print("createObject went wrong!");
+}
+
+void findOpenPosition(string &type_positionL)
+{
+    if (PositionsTotal())
+        PositionSelect(_Symbol);
+    {
+        if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
+            type_positionL = "LONG";
+
+        if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
+            type_positionL = "SHORT";
+    }
 }
