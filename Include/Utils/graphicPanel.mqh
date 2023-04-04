@@ -53,7 +53,9 @@ private:
   CLabel type_positionLabel;
   CLabel securelPartAfterTMAMiddleFlagLabel;
   CLabel shiftStopLossFlagLabel;
+  CLabel shiftStopLossMoreFlagLabel;
   CLabel valueLabel;
+  CLabel LotsLabel;
 
   // buttons
   CButton m_bChangeColor;
@@ -101,7 +103,7 @@ void CGraphicalPanel::Update(void)
 
   tma_signal.Text("tma signal:       " + (string)TMA_signal);
   stoch_signal.Text("stoch signal: " + (string)stochSignal);
-  dTMAl.Text(dTMA);
+  dTMAl.Text((string)dTMA);
   type_positionLabel.Text("type_position: " + (string)type_position);
   spreadLabel.Text("spread: " + (string)spread);
 
@@ -113,6 +115,11 @@ void CGraphicalPanel::Update(void)
   if (shiftStopLossFlag) shiftStopLossFlagLabel.Color(C'146,146,224');
   else  shiftStopLossFlagLabel.Color(C'255,166,166');
 
+ shiftStopLossMoreFlagLabel.Text("shiftStopLossFlag");
+  if (shiftStopLossMoreFlag) shiftStopLossMoreFlagLabel.Color(C'146,146,224');
+  else  shiftStopLossMoreFlagLabel.Color(C'255,166,166');
+
+  LotsLabel.Text("Lots: " + (string)Lots);
   PositionSelect(_Symbol);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) *last,0))+" USD");
 
@@ -168,7 +175,7 @@ bool CGraphicalPanel::CreatePanel(void)
   this.Add(tma_period);
 
   dTMAl.Create(NULL, "dTMA", 0, InpPanelWidth-50, 20, 1, 1);
-  dTMAl.Text(dTMA);
+  dTMAl.Text((string)dTMA);
   dTMAl.Color(clrWhite);
   dTMAl.FontSize(InpPanelFontSize);
   this.Add(dTMAl);
@@ -216,6 +223,12 @@ bool CGraphicalPanel::CreatePanel(void)
   shiftStopLossFlagLabel.FontSize(InpPanelFontSize);
   this.Add(shiftStopLossFlagLabel);
 
+  shiftStopLossMoreFlagLabel.Create(NULL, "shiftStopLossMoreFlagLabel", 0, 10, 185, 1, 1);
+  shiftStopLossMoreFlagLabel.Text("shiftStopLossMore");
+  shiftStopLossMoreFlagLabel.Color(clrWheat);
+  shiftStopLossMoreFlagLabel.FontSize(InpPanelFontSize);
+  this.Add(shiftStopLossMoreFlagLabel);
+
   m_bChangeColor.Create(NULL, "bChangeColor", 0, 10, 210, 140, 240);
   m_bChangeColor.Text("Change color:");
   m_bChangeColor.Color(clrRosyBrown);
@@ -228,6 +241,13 @@ bool CGraphicalPanel::CreatePanel(void)
   spreadLabel.Color(clrWheat);
   spreadLabel.FontSize(InpPanelFontSize);
   this.Add(spreadLabel);
+
+
+   LotsLabel.Create(NULL, "LotsLabel", 0, 10, InpPanelHeight - 100, 1, 1);
+  LotsLabel.Text("Lots: " + (string)Lots);
+  LotsLabel.Color(clrWheat);
+  LotsLabel.FontSize(InpPanelFontSize);
+  this.Add(LotsLabel);
 
   valueLabel.Create(NULL, "valueLabel", 0, 10, InpPanelHeight - 80, 1, 1);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) *last,0))+" USD");

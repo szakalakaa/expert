@@ -3,14 +3,15 @@
 // FirstPrice is price closer to last
 void shiftStoplosses(double firstPrice, double secPrice, string &type_positionL, double stoplossL, CTrade &tradeL)
 {
-    if (OrdersTotal() == 2)
+    int ordersAmount = OrdersTotal();
+    ulong orderTicket1 = OrderGetTicket(0);
+    double orderPrice1 = OrderGetDouble(ORDER_PRICE_OPEN);
+
+    if (ordersAmount == 2)
     {
-        ulong orderTicket1 = OrderGetTicket(0);
-        double orderPrice1 = OrderGetDouble(ORDER_PRICE_OPEN);
         ulong orderTicket2 = OrderGetTicket(1);
         double orderPrice2 = OrderGetDouble(ORDER_PRICE_OPEN);
-
-        if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
+        if (type_positionL == "LONG")
         {
             double newPrice1 = MathMax(orderPrice1, firstPrice);
             double newPrice2 = MathMax(orderPrice2, secPrice);
@@ -18,7 +19,7 @@ void shiftStoplosses(double firstPrice, double secPrice, string &type_positionL,
             tradeL.OrderModify(OrderGetTicket(0), newPrice1, 0, 0, ORDER_TIME_GTC, 0, 0);
             tradeL.OrderModify(OrderGetTicket(1), newPrice2, 0, 0, ORDER_TIME_GTC, 0, 0);
         }
-        if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
+        if (type_positionL == "SHORT")
         {
             double newPrice1 = MathMin(orderPrice1, firstPrice);
             double newPrice2 = MathMin(orderPrice2, secPrice);
@@ -27,6 +28,8 @@ void shiftStoplosses(double firstPrice, double secPrice, string &type_positionL,
             tradeL.OrderModify(OrderGetTicket(1), newPrice2, 0, 0, ORDER_TIME_GTC, 0, 0);
         }
     }
+    if (ordersAmount == 1)
+        tradeL.OrderModify(OrderGetTicket(0), firstPrice, 0, 0, ORDER_TIME_GTC, 0, 0);
 }
 
 void fitstStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
@@ -45,18 +48,11 @@ void fitstStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
                     Print("--ERROR 8 on buy stop loss triggered");
         }
     }
+    // REMOVE ALL ORDERS
     if (PositionsTotal() == 0)
     {
         type_positionL = "NO POSITION";
-        if (OrdersTotal() != 0)
-        {
-            ulong ticket = 0;
-            for (int i = 0; i < OrdersTotal(); i++)
-            {
-                if (!tradeL.OrderDelete(OrderGetTicket(i)))
-                    Print("--ERROR 9");
-            }
-        }
+        removeAllOrders(tradeL);
     }
     // SELLSTOP SUPPLEMENT
     if ((PositionsTotal() != 0) && (OrdersTotal() == 1))
@@ -66,11 +62,11 @@ void fitstStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
         double posVolume = PositionGetDouble(POSITION_VOLUME);
         double orderVolume = OrderGetDouble(ORDER_VOLUME_CURRENT);
         double orderPrice = OrderGetDouble(ORDER_PRICE_OPEN);
-        double difVolume = NormalizeDouble(posVolume - orderVolume,5);
+        double difVolume = NormalizeDouble(posVolume - orderVolume, 5);
 
-        if (difVolume > 0.0001)
+        if (difVolume > 0.001)
         {
-            Print("difVolume: ",difVolume, "   type_positionL: ",type_positionL);
+            Print("difVolume: ", difVolume, "   type_positionL: ", type_positionL);
             if (type_positionL == "LONG")
             {
                 if (!tradeL.SellStop(difVolume, orderPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop supplement"))
@@ -101,13 +97,14 @@ void secondStoploss(double secPrice, CTrade &tradeL)
         if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
         {
             double shiftedPrice = NormalizeDouble((orderPrice + posPrice) / 2, 0);
-            double orderHigher = MathMax(secPrice, shiftedPrice);
-            double orderLower = MathMin(secPrice, shiftedPrice);
+            double profitPrice = posPrice + 30;
+            double orderHigher = MathMax(profitPrice, shiftedPrice);
+            double orderLower = MathMin(profitPrice, shiftedPrice);
 
             if (!tradeL.OrderDelete(orderTicket))
                 Print("---ERROR: Order:  " + (string)orderTicket + " was closed ");
 
-            if (!tradeL.SellStop(posVolume, orderHigher, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop orderHigher")) // invalid price
+            if (!tradeL.SellStop(posVolume, orderHigher, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop orderHigher"))
                 Print("---ERROR: SellStop on the orderHigher price: " + (string)orderHigher);
 
             if (!tradeL.SellStop(posVolume, orderLower, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop orderLower"))
@@ -121,8 +118,9 @@ void secondStoploss(double secPrice, CTrade &tradeL)
         if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
         {
             double shiftedPrice = NormalizeDouble((orderPrice + posPrice) / 2, 0);
-            double orderHigher = MathMax(secPrice, shiftedPrice);
-            double orderLower = MathMin(secPrice, shiftedPrice);
+            double profitPrice = posPrice - 30;
+            double orderHigher = MathMax(profitPrice, shiftedPrice);
+            double orderLower = MathMin(profitPrice, shiftedPrice);
 
             if (!tradeL.OrderDelete(orderTicket))
                 Print("---ERROR: Order: " + (string)orderTicket + " was closed ");
@@ -153,7 +151,7 @@ void createObject(datetime time, double price, int iconCode, color clr, string t
     if (ObjectCreate(0, objName, OBJ_ARROW, 0, time, price))
     {
         ObjectSetInteger(0, objName, OBJPROP_ARROWCODE, iconCode);
-        // Print("createObject: objName" + objName + " iconCode: " + iconCode + " clr: " + clr);
+        ObjectSetInteger(0,objName, OBJPROP_COLOR,clr);
     }
     else
         Print("createObject went wrong!");
@@ -169,5 +167,18 @@ void findOpenPosition(string &type_positionL)
 
         if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
             type_positionL = "SHORT";
+    }
+}
+
+void removeAllOrders(CTrade &tradeLL)
+{
+    if (OrdersTotal() != 0)
+    {
+        ulong ticket = 0;
+        for (int i = 0; i < OrdersTotal(); i++)
+        {
+            if (!tradeLL.OrderDelete(OrderGetTicket(i)))
+                Print("--ERROR 9");
+        }
     }
 }
