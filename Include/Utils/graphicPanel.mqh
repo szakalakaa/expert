@@ -51,9 +51,9 @@ private:
   CLabel stoch_signal;
   CLabel spreadLabel;
   CLabel type_positionLabel;
-  CLabel securelPartAfterTMAMiddleFlagLabel;
-  CLabel shiftStopLossFlagLabel;
-  CLabel shiftStopLossMoreFlagLabel;
+  CLabel firstFlagLabel;
+  CLabel secondFlagLabel;
+  CLabel thirdFlagLabel;
   CLabel valueLabel;
   CLabel LotsLabel;
 
@@ -107,17 +107,17 @@ void CGraphicalPanel::Update(void)
   type_positionLabel.Text("type_position: " + (string)type_position);
   spreadLabel.Text("spread: " + (string)spread);
 
-  securelPartAfterTMAMiddleFlagLabel.Text("securelPartAfterTMAMiddleFlag");
-   if (securelPartAfterTMAMiddleFlag) securelPartAfterTMAMiddleFlagLabel.Color(C'146,146,224');
-  else  securelPartAfterTMAMiddleFlagLabel.Color(C'255,166,166');
+  firstFlagLabel.Text("firstFlag");
+   if (firstFlag) firstFlagLabel.Color(C'146,146,224');
+  else  firstFlagLabel.Color(C'255,166,166');
 
-  shiftStopLossFlagLabel.Text("shiftStopLossFlag");
-  if (shiftStopLossFlag) shiftStopLossFlagLabel.Color(C'146,146,224');
-  else  shiftStopLossFlagLabel.Color(C'255,166,166');
+  secondFlagLabel.Text("secondFlag");
+  if (secondFlag) secondFlagLabel.Color(C'146,146,224');
+  else  secondFlagLabel.Color(C'255,166,166');
 
- shiftStopLossMoreFlagLabel.Text("shiftStopLossFlag");
-  if (shiftStopLossMoreFlag) shiftStopLossMoreFlagLabel.Color(C'146,146,224');
-  else  shiftStopLossMoreFlagLabel.Color(C'255,166,166');
+ thirdFlagLabel.Text("thirdFlag");
+  if (thirdFlag) thirdFlagLabel.Color(C'146,146,224');
+  else  thirdFlagLabel.Color(C'255,166,166');
 
   LotsLabel.Text("Lots: " + (string)Lots);
   PositionSelect(_Symbol);
@@ -211,23 +211,23 @@ bool CGraphicalPanel::CreatePanel(void)
   this.Add(type_positionLabel);
 
   // flags
-  securelPartAfterTMAMiddleFlagLabel.Create(NULL, "securelPartAfterTMAMiddleFlagLabel", 0, 10, 145, 1, 1);
-  securelPartAfterTMAMiddleFlagLabel.Text("securelPartAfterTMAMiddle");
-  securelPartAfterTMAMiddleFlagLabel.Color(clrWheat);
-  securelPartAfterTMAMiddleFlagLabel.FontSize(InpPanelFontSize);
-  this.Add(securelPartAfterTMAMiddleFlagLabel);
+  firstFlagLabel.Create(NULL, "firstFlagLabel", 0, 10, 145, 1, 1);
+  firstFlagLabel.Text("securelPartAfterTMAMiddle");
+  firstFlagLabel.Color(clrWheat);
+  firstFlagLabel.FontSize(InpPanelFontSize);
+  this.Add(firstFlagLabel);
 
-  shiftStopLossFlagLabel.Create(NULL, "shiftStopLossFlagLabel", 0, 10, 165, 1, 1);
-  shiftStopLossFlagLabel.Text("shiftStopLossFlag");
-  shiftStopLossFlagLabel.Color(clrWheat);
-  shiftStopLossFlagLabel.FontSize(InpPanelFontSize);
-  this.Add(shiftStopLossFlagLabel);
+  secondFlagLabel.Create(NULL, "secondFlagLabel", 0, 10, 165, 1, 1);
+  secondFlagLabel.Text("secondFlag");
+  secondFlagLabel.Color(clrWheat);
+  secondFlagLabel.FontSize(InpPanelFontSize);
+  this.Add(secondFlagLabel);
 
-  shiftStopLossMoreFlagLabel.Create(NULL, "shiftStopLossMoreFlagLabel", 0, 10, 185, 1, 1);
-  shiftStopLossMoreFlagLabel.Text("shiftStopLossMore");
-  shiftStopLossMoreFlagLabel.Color(clrWheat);
-  shiftStopLossMoreFlagLabel.FontSize(InpPanelFontSize);
-  this.Add(shiftStopLossMoreFlagLabel);
+  thirdFlagLabel.Create(NULL, "thirdFlagLabel", 0, 10, 185, 1, 1);
+  thirdFlagLabel.Text("thirdFlag");
+  thirdFlagLabel.Color(clrWheat);
+  thirdFlagLabel.FontSize(InpPanelFontSize);
+  this.Add(thirdFlagLabel);
 
   m_bChangeColor.Create(NULL, "bChangeColor", 0, 10, 210, 140, 240);
   m_bChangeColor.Text("Change color:");

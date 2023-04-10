@@ -40,11 +40,11 @@ void fitstStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
         if (Symbol() == PositionGetSymbol(0))
         {
             if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
-                if (!tradeL.SellStop(NormalizeDouble(PositionGetDouble(POSITION_VOLUME),4), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 - stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss triggered"))
+                if (!tradeL.SellStop(NormalizeDouble(PositionGetDouble(POSITION_VOLUME), 4), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 - stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss triggered"))
                     Print("--ERROR 7 on sell stop loss triggered");
 
             if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
-                if (!tradeL.BuyStop(NormalizeDouble(PositionGetDouble(POSITION_VOLUME),4), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 + stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss triggered"))
+                if (!tradeL.BuyStop(NormalizeDouble(PositionGetDouble(POSITION_VOLUME), 4), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 + stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss triggered"))
                     Print("--ERROR 8 on buy stop loss triggered");
         }
     }
@@ -151,7 +151,7 @@ void createObject(datetime time, double price, int iconCode, color clr, string t
     if (ObjectCreate(0, objName, OBJ_ARROW, 0, time, price))
     {
         ObjectSetInteger(0, objName, OBJPROP_ARROWCODE, iconCode);
-        ObjectSetInteger(0,objName, OBJPROP_COLOR,clr);
+        ObjectSetInteger(0, objName, OBJPROP_COLOR, clr);
     }
     else
         Print("createObject went wrong!");
@@ -183,9 +183,22 @@ void removeAllOrders(CTrade &tradeLL)
     }
 }
 
-double getLots(double lastL){
-    double lotsTotal = NormalizeDouble((5*0.95*AccountInfoDouble(ACCOUNT_BALANCE)/lastL),4);
-    double lotsConverted=lotsTotal-NormalizeDouble(MathMod(lotsTotal,0.0004),4);
-    return NormalizeDouble(lotsConverted,4);
-
+double getLots(double lastL)
+{
+    double lotsTotal = NormalizeDouble((5 * 0.95 * AccountInfoDouble(ACCOUNT_BALANCE) / lastL), 4);
+    double lotsConverted = lotsTotal - NormalizeDouble(MathMod(lotsTotal, 0.0004), 4);
+    return NormalizeDouble(lotsConverted, 4);
 }
+
+// void check_saldo(double &saldoL)
+// {
+//     if (saldoL > AccountInfoDouble(ACCOUNT_BALANCE))
+//     {
+//         laverage = laverage_loss;
+//     }
+//     else if (AccountInfoDouble(ACCOUNT_BALANCE) > saldoL)
+//     {
+//         laverage = laverage_profit;
+//     }
+//     saldoL = AccountInfoDouble(ACCOUNT_BALANCE);
+// }
