@@ -40,11 +40,11 @@ void fitstStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
         if (Symbol() == PositionGetSymbol(0))
         {
             if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
-                if (!tradeL.SellStop(PositionGetDouble(POSITION_VOLUME), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 - stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss triggered"))
+                if (!tradeL.SellStop(NormalizeDouble(PositionGetDouble(POSITION_VOLUME),4), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 - stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss triggered"))
                     Print("--ERROR 7 on sell stop loss triggered");
 
             if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
-                if (!tradeL.BuyStop(PositionGetDouble(POSITION_VOLUME), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 + stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss triggered"))
+                if (!tradeL.BuyStop(NormalizeDouble(PositionGetDouble(POSITION_VOLUME),4), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 + stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss triggered"))
                     Print("--ERROR 8 on buy stop loss triggered");
         }
     }
@@ -89,7 +89,7 @@ void secondStoploss(double secPrice, CTrade &tradeL)
         PositionSelect(_Symbol);
         ulong orderTicket = OrderGetTicket(0);
 
-        double posVolume = NormalizeDouble(PositionGetDouble(POSITION_VOLUME) / 2, 3);
+        double posVolume = NormalizeDouble(PositionGetDouble(POSITION_VOLUME) / 2, 4);
         double posPrice = PositionGetDouble(POSITION_PRICE_OPEN);
         double orderPrice = OrderGetDouble(ORDER_PRICE_OPEN);
 
@@ -181,4 +181,11 @@ void removeAllOrders(CTrade &tradeLL)
                 Print("--ERROR 9");
         }
     }
+}
+
+double getLots(double lastL){
+    double lotsTotal = NormalizeDouble((5*0.95*AccountInfoDouble(ACCOUNT_BALANCE)/lastL),4);
+    double lotsConverted=lotsTotal-NormalizeDouble(MathMod(lotsTotal,0.0004),4);
+    return NormalizeDouble(lotsConverted,4);
+
 }
