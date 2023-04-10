@@ -9,6 +9,23 @@ string getTmaSignal(double lastL, double TMAbands_downL, double TMAbands_upL, st
         return "";
 }
 
+void setFlags(bool &firstFlagL, bool &secondFlagL, bool &thirdFlagL, bool firstL, bool secondL, bool thirdL)
+{
+    firstFlagL = false;
+    secondFlagL = false;
+    thirdFlagL = false;
+
+    if (!firstL && secondL)
+        firstFlagL = true;
+    if (!secondL)
+    {
+        firstFlagL = true;
+        secondFlagL = true;
+        thirdFlagL = true;
+    }
+    if (firstL && !secondL)  firstFlagL = false;
+}
+
 // F1->Wingdings  kody ikon
 void createObject(datetime time, double price, int iconCode, color clr, string txt)
 {
