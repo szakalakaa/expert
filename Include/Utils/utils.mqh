@@ -202,3 +202,34 @@ double getLots(double lastL)
 //     }
 //     saldoL = AccountInfoDouble(ACCOUNT_BALANCE);
 // }
+
+struct statsClass
+{
+    double highest24;
+    double lowest24;
+
+    double spread24;
+};
+
+void get24Statistics(statsClass &statsL)
+{
+
+    MqlDateTime serverTime;
+    TimeToStruct(TimeTradeServer(), serverTime);
+
+    double high = iHigh(_Symbol, PERIOD_M15, 0);
+    double low = iLow(_Symbol, PERIOD_M15, 0);
+
+    if (!MathMod(serverTime.min,60) && serverTime.sec==0)
+    {
+        statsL.highest24 = 0;
+        statsL.lowest24 = 99999;
+    }
+
+    if (high > statsL.highest24)
+        statsL.highest24 = high;
+    if (low < statsL.lowest24)
+        statsL.lowest24 = low;
+
+    statsL.spread24 = statsL.highest24 - statsL.lowest24;
+}
