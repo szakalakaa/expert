@@ -23,7 +23,8 @@ void setFlags(bool &firstFlagL, bool &secondFlagL, bool &thirdFlagL, bool firstL
         secondFlagL = true;
         thirdFlagL = true;
     }
-    if (firstL && !secondL)  firstFlagL = false;
+    if (firstL && !secondL)
+        firstFlagL = false;
 }
 
 // F1->Wingdings  kody ikon
