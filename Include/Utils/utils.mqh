@@ -1,3 +1,73 @@
+
+bool NormalizePrice(double price, double &normalizedPrice)
+{
+    double tickSize = 0;
+    if ( !SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_SIZE, tickSize))
+    {
+        Print("61 Failed to get ticksize");
+        return false;
+    }
+    normalizedPrice = NormalizeDouble(MathRound(price / tickSize) * tickSize, _Digits);
+    return true;
+}
+
+bool CountOpenPositions(int &countBuy, int &countSell)
+{
+    countBuy = 0;
+    countSell = 0;
+    int total = PositionsTotal();
+
+    for (int i = total - 1; i >= 0; i--)
+    {
+        ulong positionTicket = PositionGetTicket(i);
+        if (positionTicket <= 0)
+        {
+            Print("55 Failed to get ticket");
+            return false;
+        }
+        if (!PositionSelectByTicket(positionTicket))
+        {
+            Print("56 Failed to select position");
+            return false;
+        }
+        long magic;
+        if (!PositionGetInteger(POSITION_MAGIC, magic))
+        {
+            Print("57 Failed to get magic");
+            return false;
+        }
+        if (magic == inpMagic)
+        {
+            long type;
+            if (!PositionGetInteger(POSITION_TYPE, type))
+            {
+                Print("58 Failed to get type ");
+                return false;
+            }
+            if (type == POSITION_TYPE_BUY)
+                countBuy++;
+            if (type == POSITION_TYPE_SELL)
+                countSell++;
+        }
+    }
+    return true;
+}
+
+// check if we have a bar open tick
+bool isNewBar()
+{
+    static datetime prevTime = 0;
+    datetime currentTime = iTime(_Symbol, PERIOD_CURRENT, 0);
+
+    if (prevTime != currentTime)
+    {
+        prevTime = currentTime;
+        return true;
+    }
+
+    return false;
+}
+
 string getTmaSignal(double lastL, double TMAbands_downL, double TMAbands_upL, string type_positionL)
 {
     if ((lastL < TMAbands_downL) && (type_positionL != "LONG"))
@@ -61,19 +131,6 @@ double getLots(double lastL)
     double lotsConverted = lotsTotal - NormalizeDouble(MathMod(lotsTotal, 0.0004), 4);
     return NormalizeDouble(lotsConverted, 4);
 }
-
-// void check_saldo(double &saldoL)
-// {
-//     if (saldoL > AccountInfoDouble(ACCOUNT_BALANCE))
-//     {
-//         laverage = laverage_loss;
-//     }
-//     else if (AccountInfoDouble(ACCOUNT_BALANCE) > saldoL)
-//     {
-//         laverage = laverage_profit;
-//     }
-//     saldoL = AccountInfoDouble(ACCOUNT_BALANCE);
-// }
 
 struct statsClass
 {

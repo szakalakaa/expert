@@ -1,6 +1,6 @@
 #include <Trade\Trade.mqh>
 
-void firstStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
+void addStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
 {
     // ADD FIRST STOPLOSS
     if ((PositionsTotal() != 0) && (OrdersTotal() == 0))
@@ -15,36 +15,10 @@ void firstStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
                 if (!tradeL.BuyStop(NormalizeDouble(PositionGetDouble(POSITION_VOLUME), 4), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 + stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss triggered"))
                     Print("--ERROR 8 on buy stop loss triggered");
         }
-    }
-    // REMOVE ALL ORDERS
-    if (PositionsTotal() == 0)
-    {
-        type_positionL = "NO POSITION";
-        removeAllOrders(tradeL);
-    }
-    // SELLSTOP SUPPLEMENT
-    if ((PositionsTotal() != 0) && (OrdersTotal() == 1))
-    {
-        OrderGetTicket(0);
-        PositionSelect(_Symbol);
-        double posVolume = PositionGetDouble(POSITION_VOLUME);
-        double orderVolume = OrderGetDouble(ORDER_VOLUME_CURRENT);
-        double orderPrice = OrderGetDouble(ORDER_PRICE_OPEN);
-        double difVolume = NormalizeDouble(posVolume - orderVolume, 5);
-
-        if (difVolume > 0.001)
+        if (!OrdersTotal())
         {
-            Print("difVolume: ", difVolume, "   type_positionL: ", type_positionL);
-            if (type_positionL == "LONG")
-            {
-                if (!tradeL.SellStop(difVolume, orderPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop supplement"))
-                    Print("---ERROR: SellStop supplement ", (string)difVolume, "lots on the price: " + (string)orderPrice);
-            }
-            if (type_positionL == "SHORT")
-            {
-                if (!tradeL.BuyStop(difVolume, orderPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "BuyStop supplement"))
-                    Print("---ERROR: BuyStop supplement ", (string)difVolume, "lots on the price: " + (string)orderPrice);
-            }
+            Print("--ERROR did not open stop losses for the one position");
+            return;
         }
     }
 }
