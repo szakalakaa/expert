@@ -54,10 +54,10 @@ bool CountOpenPositions(int &countBuy, int &countSell)
 }
 
 // check if we have a bar open tick
-bool isNewBar()
+bool shouldProcess(ENUM_TIMEFRAMES perl)
 {
     static datetime prevTime = 0;
-    datetime currentTime = iTime(_Symbol, PERIOD_CURRENT, 0);
+    datetime currentTime = iTime(_Symbol, perl, 0);
 
     if (prevTime != currentTime)
     {
@@ -125,9 +125,9 @@ void findOpenPosition(string &type_positionL)
     }
 }
 
-double getLots(double lastL)
+double getLots(double lastL,int levarL)
 {
-    double lotsTotal = NormalizeDouble((5 * 0.95 * AccountInfoDouble(ACCOUNT_BALANCE) / lastL), 4);
+    double lotsTotal = NormalizeDouble((levarL * 0.95 * AccountInfoDouble(ACCOUNT_BALANCE) / lastL), 4);
     double lotsConverted = lotsTotal - NormalizeDouble(MathMod(lotsTotal, 0.0004), 4);
     return NormalizeDouble(lotsConverted, 4);
 }
