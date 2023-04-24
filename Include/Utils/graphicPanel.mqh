@@ -102,31 +102,15 @@ void CGraphicalPanel::Update(void)
 {
 
   tma_signal.Text("tma signal:       " + (string)TMA_signal);
-  stoch_signal.Text("stoch signal: " + (string)stochSignal);
-  dTMAl.Text((string)dTMA);
+
   type_positionLabel.Text("type_position: " + (string)type_position);
-  spreadLabel.Text("spread: " + (string)spread);
-
-  firstFlagLabel.Text("firstFlag");
-   if (firstFlag) firstFlagLabel.Color(C'146,146,224');
-  else  firstFlagLabel.Color(C'255,166,166');
-
-  secondFlagLabel.Text("secondFlag");
-  if (secondFlag) secondFlagLabel.Color(C'146,146,224');
-  else  secondFlagLabel.Color(C'255,166,166');
-
- thirdFlagLabel.Text("thirdFlag");
-  if (thirdFlag) thirdFlagLabel.Color(C'146,146,224');
-  else  thirdFlagLabel.Color(C'255,166,166');
+ 
 
   LotsLabel.Text("Lots: " + (string)Lots);
   PositionSelect(_Symbol);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) *last,0))+" USD");
 
 
-  if (spread>40)  spreadLabel.Color(clrRed);
-  if (spread<15)  spreadLabel.Color(C'43,255,0');
-  else spreadLabel.Color(clrWheat);
   return;
 }
 
@@ -174,11 +158,7 @@ bool CGraphicalPanel::CreatePanel(void)
   tma_period.FontSize(InpPanelFontSize);
   this.Add(tma_period);
 
-  dTMAl.Create(NULL, "dTMA", 0, InpPanelWidth-50, 20, 1, 1);
-  dTMAl.Text((string)dTMA);
-  dTMAl.Color(clrWhite);
-  dTMAl.FontSize(InpPanelFontSize);
-  this.Add(dTMAl);
+
 
   tma_multiplayer.Create(NULL, "tma_multiplayer", 0, 10, 35, 1, 1);
   tma_multiplayer.Text("tma multiplayer:  " + (string)atr_multiplier);
@@ -198,11 +178,6 @@ bool CGraphicalPanel::CreatePanel(void)
   tma_signal.FontSize(InpPanelFontSize);
   this.Add(tma_signal);
 
-  stoch_signal.Create(NULL, "stoch_signal", 0, 10, 90, 1, 1);
-  stoch_signal.Text("stoch signal: " + (string)stochSignal);
-  stoch_signal.Color(clrWheat);
-  stoch_signal.FontSize(InpPanelFontSize);
-  this.Add(stoch_signal);
 
   type_positionLabel.Create(NULL, "type_positionLabel", 0, 10, 125, 1, 1);
   type_positionLabel.Text("type_position: " + (string)type_position);
@@ -210,37 +185,12 @@ bool CGraphicalPanel::CreatePanel(void)
   type_positionLabel.FontSize(InpPanelFontSize);
   this.Add(type_positionLabel);
 
-  // flags
-  firstFlagLabel.Create(NULL, "firstFlagLabel", 0, 10, 145, 1, 1);
-  firstFlagLabel.Text("securelPartAfterTMAMiddle");
-  firstFlagLabel.Color(clrWheat);
-  firstFlagLabel.FontSize(InpPanelFontSize);
-  this.Add(firstFlagLabel);
-
-  secondFlagLabel.Create(NULL, "secondFlagLabel", 0, 10, 165, 1, 1);
-  secondFlagLabel.Text("secondFlag");
-  secondFlagLabel.Color(clrWheat);
-  secondFlagLabel.FontSize(InpPanelFontSize);
-  this.Add(secondFlagLabel);
-
-  thirdFlagLabel.Create(NULL, "thirdFlagLabel", 0, 10, 185, 1, 1);
-  thirdFlagLabel.Text("thirdFlag");
-  thirdFlagLabel.Color(clrWheat);
-  thirdFlagLabel.FontSize(InpPanelFontSize);
-  this.Add(thirdFlagLabel);
-
-  m_bChangeColor.Create(NULL, "bChangeColor", 0, 10, 210, 140, 240);
+   m_bChangeColor.Create(NULL, "bChangeColor", 0, 10, 210, 140, 240);
   m_bChangeColor.Text("Change color:");
   m_bChangeColor.Color(clrRosyBrown);
   m_bChangeColor.ColorBackground(clrRed);
   m_bChangeColor.FontSize(InpPanelFontSize);
   this.Add(m_bChangeColor);
-
-  spreadLabel.Create(NULL, "spread", 0, InpPanelWidth - 100, InpPanelHeight - 80, 1, 1);
-  spreadLabel.Text("spread: " + (string)spread);
-  spreadLabel.Color(clrWheat);
-  spreadLabel.FontSize(InpPanelFontSize);
-  this.Add(spreadLabel);
 
 
    LotsLabel.Create(NULL, "LotsLabel", 0, 10, InpPanelHeight - 100, 1, 1);
