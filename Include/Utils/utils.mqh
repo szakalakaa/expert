@@ -1,7 +1,29 @@
+void printValues(string TMA_signalA, double lastA, double orderPriceA, double bandA, double candleClose, double offsetPriceA)
+{
+    if (TMA_signalA == "buy")
+    {
+        Print(" *TMA_signal: " + (string)TMA_signalA);
+        Print("   last: " + (string)lastA);
+        Print("   ask: " + (string)orderPriceA);
+        Print("   TMAbands_down[0]: " + (string)bandA);
+        Print("   candle[1].close: " + (string)candleClose);
+        Print("   offsetForBuy: " + (string)offsetPriceA);
+    }
+    if (TMA_signalA == "sell")
+    {
+        Print(" *TMA_signal: " + (string)TMA_signalA);
+        Print("   last: " + (string)lastA);
+        Print("   bid: " + (string)orderPriceA);
+        Print("   TMAbands_up[0]: " + (string)bandA);
+        Print("   candle[1].close: " + (string)candleClose);
+        Print("   offsetForSell: " + (string)offsetPriceA);
+    }
+}
 
-bool checkInputs(double Stoploss,int Atr_period,double Atr_multiplier){
+bool checkInputs(double Stoploss, int Atr_period, double Atr_multiplier)
+{
 
-  if (Stoploss <= 0 || Stoploss > 0.04)
+    if (Stoploss <= 0 || Stoploss > 0.04)
     {
         Alert("stoploss <= 0 || stoploss > 0.04");
         return false;
@@ -19,7 +41,8 @@ bool checkInputs(double Stoploss,int Atr_period,double Atr_multiplier){
     return true;
 }
 
-void printTime(){
+void printTime()
+{
     MqlDateTime t;
     TimeToStruct(iTime(_Symbol, PERIOD_M1, 0), t);
     t.hour = t.hour + 2;
@@ -30,7 +53,7 @@ void printTime(){
 bool NormalizePrice(double price, double &normalizedPrice)
 {
     double tickSize = 0;
-    if ( !SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_SIZE, tickSize))
+    if (!SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_SIZE, tickSize))
     {
         Print("61 Failed to get ticksize");
         return false;
@@ -153,7 +176,7 @@ void findOpenPosition(string &type_positionL)
     }
 }
 
-double getLots(double lastL,int levarL)
+double getLots(double lastL, int levarL)
 {
     double lotsTotal = NormalizeDouble((levarL * 0.95 * AccountInfoDouble(ACCOUNT_BALANCE) / lastL), 4);
     double lotsConverted = lotsTotal - NormalizeDouble(MathMod(lotsTotal, 0.0004), 4);
