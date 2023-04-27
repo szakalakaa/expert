@@ -1,4 +1,32 @@
 
+bool checkInputs(double Stoploss,int Atr_period,double Atr_multiplier){
+
+  if (Stoploss <= 0 || Stoploss > 0.04)
+    {
+        Alert("stoploss <= 0 || stoploss > 0.04");
+        return false;
+    }
+    if (Atr_period > 300 || Atr_period < 100)
+    {
+        Alert("atr_period > 300 || atr_period < 100");
+        return false;
+    }
+    if (Atr_multiplier > 3 || Atr_multiplier < 0.5)
+    {
+        Alert("atr_multiplier > 3 || atr_multiplier < 0.5");
+        return false;
+    }
+    return true;
+}
+
+void printTime(){
+    MqlDateTime t;
+    TimeToStruct(iTime(_Symbol, PERIOD_M1, 0), t);
+    t.hour = t.hour + 2;
+    datetime time = StructToTime(t);
+    Print("time: ", time);
+}
+
 bool NormalizePrice(double price, double &normalizedPrice)
 {
     double tickSize = 0;
