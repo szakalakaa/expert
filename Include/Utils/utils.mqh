@@ -20,7 +20,7 @@ void printValues(string TMA_signalA, double lastA, double orderPriceA, double ba
     }
 }
 
-bool checkInputs(double Stoploss, int Atr_period, double Atr_multiplier)
+bool checkInputs(double Stoploss, int Atr_period, double Atr_multiplier,double Lotss)
 {
 
     if (Stoploss <= 0 || Stoploss > 0.04)
@@ -36,6 +36,11 @@ bool checkInputs(double Stoploss, int Atr_period, double Atr_multiplier)
     if (Atr_multiplier > 3 || Atr_multiplier < 0.5)
     {
         Alert("atr_multiplier > 3 || atr_multiplier < 0.5");
+        return false;
+    }
+     if (Lotss > 0.02 || Lotss < 0.004)
+    {
+        Alert("lots > 0.02 || lots < 0.004");
         return false;
     }
     return true;
