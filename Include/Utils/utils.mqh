@@ -1,3 +1,50 @@
+bool countOpenPositions(int &countBuy, int &conutSell)
+{
+    countBuy = 0;
+    conutSell = 0;
+
+    int total = PositionsTotal();
+    for (int i = total - 1; i >= 0; i--)
+    {
+        ulong positionTicket = PositionGetTicket(i);
+        if (positionTicket <= 0)
+        {
+            Print("Failed to get ticket");
+            return false;
+        }
+        if (!PositionSelectByTicket(positionTicket))
+        {
+            Print("Failed to select position");
+            return false;
+        }
+        long magic;
+        if (!PositionGetInteger(POSITION_MAGIC, magic))
+        {
+            Print("Failed to get magic ");
+            return false;
+        }
+        if (magic == inpMagic)
+        {
+            long type;
+            if (!PositionGetInteger(POSITION_TYPE, type))
+            {
+                Print("Failed to get type ");
+                return false;
+            }
+            if (type == POSITION_TYPE_BUY)
+            {
+                countBuy++;
+            }
+            if (type == POSITION_TYPE_SELL)
+            {
+                conutSell++;
+            }
+        }
+    }
+
+    return true;
+}
+
 void printValues(string TMA_signalA, double lastA, double orderPriceA, double bandA, double candleClose, double offsetPriceA)
 {
     if (TMA_signalA == "buy")
@@ -20,7 +67,7 @@ void printValues(string TMA_signalA, double lastA, double orderPriceA, double ba
     }
 }
 
-bool checkInputs(double Stoploss, int Atr_period, double Atr_multiplier,double Lotss)
+bool checkInputs(double Stoploss, int Atr_period, double Atr_multiplier, double Levar, double StochUpper, double kPeriod, double dPeriod)
 {
 
     if (Stoploss <= 0 || Stoploss > 0.04)
@@ -38,9 +85,29 @@ bool checkInputs(double Stoploss, int Atr_period, double Atr_multiplier,double L
         Alert("atr_multiplier > 3 || atr_multiplier < 0.5");
         return false;
     }
-     if (Lotss > 0.02 || Lotss < 0.004)
+    if (Levar > 6 || Levar <= 0)
     {
-        Alert("lots > 0.02 || lots < 0.004");
+        Alert("Levar > 6 || Levar <= 0");
+        return false;
+    }
+    if (StochUpper > 90 || StochUpper < 10)
+    {
+        Alert("stochUpper > 90 || stochUpper < 10");
+        return false;
+    }
+    if (kPeriod > 25 || kPeriod < 2)
+    {
+        Alert("kPeriod > 25 || kPeriod < 2");
+        return false;
+    }
+    if (dPeriod > 25 || dPeriod < 2)
+    {
+        Alert("dPeriod > 25 || dPeriod < 2");
+        return false;
+    }
+    if (Stoploss * Levar > 0.1)
+    {
+        Alert("Stoploss * Levar > 0.1");
         return false;
     }
     return true;
@@ -110,17 +177,16 @@ bool CountOpenPositions(int &countBuy, int &countSell)
 }
 
 // check if we have a bar open tick
-bool shouldProcess(ENUM_TIMEFRAMES perl)
+bool shouldProcess(ENUM_TIMEFRAMES ProcessPeriod)
 {
     static datetime prevTime = 0;
-    datetime currentTime = iTime(_Symbol, perl, 0);
+    datetime currentTime = iTime(_Symbol, ProcessPeriod, 0);
 
     if (prevTime != currentTime)
     {
         prevTime = currentTime;
         return true;
     }
-
     return false;
 }
 
@@ -133,24 +199,6 @@ string getTmaSignal(double lastL, double TMAbands_downL, double TMAbands_upL, st
         return "sell";
     else
         return "";
-}
-
-void setFlags(bool &firstFlagL, bool &secondFlagL, bool &thirdFlagL, bool firstL, bool secondL, bool thirdL)
-{
-    firstFlagL = false;
-    secondFlagL = false;
-    thirdFlagL = false;
-
-    if (!firstL && secondL)
-        firstFlagL = true;
-    if (!secondL)
-    {
-        firstFlagL = true;
-        secondFlagL = true;
-        thirdFlagL = true;
-    }
-    if (firstL && !secondL)
-        firstFlagL = false;
 }
 
 // F1->Wingdings  kody ikon
@@ -181,39 +229,9 @@ void findOpenPosition(string &type_positionL)
     }
 }
 
-double getLots(double lastL, int levarL)
+double getLots(double lastL, double levarL)
 {
     double lotsTotal = NormalizeDouble((levarL * 0.95 * AccountInfoDouble(ACCOUNT_BALANCE) / lastL), 4);
     double lotsConverted = lotsTotal - NormalizeDouble(MathMod(lotsTotal, 0.0004), 4);
     return NormalizeDouble(lotsConverted, 4);
-}
-
-struct statsClass
-{
-    double highest24;
-    double lowest24;
-    double spread24;
-};
-
-void get24Statistics(statsClass &statsL)
-{
-
-    MqlDateTime serverTime;
-    TimeToStruct(TimeTradeServer(), serverTime);
-
-    double high = iHigh(_Symbol, PERIOD_M15, 0);
-    double low = iLow(_Symbol, PERIOD_M15, 0);
-
-    if (!MathMod(serverTime.min, 60) && serverTime.sec == 0)
-    {
-        statsL.highest24 = 0;
-        statsL.lowest24 = 99999;
-    }
-
-    if (high > statsL.highest24)
-        statsL.highest24 = high;
-    if (low < statsL.lowest24)
-        statsL.lowest24 = low;
-
-    statsL.spread24 = statsL.highest24 - statsL.lowest24;
 }

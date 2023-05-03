@@ -21,10 +21,15 @@ void addStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
             return;
         }
     }
+    //REMOVE UNNECESERY ORDERS
+    if ((PositionsTotal() == 0) && (OrdersTotal() != 0))
+    {     
+       removeAllOrders(tradeL);
+    }
 }
 
 // add new stoploss on the secPrice and shift the primary SL to the half way between sl and op
-void secondStoploss(double secPrice, CTrade &tradeL)
+void secondStoploss(CTrade &tradeL)
 {
     if ((PositionsTotal() == 1) && (OrdersTotal() == 1))
     {
@@ -35,13 +40,25 @@ void secondStoploss(double secPrice, CTrade &tradeL)
         double posPrice = PositionGetDouble(POSITION_PRICE_OPEN);
         double orderPrice = OrderGetDouble(ORDER_PRICE_OPEN);
 
+        if ((!posVolume) || (!posPrice) || (!orderPrice))
+        {
+            Alert("prices error3: ", posVolume, "  ", posPrice, "  ", orderPrice);
+            return;
+        }
+
         // INFO: for buy 1. order has higher price
         if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
         {
-            double shiftedPrice = NormalizeDouble((orderPrice + posPrice) / 2, 0);
+
             double profitPrice = posPrice + 30;
-            double orderHigher = MathMax(profitPrice, shiftedPrice);
-            double orderLower = MathMin(profitPrice, shiftedPrice);
+            double orderHigher = MathMax(profitPrice, orderPrice);
+            double orderLower = MathMin(profitPrice, orderPrice);
+
+            if ((!profitPrice) || (!orderHigher) || (!orderLower))
+            {
+                Alert("prices error1: ", profitPrice, "  ", orderHigher, "  ", orderLower);
+                return;
+            }
 
             if (!tradeL.OrderDelete(orderTicket))
                 Print("---ERROR: Order:  " + (string)orderTicket + " was closed ");
@@ -59,10 +76,16 @@ void secondStoploss(double secPrice, CTrade &tradeL)
         // INFO: for sell 1 order has lower price
         if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
         {
-            double shiftedPrice = NormalizeDouble((orderPrice + posPrice) / 2, 0);
+
             double profitPrice = posPrice - 30;
-            double orderHigher = MathMax(profitPrice, shiftedPrice);
-            double orderLower = MathMin(profitPrice, shiftedPrice);
+            double orderHigher = MathMax(profitPrice, orderPrice);
+            double orderLower = MathMin(profitPrice, orderPrice);
+
+            if ((!profitPrice) || (!orderHigher) || (!orderLower))
+            {
+                Alert("prices error2: ", profitPrice, "  ", orderHigher, "  ", orderLower);
+                return;
+            }
 
             if (!tradeL.OrderDelete(orderTicket))
                 Print("---ERROR: Order: " + (string)orderTicket + " was closed ");
@@ -122,7 +145,8 @@ void removeAllOrders(CTrade &tradeLL)
     {
         ulong ticket = 0;
         for (int i = 0; i < OrdersTotal(); i++)
-        {
+        {   
+            Print("Order ",i, "deleted!");
             if (!tradeLL.OrderDelete(OrderGetTicket(i)))
                 Print("--ERROR 9");
         }
