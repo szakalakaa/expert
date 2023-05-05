@@ -152,3 +152,35 @@ void removeAllOrders(CTrade &tradeLL)
         }
     }
 }
+
+
+bool removeOrdersMagic(CTrade &tradeClass)
+{
+    int total = OrdersTotal();
+    for (int i = total - 1; i >= 0; i--)
+    {
+        ulong orderTicket = OrderGetTicket(i);
+        if (orderTicket <= 0)
+        {
+            Print("Failed to get order ticket");
+            return false;
+        }
+        if (!OrderSelect(orderTicket))
+        {
+            Print("Failed to select order");
+            return false;
+        }
+        long orderMagic;
+        if (!OrderGetInteger(ORDER_MAGIC, orderMagic))
+        {
+            Print("Failed to get order magic ");
+            return false;
+        }
+        if (orderMagic == inpMagic)
+        {
+             if (!tradeClass.OrderDelete(orderTicket))
+                Print("--ERROR 69");
+        }
+    }
+    return true;
+}
