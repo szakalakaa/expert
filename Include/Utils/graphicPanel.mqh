@@ -56,6 +56,10 @@ private:
   CLabel thirdFlagLabel;
   CLabel valueLabel;
   CLabel LotsLabel;
+  CLabel cntBuyLabel;
+  CLabel cntSellLabel;
+  CLabel inpMagicLabel;
+  CLabel openPosMagicLabel;
 
   // buttons
   CButton m_bChangeColor;
@@ -104,12 +108,13 @@ void CGraphicalPanel::Update(void)
   tma_signal.Text("tma signal:       " + (string)TMA_signal);
 
   type_positionLabel.Text("type_position: " + (string)type_position);
- 
-
+  cntSellLabel.Text("cntSell: " + (string)cntSell);
+  cntBuyLabel.Text("cntBuy: " + (string)cntBuy);
   LotsLabel.Text("Lots: " + (string)Lots);
+  openPosMagicLabel.Text("magic from open position: " + (string)openPosMagic);
+  inpMagicLabel.Text("magic: " + (string)inpMagic);
   PositionSelect(_Symbol);
-  valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) *last,0))+" USD");
-
+  valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
 
   return;
 }
@@ -158,8 +163,6 @@ bool CGraphicalPanel::CreatePanel(void)
   tma_period.FontSize(InpPanelFontSize);
   this.Add(tma_period);
 
-
-
   tma_multiplayer.Create(NULL, "tma_multiplayer", 0, 10, 35, 1, 1);
   tma_multiplayer.Text("tma multiplayer:  " + (string)atr_multiplier);
   tma_multiplayer.Color(clrWheat);
@@ -178,29 +181,53 @@ bool CGraphicalPanel::CreatePanel(void)
   tma_signal.FontSize(InpPanelFontSize);
   this.Add(tma_signal);
 
-
   type_positionLabel.Create(NULL, "type_positionLabel", 0, 10, 125, 1, 1);
   type_positionLabel.Text("type_position: " + (string)type_position);
   type_positionLabel.Color(clrWheat);
   type_positionLabel.FontSize(InpPanelFontSize);
   this.Add(type_positionLabel);
 
-   m_bChangeColor.Create(NULL, "bChangeColor", 0, 10, 210, 140, 240);
-  m_bChangeColor.Text("Change color:");
-  m_bChangeColor.Color(clrRosyBrown);
-  m_bChangeColor.ColorBackground(clrRed);
-  m_bChangeColor.FontSize(InpPanelFontSize);
-  this.Add(m_bChangeColor);
+  cntBuyLabel.Create(NULL, "cntBuyLabel", 0, 10, 200, 1, 1);
+  cntBuyLabel.Text("cntBuy: " + (string)cntBuy);
+  cntBuyLabel.Color(clrWheat);
+  cntBuyLabel.FontSize(InpPanelFontSize);
+  this.Add(cntBuyLabel);
+
+  cntSellLabel.Create(NULL, "cntSellLabel", 0, 10, 220, 1, 1);
+  cntSellLabel.Text("cntSell: " + (string)cntSell);
+  cntSellLabel.Color(clrWheat);
+  cntSellLabel.FontSize(InpPanelFontSize);
+  this.Add(cntSellLabel);
+
+  openPosMagicLabel.Create(NULL, "openPosMagicLabel", 0, 10, 160, 1, 1);
+  openPosMagicLabel.Text("magic from open position: " + (string)openPosMagic);
+  openPosMagicLabel.Color(clrLightBlue);
+  openPosMagicLabel.FontSize(InpPanelFontSize);
+  this.Add(openPosMagicLabel);
+
+    inpMagicLabel.Create(NULL, "inpMagicLabel", 0, 10, 180, 1, 1);
+  inpMagicLabel.Text("magic: " + (string)inpMagic);
+  inpMagicLabel.Color(clrCoral);
+  inpMagicLabel.FontSize(InpPanelFontSize);
+  this.Add(inpMagicLabel);
 
 
-   LotsLabel.Create(NULL, "LotsLabel", 0, 10, InpPanelHeight - 100, 1, 1);
+
+  // m_bChangeColor.Create(NULL, "bChangeColor", 0, 10, 210, 140, 240);
+  // m_bChangeColor.Text("Change color:");
+  // m_bChangeColor.Color(clrRosyBrown);
+  // m_bChangeColor.ColorBackground(clrRed);
+  // m_bChangeColor.FontSize(InpPanelFontSize);
+  // this.Add(m_bChangeColor);
+
+  LotsLabel.Create(NULL, "LotsLabel", 0, 10, InpPanelHeight - 100, 1, 1);
   LotsLabel.Text("Lots: " + (string)Lots);
   LotsLabel.Color(clrWheat);
   LotsLabel.FontSize(InpPanelFontSize);
   this.Add(LotsLabel);
 
   valueLabel.Create(NULL, "valueLabel", 0, 10, InpPanelHeight - 80, 1, 1);
-  valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) *last,0))+" USD");
+  valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
   valueLabel.Color(clrWheat);
   valueLabel.FontSize(InpPanelFontSize);
   this.Add(valueLabel);

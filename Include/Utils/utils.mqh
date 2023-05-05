@@ -1,3 +1,17 @@
+
+void getMagicFromOpenPosition(long &OpenPosMagic)
+{
+    if (PositionsTotal())
+    {
+        PositionGetTicket(0);
+
+        if (!PositionGetInteger(POSITION_MAGIC, OpenPosMagic))
+        {
+            Print("Failed to get magic from open position ");
+        }
+    }
+}
+
 bool countOpenPositions(int &countBuy, int &conutSell)
 {
     countBuy = 0;
