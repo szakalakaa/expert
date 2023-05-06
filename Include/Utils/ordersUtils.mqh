@@ -7,12 +7,20 @@ void addStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
     {
         if (Symbol() == PositionGetSymbol(0))
         {
+            double sellStopPrice=  NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 - stoplossL), 0);
+            double buyStopPrice = NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 + stoplossL), 0);
+            double orderLots = NormalizeDouble(PositionGetDouble(POSITION_VOLUME), 4);
+
+            Print("sellStopPrice: ",sellStopPrice);
+            Print("buyStopPrice: ",buyStopPrice);
+            Print("orderLots: ",orderLots);
+            
             if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
-                if (!tradeL.SellStop(NormalizeDouble(PositionGetDouble(POSITION_VOLUME), 4), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 - stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss triggered"))
+                if (!tradeL.SellStop(orderLots,sellStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss triggered"))
                     Print("--ERROR 7 on sell stop loss triggered");
 
             if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
-                if (!tradeL.BuyStop(NormalizeDouble(PositionGetDouble(POSITION_VOLUME), 4), NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 + stoplossL), 0), _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss triggered"))
+                if (!tradeL.BuyStop(orderLots,buyStopPrice , _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss triggered"))
                     Print("--ERROR 8 on buy stop loss triggered");
         }
         if (!OrdersTotal())
