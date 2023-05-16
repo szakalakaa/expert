@@ -193,6 +193,14 @@ bool CountOpenPositions(int &countBuy, int &countSell)
 // check if we have a bar open tick
 bool shouldProcess(ENUM_TIMEFRAMES ProcessPeriod)
 {
+    if ((ProcessPeriod == PERIOD_M2) ||
+        (ProcessPeriod == PERIOD_M4) ||
+        (ProcessPeriod == PERIOD_M6) ||
+        (ProcessPeriod == PERIOD_M10) ||
+        (ProcessPeriod == PERIOD_M12))
+        return false;
+
+
     static datetime prevTime = 0;
     datetime currentTime = iTime(_Symbol, ProcessPeriod, 0);
 
