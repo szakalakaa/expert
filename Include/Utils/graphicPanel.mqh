@@ -23,16 +23,16 @@
 #include <Controls\Dialog.mqh>
 #include <Controls\Label.mqh>
 #include <Controls\Button.mqh>
-
+#include <Controls\CheckBox.mqh>
 //+------------------------------------------------------------------+
 //| Inputs                                                             |
 //+------------------------------------------------------------------+
 // input group "====Panel Inputs====";
 static int InpPanelWidth = 300;               // width in pixel
-static int InpPanelHeight = 400;              // height in pixel
+static int InpPanelHeight = 360;              // height in pixel
 static int InpPanelFontSize = 10;             // width in pixel
 static int InpPanelTextColor = clrWhiteSmoke; // text clr
-
+static int btnSize=10;
 //+------------------------------------------------------------------+
 //| Class CGraphicalPanel                                                                  |
 //+------------------------------------------------------------------+
@@ -44,22 +44,24 @@ private:
   // labels
   CLabel main_header;
   CLabel tma_period;
-  CLabel dTMAl;
   CLabel stop_loss;
   CLabel tma_multiplayer;
   CLabel tma_signal;
   CLabel stoch_signal;
-  CLabel spreadLabel;
   CLabel type_positionLabel;
-  CLabel firstFlagLabel;
-  CLabel secondFlagLabel;
-  CLabel thirdFlagLabel;
+  CLabel lotsInPositionLabel;
+  CLabel positionOpenPriceLabel;
   CLabel valueLabel;
   CLabel LotsLabel;
   CLabel cntBuyLabel;
   CLabel cntSellLabel;
   CLabel inpMagicLabel;
   CLabel openPosMagicLabel;
+  CButton b1;
+  CButton b2;
+  CButton b3;
+  CButton b4;
+
 
   // buttons
   CButton m_bChangeColor;
@@ -106,12 +108,13 @@ void CGraphicalPanel::Update(void)
 {
 
   tma_signal.Text("tma signal:       " + (string)TMA_signal);
-
-  type_positionLabel.Text("type_position: " + (string)type_position);
+  type_positionLabel.Text((string)type_position);
+  lotsInPositionLabel.Text((string)lotsInPosition);
+  positionOpenPriceLabel.Text((string)positionOpenPrice);
   cntSellLabel.Text("cntSell: " + (string)cntSell);
   cntBuyLabel.Text("cntBuy: " + (string)cntBuy);
   LotsLabel.Text("Lots: " + (string)Lots);
-  openPosMagicLabel.Text("magic from open position: " + (string)openPosMagic);
+  openPosMagicLabel.Text("magic pos: " + (string)openPosMagic);
   inpMagicLabel.Text("magic: " + (string)inpMagic);
   PositionSelect(_Symbol);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
@@ -175,50 +178,83 @@ bool CGraphicalPanel::CreatePanel(void)
   stop_loss.FontSize(InpPanelFontSize);
   this.Add(stop_loss);
 
-  tma_signal.Create(NULL, "tma_signal", 0, 10, 75, 1, 1);
+  tma_signal.Create(NULL, "tma_signal", 0, 10, 65, 1, 1);
   tma_signal.Text("tma signal:       " + (string)TMA_signal);
   tma_signal.Color(clrWheat);
   tma_signal.FontSize(InpPanelFontSize);
   this.Add(tma_signal);
 
-  type_positionLabel.Create(NULL, "type_positionLabel", 0, 10, 125, 1, 1);
-  type_positionLabel.Text("type_position: " + (string)type_position);
+
+  int posY=100;
+
+  type_positionLabel.Create(NULL, "type_positionLabel", 0, 10, posY, 1, 1);
+  type_positionLabel.Text((string)type_position);
   type_positionLabel.Color(clrWheat);
   type_positionLabel.FontSize(InpPanelFontSize);
   this.Add(type_positionLabel);
 
-  cntBuyLabel.Create(NULL, "cntBuyLabel", 0, 10, 200, 1, 1);
-  cntBuyLabel.Text("cntBuy: " + (string)cntBuy);
-  cntBuyLabel.Color(clrWheat);
-  cntBuyLabel.FontSize(InpPanelFontSize);
-  this.Add(cntBuyLabel);
+  lotsInPositionLabel.Create(NULL, "lotsInPositionLabel", 0, 60, posY, 1, 1);
+  lotsInPositionLabel.Text((string)lotsInPosition);
+  lotsInPositionLabel.Color(clrWheat);
+  lotsInPositionLabel.FontSize(InpPanelFontSize);
+  this.Add(lotsInPositionLabel);
 
-  cntSellLabel.Create(NULL, "cntSellLabel", 0, 10, 220, 1, 1);
-  cntSellLabel.Text("cntSell: " + (string)cntSell);
-  cntSellLabel.Color(clrWheat);
-  cntSellLabel.FontSize(InpPanelFontSize);
-  this.Add(cntSellLabel);
+  positionOpenPriceLabel.Create(NULL, "positionOpenPriceLabel", 0, 120, posY, 1, 1);
+  positionOpenPriceLabel.Text((string)positionOpenPrice);
+  positionOpenPriceLabel.Color(clrWheat);
+  positionOpenPriceLabel.FontSize(InpPanelFontSize);
+  this.Add(positionOpenPriceLabel);
 
-  openPosMagicLabel.Create(NULL, "openPosMagicLabel", 0, 10, 160, 1, 1);
-  openPosMagicLabel.Text("magic from open position: " + (string)openPosMagic);
+  int magicY = 160;
+
+  openPosMagicLabel.Create(NULL, "openPosMagicLabel", 0, 10, magicY, 1, 1);
+  openPosMagicLabel.Text("magic pos: " + (string)openPosMagic);
   openPosMagicLabel.Color(clrLightBlue);
   openPosMagicLabel.FontSize(InpPanelFontSize);
   this.Add(openPosMagicLabel);
 
-    inpMagicLabel.Create(NULL, "inpMagicLabel", 0, 10, 180, 1, 1);
+  inpMagicLabel.Create(NULL, "inpMagicLabel", 0, 150, magicY, 1, 1);
   inpMagicLabel.Text("magic: " + (string)inpMagic);
   inpMagicLabel.Color(clrCoral);
   inpMagicLabel.FontSize(InpPanelFontSize);
   this.Add(inpMagicLabel);
 
+  int labelY = 180;
 
+  cntBuyLabel.Create(NULL, "cntBuyLabel", 0, 10, labelY, 1, 1);
+  cntBuyLabel.Text("cntBuy: " + (string)cntBuy);
+  cntBuyLabel.Color(clrWheat);
+  cntBuyLabel.FontSize(InpPanelFontSize);
+  this.Add(cntBuyLabel);
 
-  // m_bChangeColor.Create(NULL, "bChangeColor", 0, 10, 210, 140, 240);
-  // m_bChangeColor.Text("Change color:");
-  // m_bChangeColor.Color(clrRosyBrown);
-  // m_bChangeColor.ColorBackground(clrRed);
-  // m_bChangeColor.FontSize(InpPanelFontSize);
-  // this.Add(m_bChangeColor);
+  cntSellLabel.Create(NULL, "cntSellLabel", 0, 150, labelY, 1, 1);
+  cntSellLabel.Text("cntSell: " + (string)cntSell);
+  cntSellLabel.Color(clrWheat);
+  cntSellLabel.FontSize(InpPanelFontSize);
+  this.Add(cntSellLabel);
+
+  int yButton=210;
+  int xBut1=10;
+  int xBut2=30;
+  int xBut3=50;
+  int xBut4=70;
+
+  b1.Create(NULL, "b1", 0, xBut1, yButton, xBut1+btnSize, yButton+btnSize);
+  b1.Color(clrAquamarine);
+  this.Add(b1);
+
+  b2.Create(NULL, "b2", 0, xBut2, yButton, xBut2+btnSize, yButton+btnSize);
+  b2.Color(clrAquamarine);
+  this.Add(b2);
+
+  b3.Create(NULL, "b3", 0, xBut3, yButton, xBut3+btnSize, yButton+btnSize);
+  b3.Color(clrAquamarine);
+  this.Add(b3);
+
+  b4.Create(NULL, "b4", 0, xBut4, yButton, xBut4+btnSize, yButton+btnSize);
+  b4.Color(clrAquamarine);
+  this.Add(b4);
+
 
   LotsLabel.Create(NULL, "LotsLabel", 0, 10, InpPanelHeight - 100, 1, 1);
   LotsLabel.Text("Lots: " + (string)Lots);

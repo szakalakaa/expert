@@ -1,4 +1,76 @@
-#include <Trade\Trade.mqh>
+// OrderGetInteger(ORDER_TYPE)=5 for LONG type_position => sellStop order
+// OrderGetInteger(ORDER_TYPE)=4 for SHORT type_position => buyStop order
+bool isOrderWithValue(CTrade &tradeClass, double lotsOfOrderToFind, string type_positionLL)
+{
+    if (OrdersTotal())
+    {
+        ulong orderTicket = OrderGetTicket(0);
+        if (orderTicket <= 0)
+        {
+            Print("Failed to get order ticket");
+            return false;
+        }
+        if (!OrderSelect(orderTicket))
+        {
+            Print("Failed to select order");
+            return false;
+        }
+        double orderVolume = OrderGetDouble(ORDER_VOLUME_CURRENT);
+        if (orderVolume == 0)
+        {
+            Print("Failed to get order volume");
+            return false;
+        }
+        if ((orderVolume == lotsOfOrderToFind) && (OrderGetInteger(ORDER_TYPE) == getOrderType(type_positionLL)))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+int getOrderType(string type_positionL)
+{
+    if (type_positionL == "LONG")
+        return 5;
+    if (type_positionL == "SHORT")
+        return 4;
+    return 0;
+}
+
+bool removeOrderWithValue(CTrade &tradeClass, double lotsToRemove)
+{
+    if (OrdersTotal())
+    {
+        ulong orderTicket = OrderGetTicket(0);
+        if (orderTicket <= 0)
+        {
+            Print("Failed to get order ticket");
+            return true;
+        }
+        if (!OrderSelect(orderTicket))
+        {
+            Print("Failed to select order");
+            return true;
+        }
+        double orderVolume = OrderGetDouble(ORDER_VOLUME_CURRENT);
+        if (orderVolume == 0)
+        {
+            Print("Failed to get order volume");
+            return true;
+        }
+        if (orderVolume == lotsToRemove)
+        {
+            if (!tradeClass.OrderDelete(orderTicket))
+                Print("--ERROR 88");
+            Print("OrderTicket: ", orderTicket, " with volume: ", orderVolume, " lots was removed.");
+        }
+    }
+    return false;
+}
+
+
+////
 
 void addStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
 {
@@ -7,20 +79,20 @@ void addStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
     {
         if (Symbol() == PositionGetSymbol(0))
         {
-            double sellStopPrice=  NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 - stoplossL), 0);
+            double sellStopPrice = NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 - stoplossL), 0);
             double buyStopPrice = NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN) * (1 + stoplossL), 0);
             double orderLots = NormalizeDouble(PositionGetDouble(POSITION_VOLUME), 4);
 
-            Print("sellStopPrice: ",sellStopPrice);
-            Print("buyStopPrice: ",buyStopPrice);
-            Print("orderLots: ",orderLots);
-            
+            Print("sellStopPrice: ", sellStopPrice);
+            Print("buyStopPrice: ", buyStopPrice);
+            Print("orderLots: ", orderLots);
+
             if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
-                if (!tradeL.SellStop(orderLots,sellStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss triggered"))
+                if (!tradeL.SellStop(orderLots, sellStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss triggered"))
                     Print("--ERROR 7 on sell stop loss triggered");
 
             if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
-                if (!tradeL.BuyStop(orderLots,buyStopPrice , _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss triggered"))
+                if (!tradeL.BuyStop(orderLots, buyStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss triggered"))
                     Print("--ERROR 8 on buy stop loss triggered");
         }
         if (!OrdersTotal())
@@ -29,10 +101,10 @@ void addStoplosss(string &type_positionL, double stoplossL, CTrade &tradeL)
             return;
         }
     }
-    //REMOVE UNNECESERY ORDERS
+    // REMOVE UNNECESERY ORDERS
     if ((PositionsTotal() == 0) && (OrdersTotal() != 0))
-    {     
-       removeAllOrders(tradeL);
+    {
+        removeAllOrders(tradeL);
     }
 }
 
@@ -153,16 +225,15 @@ void removeAllOrders(CTrade &tradeLL)
     {
         ulong ticket = 0;
         for (int i = 0; i < OrdersTotal(); i++)
-        {   
-            Print("Order ",i, "deleted!");
+        {
+            Print("Order ", i, "deleted!");
             if (!tradeLL.OrderDelete(OrderGetTicket(i)))
                 Print("--ERROR 9");
         }
     }
 }
 
-
-bool removeOrdersMagic(CTrade &tradeClass)
+bool removeOrdersMagic(CTrade &tradeClass, ulong inpMagicL)
 {
     int total = OrdersTotal();
     for (int i = total - 1; i >= 0; i--)
@@ -184,11 +255,34 @@ bool removeOrdersMagic(CTrade &tradeClass)
             Print("Failed to get order magic ");
             return false;
         }
-        if (orderMagic == inpMagic)
+        if (orderMagic == inpMagicL)
         {
-             if (!tradeClass.OrderDelete(orderTicket))
+            if (!tradeClass.OrderDelete(orderTicket))
                 Print("--ERROR 69");
         }
     }
     return true;
 }
+
+bool removeOrders(CTrade &tradeClass)
+{
+    int total = OrdersTotal();
+    for (int i = total - 1; i >= 0; i--)
+    {
+        ulong orderTicket = OrderGetTicket(i);
+        if (orderTicket <= 0)
+        {
+            Print("Failed to get order ticket");
+            return false;
+        }
+        if (!OrderSelect(orderTicket))
+        {
+            Print("Failed to select order");
+            return false;
+        }
+        if (!tradeClass.OrderDelete(orderTicket))
+            Print("--ERROR 69");
+    }
+    return true;
+}
+
