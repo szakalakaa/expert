@@ -46,31 +46,15 @@ bool mainOrder(double TMAbands_downL,
         return false;
     }
     bool isOrder = isOrderWithValue(tradeL, lotsL, type_positionL);
-    // OPEN POSITION
-    if (!isOrder)
-    {
-        // buy order
-        if ((lastLocal > offsetForBuy) && (lastLocal < TMAbands_downL) && (type_positionL != "LONG"))
-        {
-            if (!tradeL.Buy(lotsL, NULL, askLocal, 0, 0, "buy main"))
-                Print("--ERROR 33A buy main");
+    Print("main isOrder: ", isOrder);
+    Print("--type_positionL: ", type_positionL);
+    Print("--lotsL: ", lotsL);
+    Print("--lastLocal: ", lastLocal);
+    Print("--TMAbands_downL: ", TMAbands_downL);
+    Print("--TMAbands_upL: ", TMAbands_upL);
+    Print("--offsetForBuy: ", offsetForBuy);
+    Print("--offsetForSell: ", offsetForSell);
 
-            if (!tradeL.SellStop(lotsL, sellStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss for band cross"))
-                Print("--ERROR 34A on sell stop loss triggered");
-            createObject(time, last, 141, clrDodgerBlue, "1");
-            return true;
-        }
-        // sell order
-        if ((lastLocal < offsetForSell) && (lastLocal > TMAbands_upL) && (type_positionL != "SHORT"))
-        {
-            if (!tradeL.Sell(lotsL, NULL, bidLocal, 0, 0, "sell main"))
-                Print("--ERROR 35B sell main");
-            if (!tradeL.BuyStop(lotsL, buyStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss main"))
-                Print("--ERROR 36B on buy stop loss triggered");
-            createObject(time, last, 141, clrIndianRed, "1");
-            return true;
-        }
-    }
     // CLOSE POSITION ->it will be later in different block with parametrers of close pos
     if (isOrder)
     {
@@ -80,12 +64,12 @@ bool mainOrder(double TMAbands_downL,
             {
                 tradeL.PositionClose(PositionGetTicket(0));
                 if (OrdersTotal() != 0)
-                    if (removeOrderWithValue(tradeL, lotsL))
-                    {
-                        Print("--ERROR main removeOrderWithValue");
-                    };
-                // TMA_signal = "";
-                // type_position = "LONG";
+                    // if (removeOrderWithValue(tradeL, lotsL))
+                    // {
+                    //     Print("--ERROR main removeOrderWithValue");
+                    // };
+                    removeAllOrders(tradeL);
+                type_position = "LONG";
             }
             return true;
         }
@@ -96,13 +80,42 @@ bool mainOrder(double TMAbands_downL,
             {
                 tradeL.PositionClose(PositionGetTicket(0));
                 if (OrdersTotal() != 0)
-                    if (removeOrderWithValue(tradeL, lotsL))
-                    {
-                        Print("--ERROR removeOrderWithValue");
-                    };
-                TMA_signal = "";
+                    // if (removeOrderWithValue(tradeL, lotsL))
+                    // {
+                    //     Print("--ERROR removeOrderWithValue");
+                    // };
+                    removeAllOrders(tradeL);
+
                 type_position = "SHORT";
             }
+        }
+    }
+
+    // OPEN POSITION
+    if (!isOrder)
+    {
+
+        // buy order
+        if ((lastLocal > offsetForBuy) && (lastLocal < TMAbands_downL))
+        {
+            Print("--2: ");
+            if (!tradeL.Buy(lotsL, NULL, askLocal, 0, 0, "buy main"))
+                Print("--ERROR 33A buy main");
+
+            if (!tradeL.SellStop(lotsL, sellStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss for band cross"))
+                Print("--ERROR 34A on sell stop loss triggered");
+            createObject(time, last, 141, clrDodgerBlue, "1");
+            return true;
+        }
+        // sell order
+        if ((lastLocal < offsetForSell) && (lastLocal > TMAbands_upL))
+        {
+            if (!tradeL.Sell(lotsL, NULL, bidLocal, 0, 0, "sell main"))
+                Print("--ERROR 35B sell main");
+            if (!tradeL.BuyStop(lotsL, buyStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss main"))
+                Print("--ERROR 36B on buy stop loss triggered");
+            createObject(time, last, 141, clrIndianRed, "1");
+            return true;
         }
     }
 

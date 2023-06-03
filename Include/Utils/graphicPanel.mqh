@@ -106,8 +106,6 @@ bool CGraphicalPanel::Oninit(void)
 
 void CGraphicalPanel::Update(void)
 {
-
-  tma_signal.Text("tma signal:       " + (string)TMA_signal);
   type_positionLabel.Text((string)type_position);
   lotsInPositionLabel.Text((string)lotsInPosition);
   positionOpenPriceLabel.Text((string)positionOpenPrice);
@@ -177,12 +175,6 @@ bool CGraphicalPanel::CreatePanel(void)
   stop_loss.Color(clrWheat);
   stop_loss.FontSize(InpPanelFontSize);
   this.Add(stop_loss);
-
-  tma_signal.Create(NULL, "tma_signal", 0, 10, 65, 1, 1);
-  tma_signal.Text("tma signal:       " + (string)TMA_signal);
-  tma_signal.Color(clrWheat);
-  tma_signal.FontSize(InpPanelFontSize);
-  this.Add(tma_signal);
 
 
   int posY=100;

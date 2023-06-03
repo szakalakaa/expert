@@ -2,7 +2,7 @@
 
 bool buyOnBand(double TMAbands_downL,
                double TMAbands_upL,
-               string type_positionL,
+               string &type_positionL,
                CTrade &tradeL,
                double lotsL,
                double stoplossL)
@@ -36,31 +36,8 @@ bool buyOnBand(double TMAbands_downL,
         return false;
     }
     bool isOrder = isOrderWithValue(tradeL, lotsL, type_positionL);
-    // OPEN POSITION
-    if (!isOrder)
-    {
-        // buy order
-        if ((lastLocal < TMAbands_downL) && (type_positionL != "LONG"))
-        {
-            if (!tradeL.Buy(lotsL, NULL, askLocal, 0, 0, "buy on band cross"))
-                Print("--ERROR 6A buy on band cross");
+    Print("cross isOrder: ", isOrder);
 
-            if (!tradeL.SellStop(lotsL, sellStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss for band cross"))
-                Print("--ERROR 7A on sell stop loss triggered");
-            createObject(time, last, 140, clrDodgerBlue, "1");
-            return true;
-        }
-        // sell
-        if ((lastLocal > TMAbands_upL) && (type_positionL != "SHORT"))
-        {
-            if (!tradeL.Sell(lotsL, NULL, bidLocal, 0, 0, "sell on band cross"))
-                Print("--ERROR 6B sell on band cross");
-            if (!tradeL.BuyStop(lotsL, buyStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss on band cross"))
-                Print("--ERROR 7B on buy stop loss triggered");
-            createObject(time, last, 140, clrIndianRed, "1");
-            return true;
-        }
-    }
     // CLOSE POSITION ->it will be later in different block with parametrers of close pos
     if (isOrder)
     {
@@ -68,7 +45,9 @@ bool buyOnBand(double TMAbands_downL,
         {
             if (type_positionL == "SHORT")
             {
-                tradeL.PositionClose(PositionGetTicket(0));
+                // jest short to musimy kupic po tej cenie
+                if (!tradeL.Buy(lotsL, NULL, askLocal, 0, 0, "close only cross band short position "))
+                    Print("--ERROR 8D close only cross band short position");
                 if (OrdersTotal() != 0)
                     if (removeOrderWithValue(tradeL, lotsL))
                     {
@@ -82,13 +61,45 @@ bool buyOnBand(double TMAbands_downL,
         {
             if (type_positionL == "LONG")
             {
-                tradeL.PositionClose(PositionGetTicket(0));
+                if (!tradeL.Sell(lotsL, NULL, bidLocal, 0, 0, "close only cross band long position"))
+                    Print("--ERROR 8D close only cross band long position");
                 if (OrdersTotal() != 0)
                     if (removeOrderWithValue(tradeL, lotsL))
                     {
                         Print("--ERROR removeOrderWithValue");
                     };
             }
+        }
+    }
+
+    // OPEN POSITION
+    if (!isOrder)
+    {
+        // buy order
+        if ((lastLocal < TMAbands_downL) && (type_positionL != "LONG"))
+        {
+            if (!tradeL.Buy(lotsL, NULL, askLocal, 0, 0, "buy on band cross"))
+                Print("--ERROR 6A buy on band cross");
+
+            if (!tradeL.SellStop(lotsL, sellStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss for band cross"))
+                Print("--ERROR 7A on sell stop loss triggered");
+
+            type_positionL = "LONG";
+            createObject(time, last, 140, clrDodgerBlue, "1");
+
+            return true;
+        }
+        // sell
+        if ((lastLocal > TMAbands_upL) && (type_positionL != "SHORT"))
+        {
+            if (!tradeL.Sell(lotsL, NULL, bidLocal, 0, 0, "sell on band cross"))
+                Print("--ERROR 6B sell on band cross");
+            if (!tradeL.BuyStop(lotsL, buyStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss on band cross"))
+                Print("--ERROR 7B on buy stop loss triggered");
+
+            type_positionL = "SHORT";
+            createObject(time, last, 140, clrIndianRed, "1");
+            return true;
         }
     }
 

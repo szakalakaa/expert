@@ -1,3 +1,29 @@
+//TODO: loop isOrderWithValue and getOrderType => not take the 1. order. Like in example below. Example to remove"
+
+// bool removeOrders(CTrade &tradeClass)
+// {
+//     int total = OrdersTotal();
+//     for (int i = total - 1; i >= 0; i--)
+//     {
+//         ulong orderTicket = OrderGetTicket(i);
+//         if (orderTicket <= 0)
+//         {
+//             Print("Failed to get order ticket");
+//             return false;
+//         }
+//         if (!OrderSelect(orderTicket))
+//         {
+//             Print("Failed to select order");
+//             return false;
+//         }
+//         if (!tradeClass.OrderDelete(orderTicket))
+//             Print("--ERROR 69");
+//     }
+//     return true;
+// }
+
+
+
 // OrderGetInteger(ORDER_TYPE)=5 for LONG type_position => sellStop order
 // OrderGetInteger(ORDER_TYPE)=4 for SHORT type_position => buyStop order
 bool isOrderWithValue(CTrade &tradeClass, double lotsOfOrderToFind, string type_positionLL)
@@ -23,6 +49,8 @@ bool isOrderWithValue(CTrade &tradeClass, double lotsOfOrderToFind, string type_
         }
         if ((orderVolume == lotsOfOrderToFind) && (OrderGetInteger(ORDER_TYPE) == getOrderType(type_positionLL)))
         {
+            Print("type_positionLL: ",type_positionLL);
+            Print("XXXXXXXXXXXXXXXX: ",OrderGetInteger(ORDER_TYPE));
             return true;
         }
     }
