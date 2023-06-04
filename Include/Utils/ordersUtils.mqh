@@ -1,57 +1,33 @@
-//TODO: loop isOrderWithValue and getOrderType => not take the 1. order. Like in example below. Example to remove"
-
-// bool removeOrders(CTrade &tradeClass)
-// {
-//     int total = OrdersTotal();
-//     for (int i = total - 1; i >= 0; i--)
-//     {
-//         ulong orderTicket = OrderGetTicket(i);
-//         if (orderTicket <= 0)
-//         {
-//             Print("Failed to get order ticket");
-//             return false;
-//         }
-//         if (!OrderSelect(orderTicket))
-//         {
-//             Print("Failed to select order");
-//             return false;
-//         }
-//         if (!tradeClass.OrderDelete(orderTicket))
-//             Print("--ERROR 69");
-//     }
-//     return true;
-// }
-
-
-
 // OrderGetInteger(ORDER_TYPE)=5 for LONG type_position => sellStop order
 // OrderGetInteger(ORDER_TYPE)=4 for SHORT type_position => buyStop order
 bool isOrderWithValue(CTrade &tradeClass, double lotsOfOrderToFind, string type_positionLL)
 {
-    if (OrdersTotal())
+    int total = OrdersTotal();
+    if (total)
     {
-        ulong orderTicket = OrderGetTicket(0);
-        if (orderTicket <= 0)
+        for (int i = total - 1; i >= 0; i--)
         {
-            Print("Failed to get order ticket");
-            return false;
-        }
-        if (!OrderSelect(orderTicket))
-        {
-            Print("Failed to select order");
-            return false;
-        }
-        double orderVolume = OrderGetDouble(ORDER_VOLUME_CURRENT);
-        if (orderVolume == 0)
-        {
-            Print("Failed to get order volume");
-            return false;
-        }
-        if ((orderVolume == lotsOfOrderToFind) && (OrderGetInteger(ORDER_TYPE) == getOrderType(type_positionLL)))
-        {
-            Print("type_positionLL: ",type_positionLL);
-            Print("XXXXXXXXXXXXXXXX: ",OrderGetInteger(ORDER_TYPE));
-            return true;
+            ulong orderTicket = OrderGetTicket(i);
+            if (orderTicket <= 0)
+            {
+                Print("Failed to get order ticket");
+                return false;
+            }
+            if (!OrderSelect(orderTicket))
+            {
+                Print("Failed to select order");
+                return false;
+            }
+            double orderVolume = OrderGetDouble(ORDER_VOLUME_CURRENT);
+            if (orderVolume == 0)
+            {
+                Print("Failed to get order volume");
+                return false;
+            }
+            if ((orderVolume == lotsOfOrderToFind) && (OrderGetInteger(ORDER_TYPE) == getOrderType(type_positionLL)))
+            {
+                return true;
+            }
         }
     }
     return false;
@@ -68,35 +44,38 @@ int getOrderType(string type_positionL)
 
 bool removeOrderWithValue(CTrade &tradeClass, double lotsToRemove)
 {
-    if (OrdersTotal())
+    int total = OrdersTotal();
+    if (total)
     {
-        ulong orderTicket = OrderGetTicket(0);
-        if (orderTicket <= 0)
+        for (int i = total - 1; i >= 0; i--)
         {
-            Print("Failed to get order ticket");
-            return true;
-        }
-        if (!OrderSelect(orderTicket))
-        {
-            Print("Failed to select order");
-            return true;
-        }
-        double orderVolume = OrderGetDouble(ORDER_VOLUME_CURRENT);
-        if (orderVolume == 0)
-        {
-            Print("Failed to get order volume");
-            return true;
-        }
-        if (orderVolume == lotsToRemove)
-        {
-            if (!tradeClass.OrderDelete(orderTicket))
-                Print("--ERROR 88");
-            Print("OrderTicket: ", orderTicket, " with volume: ", orderVolume, " lots was removed.");
+            ulong orderTicket = OrderGetTicket(i);
+            if (orderTicket <= 0)
+            {
+                Print("Failed to get order ticket");
+                return true;
+            }
+            if (!OrderSelect(orderTicket))
+            {
+                Print("Failed to select order");
+                return true;
+            }
+            double orderVolume = OrderGetDouble(ORDER_VOLUME_CURRENT);
+            if (orderVolume == 0)
+            {
+                Print("Failed to get order volume");
+                return true;
+            }
+            if (orderVolume == lotsToRemove)
+            {
+                if (!tradeClass.OrderDelete(orderTicket))
+                    Print("--ERROR 88");
+                Print("OrderTicket: ", orderTicket, " with volume: ", orderVolume, " lots was removed.");
+            }
         }
     }
     return false;
 }
-
 
 ////
 
@@ -313,4 +292,3 @@ bool removeOrders(CTrade &tradeClass)
     }
     return true;
 }
-

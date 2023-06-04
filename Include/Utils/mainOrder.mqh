@@ -58,34 +58,34 @@ bool mainOrder(double TMAbands_downL,
     // CLOSE POSITION ->it will be later in different block with parametrers of close pos
     if (isOrder)
     {
-        if ((lastLocal < TMAbands_downL) && (type_positionL != "LONG"))
+        if ((lastLocal < TMAbands_downL) && (lastLocal > offsetForBuy) && (type_positionL != "LONG"))
         {
             if (type_positionL == "SHORT")
             {
-                tradeL.PositionClose(PositionGetTicket(0));
+                if (!tradeL.Buy(lotsL, NULL, askLocal, 0, 0, "close only main short position "))
+                    Print("--ERROR 9D close only main short position");
                 if (OrdersTotal() != 0)
-                    // if (removeOrderWithValue(tradeL, lotsL))
-                    // {
-                    //     Print("--ERROR main removeOrderWithValue");
-                    // };
-                    removeAllOrders(tradeL);
+                    if (removeOrderWithValue(tradeL, lotsL))
+                    {
+                        Print("--ERROR removeOrderWithValue");
+                    };
+
                 type_position = "LONG";
             }
             return true;
         }
 
-        if ((lastLocal > TMAbands_upL) && (type_positionL != "SHORT"))
+        if ((lastLocal > TMAbands_upL) && (lastLocal < offsetForSell) && (type_positionL != "SHORT"))
         {
             if (type_positionL == "LONG")
             {
-                tradeL.PositionClose(PositionGetTicket(0));
+                if (!tradeL.Sell(lotsL, NULL, bidLocal, 0, 0, "close only main long position"))
+                    Print("--ERROR 8D close only main long position");
                 if (OrdersTotal() != 0)
-                    // if (removeOrderWithValue(tradeL, lotsL))
-                    // {
-                    //     Print("--ERROR removeOrderWithValue");
-                    // };
-                    removeAllOrders(tradeL);
-
+                    if (removeOrderWithValue(tradeL, lotsL))
+                    {
+                        Print("--ERROR removeOrderWithValue");
+                    };
                 type_position = "SHORT";
             }
         }
