@@ -81,7 +81,7 @@ void printValues(string TMA_signalA, double lastA, double orderPriceA, double ba
     }
 }
 
-bool checkInputs(double Stoploss, int Atr_period, double Atr_multiplier , double StochUpper, double kPeriod, double dPeriod)
+bool checkInputs(double Stoploss, int Atr_period, double Atr_multiplier, double StochUpper, double kPeriod, double dPeriod)
 {
 
     if (Stoploss <= 0 || Stoploss > 0.04)
@@ -98,7 +98,7 @@ bool checkInputs(double Stoploss, int Atr_period, double Atr_multiplier , double
     {
         Alert("atr_multiplier > 3 || atr_multiplier < 0.5");
         return false;
-    }   
+    }
     if (StochUpper > 90 || StochUpper < 10)
     {
         Alert("stochUpper > 90 || stochUpper < 10");
@@ -113,7 +113,7 @@ bool checkInputs(double Stoploss, int Atr_period, double Atr_multiplier , double
     {
         Alert("dPeriod > 25 || dPeriod < 2");
         return false;
-    } 
+    }
     return true;
 }
 
@@ -190,7 +190,6 @@ bool shouldProcess(ENUM_TIMEFRAMES ProcessPeriod)
         (ProcessPeriod == PERIOD_M12))
         return false;
 
-
     static datetime prevTime = 0;
     datetime currentTime = iTime(_Symbol, ProcessPeriod, 0);
 
@@ -246,4 +245,15 @@ double getLots(double lastL, double levarL)
     double lotsTotal = NormalizeDouble((levarL * 0.95 * AccountInfoDouble(ACCOUNT_BALANCE) / lastL), 4);
     double lotsConverted = lotsTotal - NormalizeDouble(MathMod(lotsTotal, 0.0004), 4);
     return NormalizeDouble(lotsConverted, 4);
+}
+
+void crossBlockadeRelease(datetime stopLossTriggeredTimeL, bool &crossBlockadeFlagL, int crossBlockTimeL)
+{
+
+    if (stopLossTriggeredTimeL < TimeCurrent() - crossBlockTimeL * 60)
+    {
+        // Print("RESET TIME");
+        stopLossTriggeredTimeL = NULL;
+        crossBlockadeFlagL = false;
+    }
 }

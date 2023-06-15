@@ -32,7 +32,7 @@ static int InpPanelWidth = 300;               // width in pixel
 static int InpPanelHeight = 360;              // height in pixel
 static int InpPanelFontSize = 10;             // width in pixel
 static int InpPanelTextColor = clrWhiteSmoke; // text clr
-static int btnSize=10;
+static int btnSize = 10;
 //+------------------------------------------------------------------+
 //| Class CGraphicalPanel                                                                  |
 //+------------------------------------------------------------------+
@@ -57,11 +57,11 @@ private:
   CLabel cntSellLabel;
   CLabel inpMagicLabel;
   CLabel openPosMagicLabel;
+  CButton crossBlockadeFlagButton;
   CButton b1;
   CButton b2;
   CButton b3;
   CButton b4;
-
 
   // buttons
   CButton m_bChangeColor;
@@ -106,6 +106,11 @@ bool CGraphicalPanel::Oninit(void)
 
 void CGraphicalPanel::Update(void)
 {
+  if (crossBlockadeFlag)
+    crossBlockadeFlagButton.Color(clrRed);
+  else if (!crossBlockadeFlag)
+    crossBlockadeFlagButton.Color(clrAntiqueWhite);
+
   type_positionLabel.Text((string)type_position);
   lotsInPositionLabel.Text((string)lotsInPosition);
   positionOpenPriceLabel.Text((string)positionOpenPrice);
@@ -158,6 +163,13 @@ bool CGraphicalPanel::CreatePanel(void)
   main_header.FontSize(InpPanelFontSize);
   this.Add(main_header);
 
+  int yButt = 5;
+  int xBut = 150;
+
+  crossBlockadeFlagButton.Create(NULL, "crossBlockadeFlagButton", 0, xBut, yButt, xBut + btnSize, yButt + btnSize);
+  crossBlockadeFlagButton.Color(clrAquamarine);
+  this.Add(crossBlockadeFlagButton);
+
   tma_period.Create(NULL, "tma_period", 0, 10, 20, 1, 1);
   tma_period.Text("tma period:       " + (string)atr_period);
   tma_period.Color(clrWheat);
@@ -176,8 +188,7 @@ bool CGraphicalPanel::CreatePanel(void)
   stop_loss.FontSize(InpPanelFontSize);
   this.Add(stop_loss);
 
-
-  int posY=100;
+  int posY = 100;
 
   type_positionLabel.Create(NULL, "type_positionLabel", 0, 10, posY, 1, 1);
   type_positionLabel.Text((string)type_position);
@@ -225,28 +236,27 @@ bool CGraphicalPanel::CreatePanel(void)
   cntSellLabel.FontSize(InpPanelFontSize);
   this.Add(cntSellLabel);
 
-  int yButton=210;
-  int xBut1=10;
-  int xBut2=30;
-  int xBut3=50;
-  int xBut4=70;
+  int yButton = 210;
+  int xBut1 = 10;
+  int xBut2 = 30;
+  int xBut3 = 50;
+  int xBut4 = 70;
 
-  b1.Create(NULL, "b1", 0, xBut1, yButton, xBut1+btnSize, yButton+btnSize);
+  b1.Create(NULL, "b1", 0, xBut1, yButton, xBut1 + btnSize, yButton + btnSize);
   b1.Color(clrAquamarine);
   this.Add(b1);
 
-  b2.Create(NULL, "b2", 0, xBut2, yButton, xBut2+btnSize, yButton+btnSize);
+  b2.Create(NULL, "b2", 0, xBut2, yButton, xBut2 + btnSize, yButton + btnSize);
   b2.Color(clrAquamarine);
   this.Add(b2);
 
-  b3.Create(NULL, "b3", 0, xBut3, yButton, xBut3+btnSize, yButton+btnSize);
+  b3.Create(NULL, "b3", 0, xBut3, yButton, xBut3 + btnSize, yButton + btnSize);
   b3.Color(clrAquamarine);
   this.Add(b3);
 
-  b4.Create(NULL, "b4", 0, xBut4, yButton, xBut4+btnSize, yButton+btnSize);
+  b4.Create(NULL, "b4", 0, xBut4, yButton, xBut4 + btnSize, yButton + btnSize);
   b4.Color(clrAquamarine);
   this.Add(b4);
-
 
   LotsLabel.Create(NULL, "LotsLabel", 0, 10, InpPanelHeight - 100, 1, 1);
   LotsLabel.Text("Lots: " + (string)Lots);

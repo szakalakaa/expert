@@ -5,7 +5,8 @@ bool buyOnBand(double TMAbands_downL,
                string &type_positionL,
                CTrade &tradeL,
                double lotsL,
-               double stoplossL)
+               double stoplossL,
+               bool crossBlockadeFlagL)
 {
 
     double lastLocal = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_LAST), _Digits);
@@ -36,7 +37,7 @@ bool buyOnBand(double TMAbands_downL,
         return false;
     }
     bool isOrder = isOrderWithValue(tradeL, lotsL, type_positionL);
-    Print("cross isOrder: ", isOrder);
+    // Print("cross isOrder: ", isOrder);
 
     // CLOSE POSITION ->it will be later in different block with parametrers of close pos
     if (isOrder)
@@ -61,7 +62,7 @@ bool buyOnBand(double TMAbands_downL,
         {
             if (type_positionL == "LONG")
             {
-                if (!tradeL.Sell(lotsL, NULL, bidLocal, 0, 0, "close only cross band long position"))
+                if (!tradeL.Sell(lotsL, NULL, bidLocal, bidLocal+50, bidLocal-60, "close only cross band long position"))
                     Print("--ERROR 8D close only cross band long position");
                 if (OrdersTotal() != 0)
                     if (removeOrderWithValue(tradeL, lotsL))
@@ -73,7 +74,7 @@ bool buyOnBand(double TMAbands_downL,
     }
 
     // OPEN POSITION
-    if (!isOrder)
+    if (!isOrder && !crossBlockadeFlagL)
     {
         // buy order
         if ((lastLocal < TMAbands_downL) && (type_positionL != "LONG"))
