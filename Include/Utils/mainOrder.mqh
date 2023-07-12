@@ -45,18 +45,19 @@ bool mainOrder(double TMAbands_downL,
         Print("--offsetForSell: ", offsetForSell);
         return false;
     }
-    bool isOrder = isOrderWithValue(tradeL, lotsL, type_positionL);
-    Print("main isOrder: ", isOrder);
-    Print("--type_positionL: ", type_positionL);
-    Print("--lotsL: ", lotsL);
-    Print("--lastLocal: ", lastLocal);
-    Print("--TMAbands_downL: ", TMAbands_downL);
-    Print("--TMAbands_upL: ", TMAbands_upL);
-    Print("--offsetForBuy: ", offsetForBuy);
-    Print("--offsetForSell: ", offsetForSell);
+    bool isMainOrder = isOrderWithValue(tradeL, lotsL, type_positionL);
+
+        Print("mainOrder main isMainOrder: ", isMainOrder);
+    // Print("--type_positionL: ", type_positionL);
+    // Print("--lotsL: ", lotsL);
+    // Print("--lastLocal: ", lastLocal);
+    // Print("--TMAbands_downL: ", TMAbands_downL);
+    // Print("--TMAbands_upL: ", TMAbands_upL);
+    // Print("--offsetForBuy: ", offsetForBuy);
+    // Print("--offsetForSell: ", offsetForSell);
 
     // CLOSE POSITION ->it will be later in different block with parametrers of close pos
-    if (isOrder)
+    if (isMainOrder)
     {
         if ((lastLocal < TMAbands_downL) && (lastLocal > offsetForBuy) && (type_positionL != "LONG"))
         {
@@ -92,7 +93,7 @@ bool mainOrder(double TMAbands_downL,
     }
 
     // OPEN POSITION
-    if (!isOrder)
+    if (!isMainOrder)
     {
 
         // buy order

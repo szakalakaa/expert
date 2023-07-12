@@ -81,12 +81,17 @@ void printValues(string TMA_signalA, double lastA, double orderPriceA, double ba
     }
 }
 
-bool checkInputs(double Stoploss, int Atr_period, double Atr_multiplier, double StochUpper, double kPeriod, double dPeriod)
+bool checkInputs(double Stoploss, double StoplossCross, int Atr_period, double Atr_multiplier, double StochUpper, double kPeriod, double dPeriod)
 {
 
     if (Stoploss <= 0 || Stoploss > 0.04)
     {
         Alert("stoploss <= 0 || stoploss > 0.04");
+        return false;
+    }
+    if (StoplossCross <= 0 || StoplossCross > 0.04)
+    {
+        Alert("stoplossCross <= 0 || stoplossCross > 0.04");
         return false;
     }
     if (Atr_period > 300 || Atr_period < 100)

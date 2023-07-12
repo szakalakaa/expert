@@ -1,25 +1,39 @@
 #include <Trade\Trade.mqh>
 
+bool canOpenPositionOnCrossBand(double TMAbands_downL,
+                                double TMAbands_upL,
+                                string &type_positionL,
+                                CTrade &tradeL,
+                                double lotsL,
+                                double stoplossL)
+{
+    // No need to check data because are chacked later
+
+    return true;
+}
+
 bool buyOnBand(double TMAbands_downL,
                double TMAbands_upL,
                string &type_positionL,
                CTrade &tradeL,
+               double lotsMainL,
                double lotsL,
-               double stoplossL,
+               double stoplossCrossL,
                bool crossBlockadeFlagL)
 {
 
     double lastLocal = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_LAST), _Digits);
     double askLocal = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_ASK), _Digits);
     double bidLocal = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_BID), _Digits);
-    double sellStopPrice = NormalizeDouble(bidLocal * (1 - stoplossL), 0);
-    double buyStopPrice = NormalizeDouble(askLocal * (1 + stoplossL), 0);
+    double sellStopPrice = NormalizeDouble(bidLocal * (1 - stoplossCrossL), 0);
+    double buyStopPrice = NormalizeDouble(askLocal * (1 + stoplossCrossL), 0);
     datetime time = iTime(_Symbol, PERIOD_M1, 0);
 
     // check params
     if (lastLocal < 10000 || askLocal < 10000 || bidLocal < 10000 ||
+        lotsMainL <= 0 || lotsMainL > 0.5 ||
         lotsL <= 0 || lotsL > 0.5 ||
-        stoplossL <= 0 || stoplossL > 0.05 ||
+        stoplossCrossL <= 0 || stoplossCrossL > 0.05 ||
         TMAbands_downL < 10000 || TMAbands_downL > TMAbands_upL || TMAbands_upL < 10000 ||
         sellStopPrice < 10000 || buyStopPrice < 10000)
     {
@@ -33,14 +47,18 @@ bool buyOnBand(double TMAbands_downL,
         Print("--TMAbands_upL: ", TMAbands_upL);
         Print("--type_positionL: ", type_positionL);
         Print("--lotsL: ", lotsL);
-        Print("--stoplossL: ", stoplossL);
+        Print("--lotsMainL: ", lotsMainL);
+        Print("--stoplossCrossL: ", stoplossCrossL);
         return false;
     }
-    bool isOrder = isOrderWithValue(tradeL, lotsL, type_positionL);
-    // Print("cross isOrder: ", isOrder);
+    bool isCrossOrder = isOrderWithValue(tradeL, lotsL, type_positionL);
+    bool isMainOrder = isOrderWithValue(tradeL, lotsMainL, type_positionL);
+
+    Print("buyOnBand isCrossOrder : ", isCrossOrder);
+    Print("buyOnBand isMainOrder : ", isMainOrder);
 
     // CLOSE POSITION ->it will be later in different block with parametrers of close pos
-    if (isOrder)
+    if (isCrossOrder && !isMainOrder)
     {
         if ((lastLocal < TMAbands_downL) && (type_positionL != "LONG"))
         {
@@ -62,7 +80,7 @@ bool buyOnBand(double TMAbands_downL,
         {
             if (type_positionL == "LONG")
             {
-                if (!tradeL.Sell(lotsL, NULL, bidLocal, bidLocal+50, bidLocal-60, "close only cross band long position"))
+                if (!tradeL.Sell(lotsL, NULL, bidLocal, bidLocal + 50, bidLocal - 60, "close only cross band long position"))
                     Print("--ERROR 8D close only cross band long position");
                 if (OrdersTotal() != 0)
                     if (removeOrderWithValue(tradeL, lotsL))
@@ -70,11 +88,12 @@ bool buyOnBand(double TMAbands_downL,
                         Print("--ERROR removeOrderWithValue");
                     };
             }
+            return true;
         }
     }
 
     // OPEN POSITION
-    if (!isOrder && !crossBlockadeFlagL)
+    if (!isCrossOrder && !crossBlockadeFlagL)
     {
         // buy order
         if ((lastLocal < TMAbands_downL) && (type_positionL != "LONG"))
@@ -87,7 +106,7 @@ bool buyOnBand(double TMAbands_downL,
 
             type_positionL = "LONG";
             createObject(time, last, 140, clrDodgerBlue, "1");
-
+            crossBlockadeFlagL = true;
             return true;
         }
         // sell
@@ -100,9 +119,12 @@ bool buyOnBand(double TMAbands_downL,
 
             type_positionL = "SHORT";
             createObject(time, last, 140, clrIndianRed, "1");
+            crossBlockadeFlagL = true;
             return true;
         }
     }
 
     return true;
 }
+
+// gdy sprzeda cross i main, potem po przekroczeniu tmaDown, zostaje mu tylko main i signal do kupna cross -> robi zakup i sprawdza czy jest pozycja po pozycji (a moze trzeba po orderze?)
