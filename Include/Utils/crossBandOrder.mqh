@@ -54,11 +54,11 @@ bool buyOnBand(double TMAbands_downL,
     bool isCrossOrder = isOrderWithValue(tradeL, lotsL, type_positionL);
     bool isMainOrder = isOrderWithValue(tradeL, lotsMainL, type_positionL);
 
-    Print("buyOnBand isCrossOrder : ", isCrossOrder);
-    Print("buyOnBand isMainOrder : ", isMainOrder);
+    // Print("buyOnBand isCrossOrder : ", isCrossOrder);
+    // Print("buyOnBand isMainOrder : ", isMainOrder);
 
     // CLOSE POSITION ->it will be later in different block with parametrers of close pos
-    if (isCrossOrder && !isMainOrder)
+    if (isCrossOrder)
     {
         if ((lastLocal < TMAbands_downL) && (type_positionL != "LONG"))
         {
@@ -93,7 +93,7 @@ bool buyOnBand(double TMAbands_downL,
     }
 
     // OPEN POSITION
-    if (!isCrossOrder && !crossBlockadeFlagL)
+    if (!isCrossOrder && !crossBlockadeFlagL && !isMainOrder)
     {
         // buy order
         if ((lastLocal < TMAbands_downL) && (type_positionL != "LONG"))

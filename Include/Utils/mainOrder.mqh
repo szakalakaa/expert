@@ -47,7 +47,7 @@ bool mainOrder(double TMAbands_downL,
     }
     bool isMainOrder = isOrderWithValue(tradeL, lotsL, type_positionL);
 
-        Print("mainOrder main isMainOrder: ", isMainOrder);
+    Print("mainOrder main isMainOrder: ", isMainOrder);
     // Print("--type_positionL: ", type_positionL);
     // Print("--lotsL: ", lotsL);
     // Print("--lastLocal: ", lastLocal);
@@ -66,10 +66,13 @@ bool mainOrder(double TMAbands_downL,
                 if (!tradeL.Buy(lotsL, NULL, askLocal, 0, 0, "close only main short position "))
                     Print("--ERROR 9D close only main short position");
                 if (OrdersTotal() != 0)
-                    if (removeOrderWithValue(tradeL, lotsL))
-                    {
-                        Print("--ERROR removeOrderWithValue");
-                    };
+                {
+                    removeAllOrders(tradeL);
+                }
+                // if (removeOrderWithValue(tradeL, lotsL))
+                // {
+                //     Print("--ERROR removeOrderWithValue");
+                // };
 
                 type_position = "LONG";
             }
@@ -83,10 +86,13 @@ bool mainOrder(double TMAbands_downL,
                 if (!tradeL.Sell(lotsL, NULL, bidLocal, 0, 0, "close only main long position"))
                     Print("--ERROR 8D close only main long position");
                 if (OrdersTotal() != 0)
-                    if (removeOrderWithValue(tradeL, lotsL))
-                    {
-                        Print("--ERROR removeOrderWithValue");
-                    };
+                {
+                    removeAllOrders(tradeL);
+                }
+                // if (removeOrderWithValue(tradeL, lotsL))
+                // {
+                //     Print("--ERROR removeOrderWithValue");
+                // };
                 type_position = "SHORT";
             }
         }
