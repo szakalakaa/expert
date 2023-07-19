@@ -47,7 +47,7 @@ bool mainOrder(double TMAbands_downL,
     }
     bool isMainOrder = isOrderWithValue(tradeL, lotsL, type_positionL);
 
-    Print("mainOrder main isMainOrder: ", isMainOrder);
+    // Print("mainOrder main isMainOrder: ", isMainOrder);
     // Print("--type_positionL: ", type_positionL);
     // Print("--lotsL: ", lotsL);
     // Print("--lastLocal: ", lastLocal);
