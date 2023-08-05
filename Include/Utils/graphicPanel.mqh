@@ -52,7 +52,7 @@ private:
   CLabel lotsInPositionLabel;
   CLabel positionOpenPriceLabel;
   CLabel valueLabel;
-  CLabel LotsLabel;
+
   CLabel cntBuyLabel;
   CLabel cntSellLabel;
   CLabel inpMagicLabel;
@@ -116,7 +116,7 @@ void CGraphicalPanel::Update(void)
   positionOpenPriceLabel.Text((string)positionOpenPrice);
   cntSellLabel.Text("cntSell: " + (string)cntSell);
   cntBuyLabel.Text("cntBuy: " + (string)cntBuy);
-  LotsLabel.Text("Lots: " + (string)Lots);
+
   openPosMagicLabel.Text("magic pos: " + (string)openPosMagic);
   inpMagicLabel.Text("magic: " + (string)inpMagic);
   PositionSelect(_Symbol);
@@ -208,33 +208,33 @@ bool CGraphicalPanel::CreatePanel(void)
   positionOpenPriceLabel.FontSize(InpPanelFontSize);
   this.Add(positionOpenPriceLabel);
 
-  int magicY = 160;
+  // int magicY = 160;
 
-  openPosMagicLabel.Create(NULL, "openPosMagicLabel", 0, 10, magicY, 1, 1);
-  openPosMagicLabel.Text("magic pos: " + (string)openPosMagic);
-  openPosMagicLabel.Color(clrLightBlue);
-  openPosMagicLabel.FontSize(InpPanelFontSize);
-  this.Add(openPosMagicLabel);
+  // openPosMagicLabel.Create(NULL, "openPosMagicLabel", 0, 10, magicY, 1, 1);
+  // openPosMagicLabel.Text("magic pos: " + (string)openPosMagic);
+  // openPosMagicLabel.Color(clrLightBlue);
+  // openPosMagicLabel.FontSize(InpPanelFontSize);
+  // this.Add(openPosMagicLabel);
 
-  inpMagicLabel.Create(NULL, "inpMagicLabel", 0, 150, magicY, 1, 1);
-  inpMagicLabel.Text("magic: " + (string)inpMagic);
-  inpMagicLabel.Color(clrCoral);
-  inpMagicLabel.FontSize(InpPanelFontSize);
-  this.Add(inpMagicLabel);
+  // inpMagicLabel.Create(NULL, "inpMagicLabel", 0, 150, magicY, 1, 1);
+  // inpMagicLabel.Text("magic: " + (string)inpMagic);
+  // inpMagicLabel.Color(clrCoral);
+  // inpMagicLabel.FontSize(InpPanelFontSize);
+  // this.Add(inpMagicLabel);
 
-  int labelY = 180;
+  // int labelY = 180;
 
-  cntBuyLabel.Create(NULL, "cntBuyLabel", 0, 10, labelY, 1, 1);
-  cntBuyLabel.Text("cntBuy: " + (string)cntBuy);
-  cntBuyLabel.Color(clrWheat);
-  cntBuyLabel.FontSize(InpPanelFontSize);
-  this.Add(cntBuyLabel);
+  // cntBuyLabel.Create(NULL, "cntBuyLabel", 0, 10, labelY, 1, 1);
+  // cntBuyLabel.Text("cntBuy: " + (string)cntBuy);
+  // cntBuyLabel.Color(clrWheat);
+  // cntBuyLabel.FontSize(InpPanelFontSize);
+  // this.Add(cntBuyLabel);
 
-  cntSellLabel.Create(NULL, "cntSellLabel", 0, 150, labelY, 1, 1);
-  cntSellLabel.Text("cntSell: " + (string)cntSell);
-  cntSellLabel.Color(clrWheat);
-  cntSellLabel.FontSize(InpPanelFontSize);
-  this.Add(cntSellLabel);
+  // cntSellLabel.Create(NULL, "cntSellLabel", 0, 150, labelY, 1, 1);
+  // cntSellLabel.Text("cntSell: " + (string)cntSell);
+  // cntSellLabel.Color(clrWheat);
+  // cntSellLabel.FontSize(InpPanelFontSize);
+  // this.Add(cntSellLabel);
 
   int yButton = 210;
   int xBut1 = 10;
@@ -258,11 +258,6 @@ bool CGraphicalPanel::CreatePanel(void)
   b4.Color(clrAquamarine);
   this.Add(b4);
 
-  LotsLabel.Create(NULL, "LotsLabel", 0, 10, InpPanelHeight - 100, 1, 1);
-  LotsLabel.Text("Lots: " + (string)Lots);
-  LotsLabel.Color(clrWheat);
-  LotsLabel.FontSize(InpPanelFontSize);
-  this.Add(LotsLabel);
 
   valueLabel.Create(NULL, "valueLabel", 0, 10, InpPanelHeight - 80, 1, 1);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
