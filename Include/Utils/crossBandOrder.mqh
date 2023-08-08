@@ -1,4 +1,7 @@
 #include <Trade\Trade.mqh>
+#include <Utils\ordersUtils.mqh>
+#include <Utils\utils.mqh>
+
 
 bool canOpenPositionOnCrossBand(double TMAbands_downL,
                                 double TMAbands_upL,

@@ -1,4 +1,6 @@
 #include <Trade\Trade.mqh>
+#include <Utils\ordersUtils.mqh>
+#include <Utils\utils.mqh>
 
 bool mainOrder(double TMAbands_downL,
                double TMAbands_upL,
@@ -74,7 +76,7 @@ bool mainOrder(double TMAbands_downL,
                 //     Print("--ERROR removeOrderWithValue");
                 // };
 
-                type_position = "LONG";
+                type_positionL = "LONG";
             }
             return true;
         }
@@ -93,7 +95,7 @@ bool mainOrder(double TMAbands_downL,
                 // {
                 //     Print("--ERROR removeOrderWithValue");
                 // };
-                type_position = "SHORT";
+                type_positionL = "SHORT";
             }
         }
     }
@@ -111,7 +113,7 @@ bool mainOrder(double TMAbands_downL,
 
             if (!tradeL.SellStop(lotsL, sellStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss for band cross"))
                 Print("--ERROR 34A on sell stop loss triggered");
-            createObject(time, last, 141, clrDodgerBlue, "1");
+            createObject(time, lastLocal, 141, clrDodgerBlue, "1");
             return true;
         }
         // sell order
@@ -121,7 +123,7 @@ bool mainOrder(double TMAbands_downL,
                 Print("--ERROR 35B sell main");
             if (!tradeL.BuyStop(lotsL, buyStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss main"))
                 Print("--ERROR 36B on buy stop loss triggered");
-            createObject(time, last, 141, clrIndianRed, "1");
+            createObject(time, lastLocal, 141, clrIndianRed, "1");
             return true;
         }
     }
