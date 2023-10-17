@@ -57,6 +57,10 @@ private:
   CLabel cntSellLabel;
   CLabel inpMagicLabel;
   CLabel openPosMagicLabel;
+  CLabel isMainOrderLabel;
+  CLabel isCrossOrderLabel;
+
+
   CButton crossBlockadeFlagButton;
   CButton b1;
   CButton b2;
@@ -121,6 +125,13 @@ void CGraphicalPanel::Update(void)
   inpMagicLabel.Text("magic: " + (string)inpMagic);
   PositionSelect(_Symbol);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
+
+
+
+  isMainOrderLabel.Text("isMainOrder: "+(string)isMainOrder);
+  isCrossOrderLabel.Text("isCrossOrder: "+(string)isCrossOrder);
+
+
 
   return;
 }
@@ -208,33 +219,17 @@ bool CGraphicalPanel::CreatePanel(void)
   positionOpenPriceLabel.FontSize(InpPanelFontSize);
   this.Add(positionOpenPriceLabel);
 
-  // int magicY = 160;
-
-  // openPosMagicLabel.Create(NULL, "openPosMagicLabel", 0, 10, magicY, 1, 1);
-  // openPosMagicLabel.Text("magic pos: " + (string)openPosMagic);
-  // openPosMagicLabel.Color(clrLightBlue);
-  // openPosMagicLabel.FontSize(InpPanelFontSize);
-  // this.Add(openPosMagicLabel);
-
-  // inpMagicLabel.Create(NULL, "inpMagicLabel", 0, 150, magicY, 1, 1);
-  // inpMagicLabel.Text("magic: " + (string)inpMagic);
-  // inpMagicLabel.Color(clrCoral);
-  // inpMagicLabel.FontSize(InpPanelFontSize);
-  // this.Add(inpMagicLabel);
-
-  // int labelY = 180;
-
-  // cntBuyLabel.Create(NULL, "cntBuyLabel", 0, 10, labelY, 1, 1);
-  // cntBuyLabel.Text("cntBuy: " + (string)cntBuy);
-  // cntBuyLabel.Color(clrWheat);
-  // cntBuyLabel.FontSize(InpPanelFontSize);
-  // this.Add(cntBuyLabel);
-
-  // cntSellLabel.Create(NULL, "cntSellLabel", 0, 150, labelY, 1, 1);
-  // cntSellLabel.Text("cntSell: " + (string)cntSell);
-  // cntSellLabel.Color(clrWheat);
-  // cntSellLabel.FontSize(InpPanelFontSize);
-  // this.Add(cntSellLabel);
+  isMainOrderLabel.Create(NULL, "isMainOrderLabel", 0, 20, 120, 1, 1);
+  isMainOrderLabel.Text("isMainOrder: "+(string)isMainOrder);
+  isMainOrderLabel.Color(clrWheat);
+  isMainOrderLabel.FontSize(InpPanelFontSize);
+  this.Add(isMainOrderLabel);  
+  
+  isCrossOrderLabel.Create(NULL, "isCrossOrderLabel", 0, 20, 140, 1, 1);
+  isCrossOrderLabel.Text("isCrossOrder: "+(string)isCrossOrder);
+  isCrossOrderLabel.Color(clrWheat);
+  isCrossOrderLabel.FontSize(InpPanelFontSize);
+  this.Add(isCrossOrderLabel);
 
   int yButton = 210;
   int xBut1 = 10;

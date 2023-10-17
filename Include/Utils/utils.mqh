@@ -1,4 +1,28 @@
 
+void getTypePosition(string &Type_position, double &LotsInPosition, double &PositionOpenPrice)
+{
+    if (PositionsTotal())
+    {
+        PositionGetSymbol(0);
+        if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
+        {
+            Type_position = "LONG";
+        }
+        if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
+        {
+            Type_position = "SHORT";
+        }
+        LotsInPosition = NormalizeDouble(PositionGetDouble(POSITION_VOLUME), 4);
+        PositionOpenPrice = NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN), 0);
+    }
+    else
+    {
+        Type_position = "NO POSITION";
+        LotsInPosition = 0;
+        PositionOpenPrice = 0;
+    }
+}
+
 void getMagicFromOpenPosition(long &OpenPosMagic)
 {
     if (PositionsTotal())
@@ -16,7 +40,7 @@ bool countOpenPositions(int &countBuy, int &conutSell)
 {
     countBuy = 0;
     conutSell = 0;
-
+    int inpMagicFake=5;
     int total = PositionsTotal();
     for (int i = total - 1; i >= 0; i--)
     {
@@ -37,7 +61,7 @@ bool countOpenPositions(int &countBuy, int &conutSell)
             Print("Failed to get magic ");
             return false;
         }
-        if (magic == inpMagic)
+        if (magic == inpMagicFake)
         {
             long type;
             if (!PositionGetInteger(POSITION_TYPE, type))
@@ -140,48 +164,6 @@ bool NormalizePrice(double price, double &normalizedPrice)
         return false;
     }
     normalizedPrice = NormalizeDouble(MathRound(price / tickSize) * tickSize, _Digits);
-    return true;
-}
-
-bool CountOpenPositions(int &countBuy, int &countSell)
-{
-    countBuy = 0;
-    countSell = 0;
-    int total = PositionsTotal();
-
-    for (int i = total - 1; i >= 0; i--)
-    {
-        ulong positionTicket = PositionGetTicket(i);
-        if (positionTicket <= 0)
-        {
-            Print("55 Failed to get ticket");
-            return false;
-        }
-        if (!PositionSelectByTicket(positionTicket))
-        {
-            Print("56 Failed to select position");
-            return false;
-        }
-        long magic;
-        if (!PositionGetInteger(POSITION_MAGIC, magic))
-        {
-            Print("57 Failed to get magic");
-            return false;
-        }
-        if (magic == inpMagic)
-        {
-            long type;
-            if (!PositionGetInteger(POSITION_TYPE, type))
-            {
-                Print("58 Failed to get type ");
-                return false;
-            }
-            if (type == POSITION_TYPE_BUY)
-                countBuy++;
-            if (type == POSITION_TYPE_SELL)
-                countSell++;
-        }
-    }
     return true;
 }
 
