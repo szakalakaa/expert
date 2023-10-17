@@ -126,12 +126,8 @@ void CGraphicalPanel::Update(void)
   PositionSelect(_Symbol);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
 
-
-
-  isMainOrderLabel.Text("isMainOrder: "+(string)isMainOrder);
-  isCrossOrderLabel.Text("isCrossOrder: "+(string)isCrossOrder);
-
-
+  isMainOrderLabel.Text("isMainOrder: " + (string)isMainOrder);
+  isCrossOrderLabel.Text("isCrossOrder: " + (string)isCrossOrder);
 
   return;
 }
@@ -219,17 +215,17 @@ bool CGraphicalPanel::CreatePanel(void)
   positionOpenPriceLabel.FontSize(InpPanelFontSize);
   this.Add(positionOpenPriceLabel);
 
-  isMainOrderLabel.Create(NULL, "isMainOrderLabel", 0, 20, 120, 1, 1);
-  isMainOrderLabel.Text("isMainOrder: "+(string)isMainOrder);
-  isMainOrderLabel.Color(clrWheat);
-  isMainOrderLabel.FontSize(InpPanelFontSize);
-  this.Add(isMainOrderLabel);  
-  
-  isCrossOrderLabel.Create(NULL, "isCrossOrderLabel", 0, 20, 140, 1, 1);
-  isCrossOrderLabel.Text("isCrossOrder: "+(string)isCrossOrder);
+  isCrossOrderLabel.Create(NULL, "isCrossOrderLabel", 0, 20, 120, 1, 1);
+  isCrossOrderLabel.Text("isCrossOrder: " + (string)isCrossOrder);
   isCrossOrderLabel.Color(clrWheat);
   isCrossOrderLabel.FontSize(InpPanelFontSize);
   this.Add(isCrossOrderLabel);
+
+  isMainOrderLabel.Create(NULL, "isMainOrderLabel", 0, 20, 140, 1, 1);
+  isMainOrderLabel.Text("isMainOrder: " + (string)isMainOrder);
+  isMainOrderLabel.Color(clrWheat);
+  isMainOrderLabel.FontSize(InpPanelFontSize);
+  this.Add(isMainOrderLabel);
 
   int yButton = 210;
   int xBut1 = 10;

@@ -72,7 +72,7 @@ bool mainOrder(double TMAbands_downL,
         // buy order
         if ((lastLocal > offsetForBuy) && (lastLocal < TMAbands_downL))
         {
-            Print("--2: ");
+            Print("--BUY MAIN: ");
             if (!tradeL.Buy(lotsL, NULL, askLocal, 0, 0, "buy main"))
                 Print("--ERROR 33A buy main");
 
@@ -84,6 +84,7 @@ bool mainOrder(double TMAbands_downL,
         // sell order
         if ((lastLocal < offsetForSell) && (lastLocal > TMAbands_upL))
         {
+            Print("--SELL MAIN: ");
             if (!tradeL.Sell(lotsL, NULL, bidLocal, 0, 0, "sell main"))
                 Print("--ERROR 35B sell main");
             if (!tradeL.BuyStop(lotsL, BuyStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss main"))
