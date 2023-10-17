@@ -26,8 +26,7 @@ bool isOrderWithValue(CTrade &tradeClass, double lotsOfOrderToFind, string type_
             }
             if ((orderVolume == lotsOfOrderToFind) && (OrderGetInteger(ORDER_TYPE) == getOrderType(type_positionLL)))
             {
-                Print("lotsOfOrderToFind: ",lotsOfOrderToFind);
-                Print("type_positionLL: ",type_positionLL);
+
                 return true;
             }
         }
