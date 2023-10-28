@@ -16,7 +16,9 @@ bool mainOrder(double TMAbands_downL,
                // new then crossBandOrder
                double orderOffset,
                double lastCandleClose,
-               double IsMainOrder)
+               double IsMainOrder,
+               bool BlockCross
+               )
 {
 
     double offsetForBuy = NormalizeDouble(lastCandleClose * (10000 + orderOffset) / 10000, 0);
@@ -36,11 +38,6 @@ bool mainOrder(double TMAbands_downL,
                 {
                     removeAllOrders(tradeL);
                 }
-                // if (removeOrderWithValue(tradeL, lotsL))
-                // {
-                //     Print("--ERROR removeOrderWithValue");
-                // };
-
                 type_positionL = "LONG";
             }
             return true;
@@ -56,17 +53,13 @@ bool mainOrder(double TMAbands_downL,
                 {
                     removeAllOrders(tradeL);
                 }
-                // if (removeOrderWithValue(tradeL, lotsL))
-                // {
-                //     Print("--ERROR removeOrderWithValue");
-                // };
                 type_positionL = "SHORT";
             }
         }
     }
 
     // OPEN POSITION
-    if (!IsMainOrder)
+    if (!IsMainOrder && !BlockCross)
     {
 
         // buy order
