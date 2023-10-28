@@ -16,13 +16,16 @@ bool buyOnBand(double TMAbands_downL,
                double stoplossCrossL,
                bool crossBlockadeFlagL,
                bool IsCrossOrder,
-               bool IsMainOrder)
+               bool IsMainOrder,
+               bool BlockBuyCross,
+               bool BlockSellCross,
+               bool BlockCross)
 {
 
     datetime time = iTime(_Symbol, PERIOD_M1, 0);
 
     // CLOSE POSITION ->it will be later in different block with parametrers of close pos
-    if (IsCrossOrder)
+    if ((IsCrossOrder))
     {
         if ((lastLocal < TMAbands_downL) && (type_positionL != "LONG"))
         {
@@ -57,7 +60,7 @@ bool buyOnBand(double TMAbands_downL,
     }
 
     // OPEN POSITION
-    if (!IsCrossOrder && !crossBlockadeFlagL)
+    if (!IsCrossOrder && !crossBlockadeFlagL && !BlockCross)
     {
         // buy order when no mainOrder
         if ((lastLocal < TMAbands_downL) && (type_positionL != "LONG") && (!IsMainOrder))
@@ -101,7 +104,7 @@ bool buyOnBand(double TMAbands_downL,
             return true;
         }
         // sell additional piece
-         if ((lastLocal > TMAbands_upL) && (type_positionL == "SHORT") && (IsMainOrder))
+        if ((lastLocal > TMAbands_upL) && (type_positionL == "SHORT") && (IsMainOrder))
         {
             if (!tradeL.Sell(lotsL, NULL, bidLocal, 0, 0, "sell aadditional cross"))
                 Print("--ERROR 6B sell on band cross");

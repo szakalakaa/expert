@@ -162,7 +162,7 @@ bool CGraphicalPanel::CheckInputs(void)
 bool CGraphicalPanel::CreatePanel(void)
 {
   // create dialog panel
-  this.Create(NULL, "Tie Range EA", 0, 0, 30, InpPanelWidth, InpPanelHeight);
+  this.Create(NULL, "Tie Range EA", 0, 0, 60, InpPanelWidth, InpPanelHeight);
 
   main_header.Create(NULL, "main_header", 0, 10, 5, 1, 1);
   main_header.Text("Inputs:");

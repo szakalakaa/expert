@@ -1,3 +1,14 @@
+// bool isSignalForAction(string &Type_position,
+//                         double UpperBand,
+//                         double LowerBand,
+//                         double Last,
+//                         double Ask,
+//                         double Bid)
+// {
+//     if(Type_position == "LONG" && Last){
+
+//     }
+// }
 
 void getTypePosition(string &Type_position, double &LotsInPosition, double &PositionOpenPrice)
 {
@@ -40,7 +51,7 @@ bool countOpenPositions(int &countBuy, int &conutSell)
 {
     countBuy = 0;
     conutSell = 0;
-    int inpMagicFake=5;
+    int inpMagicFake = 5;
     int total = PositionsTotal();
     for (int i = total - 1; i >= 0; i--)
     {
