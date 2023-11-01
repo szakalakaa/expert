@@ -1,6 +1,10 @@
 
-bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, double Ask, double Bid)
+//INVESTIGATION: SHIFT ORDER DOWN WHEN LAST HITS TRIGGER PRICE
+bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, double Ask, double Bid, double Last, bool &StopLossWasSchifted)
 {
+    // PositionsTotal();
+    // PositionGetSymbol(0);
+    // positionOpenPrice = NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN), 0);
     int total = OrdersTotal();
     if (total)
     {
@@ -30,23 +34,39 @@ bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, 
                 return false;
             }
 
+            // POZYCJA SHORT
             if (OrderGetInteger(ORDER_TYPE) == getOrderType("LONG"))
             {
-                double triggerPrice = NormalizeDouble((100 + TriggerSLProcent) * Ask, 0);
-                if (triggerPrice == 0)
+                double stoplos = 0.015;
+
+                double triggerPrice = NormalizeDouble(orderPriceOpen * (1-stoplos) * (100 - TriggerSLProcent) / 100, 0);
+
+                double newSLPrice = NormalizeDouble(orderPriceOpen * (100 - NewSLProcent) / 100, 0);
+                if (triggerPrice == 0 || newSLPrice == 0)
                 {
-                    Print("Failed to calculate triggerPrice");
-                    return false;
-                }
-                double newSLPrice = NormalizeDouble(orderPriceOpen * (100 + NewSLProcent), 0);
-                if (newSLPrice == 0)
-                {
-                    Print("Failed to calculate newSLPrice");
+                    Print("Failed to calculate triggerPrice or newSLPrice");
                     return false;
                 }
 
-                if (triggerPrice > Ask)
+                Print("-orderTicket nr: ", i, " - ", orderTicket);
+                Print("-orderPriceOpen: ", orderPriceOpen);
+                Print("- newSLPrice: ", newSLPrice);
+                Print("- triggerPrice: ", triggerPrice);
+
+                Print("-last: ", Last);
+                Print("-WYNIK: ", orderPriceOpen * (1-stoplos));
+
+                if (Last < triggerPrice)
                 {
+
+                    datetime time = iTime(_Symbol, PERIOD_M1, 0);
+                    createObject(time, orderPriceOpen, 140, clrCadetBlue, "1");
+                    createObject(time, newSLPrice, 140, clrYellow, "2");
+                    createObject(time, triggerPrice, 140, clrRosyBrown, "3");
+
+                    StopLossWasSchifted = true;
+                    Print("**** SHIFTED *****");
+
                     if (!Trade.OrderDelete(orderTicket))
                         Print("---ERROR: Order: " + (string)orderTicket + " was closed ");
 
@@ -85,7 +105,7 @@ bool isOrderWithValue(CTrade &tradeClass, double lotsOfOrderToFind, string type_
                 Print("Failed to get order volume");
                 return false;
             }
-            if ((orderVolume == lotsOfOrderToFind) && (OrderGetInteger(ORDER_TYPE) == getOrderType(type_positionLL)))
+            if ((orderVolume == lotsOfOrderToFind) && (OrderGetInteger(ORDER_TYPE) == getPositionType(type_positionLL)))
             {
 
                 return true;
@@ -95,11 +115,20 @@ bool isOrderWithValue(CTrade &tradeClass, double lotsOfOrderToFind, string type_
     return false;
 }
 
-int getOrderType(string type_positionL)
+int getPositionType(string type_positionL)
 {
     if (type_positionL == "LONG")
         return 5;
     if (type_positionL == "SHORT")
+        return 4;
+    return 0;
+}
+
+int getOrderType(string type_positionL)
+{
+    if (type_positionL == "SHORT")
+        return 5;
+    if (type_positionL == "LONG")
         return 4;
     return 0;
 }
