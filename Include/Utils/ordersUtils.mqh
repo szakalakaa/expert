@@ -2,9 +2,9 @@
 //INVESTIGATION: SHIFT ORDER DOWN WHEN LAST HITS TRIGGER PRICE
 bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, double Ask, double Bid, double Last, bool &StopLossWasSchifted)
 {
-    // PositionsTotal();
-    // PositionGetSymbol(0);
-    // positionOpenPrice = NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN), 0);
+    PositionsTotal();
+    PositionGetSymbol(0);
+    positionOpenPrice = NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN), 0);
     int total = OrdersTotal();
     if (total)
     {
@@ -39,9 +39,9 @@ bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, 
             {
                 double stoplos = 0.015;
 
-                double triggerPrice = NormalizeDouble(orderPriceOpen * (1-stoplos) * (100 - TriggerSLProcent) / 100, 0);
+                double triggerPrice = NormalizeDouble(positionOpenPrice* (100 - TriggerSLProcent) / 100, 0);
 
-                double newSLPrice = NormalizeDouble(orderPriceOpen * (100 - NewSLProcent) / 100, 0);
+                double newSLPrice = NormalizeDouble(positionOpenPrice * (100 - NewSLProcent) / 100, 0);
                 if (triggerPrice == 0 || newSLPrice == 0)
                 {
                     Print("Failed to calculate triggerPrice or newSLPrice");
@@ -49,12 +49,12 @@ bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, 
                 }
 
                 Print("-orderTicket nr: ", i, " - ", orderTicket);
-                Print("-orderPriceOpen: ", orderPriceOpen);
+                Print("-positionOpenPrice: ", positionOpenPrice);
                 Print("- newSLPrice: ", newSLPrice);
                 Print("- triggerPrice: ", triggerPrice);
 
                 Print("-last: ", Last);
-                Print("-WYNIK: ", orderPriceOpen * (1-stoplos));
+
 
                 if (Last < triggerPrice)
                 {
