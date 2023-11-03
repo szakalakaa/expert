@@ -16,9 +16,9 @@ bool mainOrder(double TMAbands_downL,
                // new then crossBandOrder
                double orderOffset,
                double lastCandleClose,
-               double IsMainOrder,
-               bool BlockCross
-               )
+               bool IsMainOrder,
+               bool BlockCross,
+               bool &StopLossWasSchifted)
 {
 
     double offsetForBuy = NormalizeDouble(lastCandleClose * (10000 + orderOffset) / 10000, 0);
@@ -38,6 +38,7 @@ bool mainOrder(double TMAbands_downL,
                 {
                     removeAllOrders(tradeL);
                 }
+                StopLossWasSchifted = false;
                 type_positionL = "LONG";
             }
             return true;
@@ -53,6 +54,7 @@ bool mainOrder(double TMAbands_downL,
                 {
                     removeAllOrders(tradeL);
                 }
+                StopLossWasSchifted = false;
                 type_positionL = "SHORT";
             }
         }
@@ -61,7 +63,6 @@ bool mainOrder(double TMAbands_downL,
     // OPEN POSITION
     if (!IsMainOrder && !BlockCross)
     {
-
         // buy order
         if ((lastLocal > offsetForBuy) && (lastLocal < TMAbands_downL))
         {

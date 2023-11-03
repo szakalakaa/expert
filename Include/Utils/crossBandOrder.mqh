@@ -14,11 +14,8 @@ bool buyOnBand(double TMAbands_downL,
                double lotsMainL,
                double lotsL,
                double stoplossCrossL,
-               bool crossBlockadeFlagL,
                bool IsCrossOrder,
                bool IsMainOrder,
-               bool BlockBuyCross,
-               bool BlockSellCross,
                bool BlockCross)
 {
 
@@ -60,7 +57,7 @@ bool buyOnBand(double TMAbands_downL,
     }
 
     // OPEN POSITION
-    if (!IsCrossOrder && !crossBlockadeFlagL && !BlockCross)
+    if (!IsCrossOrder  && !BlockCross)
     {
         // buy order when no mainOrder
         if ((lastLocal < TMAbands_downL) && (type_positionL != "LONG") && (!IsMainOrder))
@@ -73,7 +70,6 @@ bool buyOnBand(double TMAbands_downL,
 
             type_positionL = "LONG";
             createObject(time, lastLocal, 140, clrDodgerBlue, "1");
-            crossBlockadeFlagL = true;
             return true;
         }
 
@@ -100,7 +96,6 @@ bool buyOnBand(double TMAbands_downL,
 
             type_positionL = "SHORT";
             createObject(time, lastLocal, 140, clrIndianRed, "1");
-            crossBlockadeFlagL = true;
             return true;
         }
         // sell additional piece

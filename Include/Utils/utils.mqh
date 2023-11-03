@@ -1,15 +1,3 @@
-// bool isSignalForAction(string &Type_position,
-//                         double UpperBand,
-//                         double LowerBand,
-//                         double Last,
-//                         double Ask,
-//                         double Bid)
-// {
-//     if(Type_position == "LONG" && Last){
-
-//     }
-// }
-
 void getTypePosition(string &Type_position, double &LotsInPosition, double &PositionOpenPrice)
 {
     if (PositionsTotal())
@@ -116,7 +104,7 @@ void printValues(string TMA_signalA, double lastA, double orderPriceA, double ba
     }
 }
 
-bool checkInputs(double Stoploss, double StoplossCross, int Atr_period, double Atr_multiplier, double StochUpper, double kPeriod, double dPeriod)
+bool checkInputs(double Stoploss, double StoplossCross, int Atr_period, double Atr_multiplier, double StochUpper, double kPeriod, double dPeriod, double TriggerSLProcent, double NewSLProcent)
 {
 
     if (Stoploss <= 0 || Stoploss > 0.04)
@@ -152,6 +140,22 @@ bool checkInputs(double Stoploss, double StoplossCross, int Atr_period, double A
     if (dPeriod > 25 || dPeriod < 2)
     {
         Alert("dPeriod > 25 || dPeriod < 2");
+        return false;
+    }
+
+    if (TriggerSLProcent <= 0 || TriggerSLProcent > 1.2)
+    {
+        Alert("TriggerSLProcent <= 0 || TriggerSLProcent > 1.2");
+        return false;
+    }
+    if (NewSLProcent <= 0 || NewSLProcent > 1.2)
+    {
+        Alert("NewSLProcent <= 0 || NewSLProcent > 1.2");
+        return false;
+    }
+    if (NewSLProcent + 0.2 > TriggerSLProcent )
+    {
+        Alert("NewSLProcent < TriggerSLProcent+0.2");
         return false;
     }
     return true;
@@ -245,13 +249,3 @@ double getLots(double lastL, double levarL)
     return NormalizeDouble(lotsConverted, 4);
 }
 
-void crossBlockadeRelease(datetime stopLossTriggeredTimeL, bool &crossBlockadeFlagL, int crossBlockTimeL)
-{
-
-    if (stopLossTriggeredTimeL < TimeCurrent() - crossBlockTimeL * 60)
-    {
-        // Print("RESET TIME");
-        stopLossTriggeredTimeL = NULL;
-        crossBlockadeFlagL = false;
-    }
-}

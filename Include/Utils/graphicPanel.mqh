@@ -52,10 +52,8 @@ private:
   CLabel lotsInPositionLabel;
   CLabel positionOpenPriceLabel;
   CLabel valueLabel;
-
   CLabel cntBuyLabel;
   CLabel cntSellLabel;
-  CLabel inpMagicLabel;
   CLabel openPosMagicLabel;
   CLabel isMainOrderLabel;
   CLabel isCrossOrderLabel;
@@ -118,11 +116,11 @@ void CGraphicalPanel::Update(void)
   type_positionLabel.Text((string)type_position);
   lotsInPositionLabel.Text((string)lotsInPosition);
   positionOpenPriceLabel.Text((string)positionOpenPrice);
-  cntSellLabel.Text("cntSell: " + (string)cntSell);
-  cntBuyLabel.Text("cntBuy: " + (string)cntBuy);
 
-  openPosMagicLabel.Text("magic pos: " + (string)openPosMagic);
-  inpMagicLabel.Text("magic: " + (string)inpMagic);
+
+
+
+
   PositionSelect(_Symbol);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
 
