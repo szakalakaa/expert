@@ -1,81 +1,62 @@
-// INVESTIGATION: SHIFT ORDER DOWN WHEN LAST HITS TRIGGER PRICE
-bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, double Ask, double Bid, double Last, bool &StopLossWasSchifted)
+// INVESTIGATION: SHIFT ORDER DOWN WHEN LAST HITS TRIGGER PRICE   ->tylko main order!
+bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, double Ask, double Bid, double Last, double lotsToSchift, bool &StopLossWasSchifted)
 {
-    PositionsTotal();
-    PositionGetSymbol(0);
-    positionOpenPrice = NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN), 0);
-    int total = OrdersTotal();
-    datetime time = iTime(_Symbol, PERIOD_M1, 0);
-
-    if (total)
+    if (PositionsTotal())
     {
-        for (int i = total - 1; i >= 0; i--)
+        PositionGetSymbol(0);
+        positionOpenPrice = NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN), 0);
+        datetime time = iTime(_Symbol, PERIOD_M1, 0);
+        ulong orderTicket = getOrderTicketByVolume(lotsToSchift);
+
+        if (orderTicket <= 0 || positionOpenPrice <= 0)
         {
-            ulong orderTicket = OrderGetTicket(i);
-            if (orderTicket <= 0)
+            Print("Failed to get orderTicket ", orderTicket, " positionOpenPrice ", positionOpenPrice);
+            return false;
+        }
+
+        if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
+        {
+            double triggerPrice = NormalizeDouble(positionOpenPrice * (100 + TriggerSLProcent) / 100, 0);
+            double newSLPrice = NormalizeDouble(positionOpenPrice * (100 + NewSLProcent) / 100, 0);
+
+            if (triggerPrice == 0 || newSLPrice == 0)
             {
-                Print("Failed to get order ticket");
-                return false;
-            }
-            if (!OrderSelect(orderTicket))
-            {
-                Print("Failed to select order");
-                return false;
-            }
-            double orderVolume = OrderGetDouble(ORDER_VOLUME_CURRENT);
-            if (orderVolume == 0)
-            {
-                Print("Failed to get order volume");
+                Print("Failed to calculate triggerPrice or newSLPrice ", triggerPrice, " ", newSLPrice);
                 return false;
             }
 
-            // // POZYCJA SHORT
-            if (OrderGetInteger(ORDER_TYPE) == getOrderType("LONG"))
+            if (Last > triggerPrice)
             {
-                double triggerPrice = NormalizeDouble(positionOpenPrice * (100 - TriggerSLProcent) / 100, 0);
-                double newSLPrice = NormalizeDouble(positionOpenPrice * (100 - NewSLProcent) / 100, 0);
+                createObject(time, newSLPrice, 140, clrSkyBlue, "3");
+                if (!Trade.OrderDelete(orderTicket))
+                    Print("---ERROR: Order: " + (string)orderTicket + " was closed ");
 
-                if (triggerPrice == 0 || newSLPrice == 0)
-                {
-                    Print("Failed to calculate triggerPrice or newSLPrice",triggerPrice," ",newSLPrice);
-                    return false;
-                }
-                if (Last < triggerPrice)
-                {
-                    createObject(time, newSLPrice, 140, clrOrangeRed, "3");
-                    StopLossWasSchifted = true;
-                    Print("****SL SHIFTED *****");
-                    if (!Trade.OrderDelete(orderTicket))
-                        Print("---ERROR: Order: " + (string)orderTicket + " was closed ");
+                if (!Trade.SellStop(lotsToSchift, newSLPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop order shifted"))
+                    Print("---ERROR: SellStop on the order price: " + (string)newSLPrice);
+                StopLossWasSchifted = true;
+            }
+        }
 
-                    if (!Trade.BuyStop(orderVolume, newSLPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "BuyStop order shifted"))
-                        Print("---ERROR: BuyStop on the order price: " + (string)newSLPrice);
-                }
+        if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
+        {
+            double triggerPrice = NormalizeDouble(positionOpenPrice * (100 - TriggerSLProcent) / 100, 0);
+            double newSLPrice = NormalizeDouble(positionOpenPrice * (100 - NewSLProcent) / 100, 0);
+
+            if (triggerPrice == 0 || newSLPrice == 0)
+            {
+                Print("Failed to calculate triggerPrice or newSLPrice", triggerPrice, " ", newSLPrice);
+                return false;
             }
 
-                // POZYCJA LONG
-            if (OrderGetInteger(ORDER_TYPE) == getOrderType("SHORT"))
+            if (Last < triggerPrice)
             {
-                double triggerPrice = NormalizeDouble(positionOpenPrice * (100 + TriggerSLProcent) / 100, 0);
-                double newSLPrice = NormalizeDouble(positionOpenPrice * (100 + NewSLProcent) / 100, 0);
+                createObject(time, newSLPrice, 140, clrOrangeRed, "3");
+                if (!Trade.OrderDelete(orderTicket))
+                    Print("---ERROR: Order: " + (string)orderTicket + " was closed ");
 
-                if (triggerPrice == 0 || newSLPrice == 0)
-                {
-                    Print("Failed to calculate triggerPrice or newSLPrice ",triggerPrice," ",newSLPrice);
-                    return false;
-                }
-
-                if (Last > triggerPrice)
-                {
-                    createObject(time, newSLPrice, 140, clrSkyBlue, "3");
-                    StopLossWasSchifted = true;
-                    Print("****SL SHIFTED XXXXXX *****");
-                    if (!Trade.OrderDelete(orderTicket))
-                        Print("---ERROR: Order: " + (string)orderTicket + " was closed ");
-
-                    if (!Trade.SellStop(orderVolume, newSLPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop order shifted"))
-                        Print("---ERROR: SellStop on the order price: " + (string)newSLPrice);
-                }
+                if (!Trade.BuyStop(lotsToSchift, newSLPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "BuyStop order shifted"))
+                    Print("---ERROR: BuyStop on the order price: " + (string)newSLPrice);
+                StopLossWasSchifted = true;
             }
         }
     }
@@ -116,6 +97,40 @@ bool isOrderWithValue(CTrade &tradeClass, double lotsOfOrderToFind, string type_
         }
     }
     return false;
+}
+
+ulong getOrderTicketByVolume(double lotsOfOrderToFind)
+{
+    int total = OrdersTotal();
+    if (total)
+    {
+        for (int i = total - 1; i >= 0; i--)
+        {
+            ulong orderTicket = OrderGetTicket(i);
+            if (orderTicket <= 0)
+            {
+                Print("Failed to get order ticket");
+                return -1;
+            }
+            if (!OrderSelect(orderTicket))
+            {
+                Print("Failed to select order");
+                return -1;
+            }
+            double orderVolume = OrderGetDouble(ORDER_VOLUME_CURRENT);
+            if (orderVolume == 0)
+            {
+                Print("Failed to get order volume");
+                return -1;
+            }
+            if ((orderVolume == lotsOfOrderToFind))
+            {
+
+                return orderTicket;
+            }
+        }
+    }
+    return -1;
 }
 
 int getPositionType(string type_positionL)

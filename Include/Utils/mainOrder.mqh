@@ -70,7 +70,7 @@ bool mainOrder(double TMAbands_downL,
             if (!tradeL.Buy(lotsL, NULL, askLocal, 0, 0, "buy main"))
                 Print("--ERROR 33A buy main");
 
-            if (!tradeL.SellStop(lotsL, SellStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss for band cross"))
+            if (!tradeL.SellStop(lotsL, SellStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss main"))
                 Print("--ERROR 34A on sell stop loss triggered");
             createObject(time, lastLocal, 141, clrDodgerBlue, "1");
             return true;
