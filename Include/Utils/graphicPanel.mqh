@@ -15,7 +15,7 @@
 #undef CONTROLS_FONT_NAME
 #undef CONTROLS_DIALOG_COLOR_CLIENT_BG
 #define CONTROLS_FONT_NAME "Consolas"
-#define CONTROLS_DIALOG_COLOR_CLIENT_BG C'0x20,0x20,0x20'
+#define CONTROLS_DIALOG_COLOR_CLIENT_BG 0x150C0C
 
 //+------------------------------------------------------------------+
 //| Include                                                          |
@@ -28,7 +28,7 @@
 //| Inputs                                                             |
 //+------------------------------------------------------------------+
 // input group "====Panel Inputs====";
-static int InpPanelWidth = 300;               // width in pixel
+static int InpPanelWidth = 600;               // width in pixel
 static int InpPanelHeight = 360;              // height in pixel
 static int InpPanelFontSize = 10;             // width in pixel
 static int InpPanelTextColor = clrWhiteSmoke; // text clr
@@ -57,7 +57,8 @@ private:
   CLabel openPosMagicLabel;
   CLabel isMainOrderLabel;
   CLabel isCrossOrderLabel;
-
+  CLabel timeBlockadeAfterSLLabel;
+  CLabel stopLossWasSchiftedLabel;
 
   CButton crossBlockadeFlagButton;
   CButton b1;
@@ -108,18 +109,20 @@ bool CGraphicalPanel::Oninit(void)
 
 void CGraphicalPanel::Update(void)
 {
-  if (crossBlockadeFlag)
-    crossBlockadeFlagButton.Color(clrRed);
-  else if (!crossBlockadeFlag)
-    crossBlockadeFlagButton.Color(clrAntiqueWhite);
+  if (timeBlockadeAfterSL)
+    timeBlockadeAfterSLLabel.Color(clrLightSkyBlue);
+  else if (!timeBlockadeAfterSL)
+    timeBlockadeAfterSLLabel.Color(clrLightCoral);
+  timeBlockadeAfterSLLabel.Text("timeBlockadeAfterSL: " + (string)(remainMinutes));
+
+  if (stopLossWasSchifted)
+    stopLossWasSchiftedLabel.Color(clrLightSkyBlue);
+  else if (!stopLossWasSchifted)
+    stopLossWasSchiftedLabel.Color(clrLightCoral);
 
   type_positionLabel.Text((string)type_position);
   lotsInPositionLabel.Text((string)lotsInPosition);
   positionOpenPriceLabel.Text((string)positionOpenPrice);
-
-
-
-
 
   PositionSelect(_Symbol);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
@@ -194,20 +197,19 @@ bool CGraphicalPanel::CreatePanel(void)
   this.Add(stop_loss);
 
   int posY = 100;
-
   type_positionLabel.Create(NULL, "type_positionLabel", 0, 10, posY, 1, 1);
   type_positionLabel.Text((string)type_position);
   type_positionLabel.Color(clrWheat);
   type_positionLabel.FontSize(InpPanelFontSize);
   this.Add(type_positionLabel);
 
-  lotsInPositionLabel.Create(NULL, "lotsInPositionLabel", 0, 60, posY, 1, 1);
+  lotsInPositionLabel.Create(NULL, "lotsInPositionLabel", 0, 100, posY, 1, 1);
   lotsInPositionLabel.Text((string)lotsInPosition);
   lotsInPositionLabel.Color(clrWheat);
   lotsInPositionLabel.FontSize(InpPanelFontSize);
   this.Add(lotsInPositionLabel);
 
-  positionOpenPriceLabel.Create(NULL, "positionOpenPriceLabel", 0, 120, posY, 1, 1);
+  positionOpenPriceLabel.Create(NULL, "positionOpenPriceLabel", 0, 160, posY, 1, 1);
   positionOpenPriceLabel.Text((string)positionOpenPrice);
   positionOpenPriceLabel.Color(clrWheat);
   positionOpenPriceLabel.FontSize(InpPanelFontSize);
@@ -224,6 +226,18 @@ bool CGraphicalPanel::CreatePanel(void)
   isMainOrderLabel.Color(clrWheat);
   isMainOrderLabel.FontSize(InpPanelFontSize);
   this.Add(isMainOrderLabel);
+
+  timeBlockadeAfterSLLabel.Create(NULL, "timeBlockadeAfterSLLabel", 0, 20, 160, 1, 1);
+  timeBlockadeAfterSLLabel.Text("timeBlockadeAfterSL: " + (string)remainMinutes);
+  timeBlockadeAfterSLLabel.Color(clrWheat);
+  timeBlockadeAfterSLLabel.FontSize(InpPanelFontSize);
+  this.Add(timeBlockadeAfterSLLabel);
+
+  stopLossWasSchiftedLabel.Create(NULL, "stopLossWasSchiftedLabel", 0, 20, 180, 1, 1);
+  stopLossWasSchiftedLabel.Text("stopLossWasSchifted");
+  stopLossWasSchiftedLabel.Color(clrWheat);
+  stopLossWasSchiftedLabel.FontSize(InpPanelFontSize);
+  this.Add(stopLossWasSchiftedLabel);
 
   int yButton = 210;
   int xBut1 = 10;
@@ -246,7 +260,6 @@ bool CGraphicalPanel::CreatePanel(void)
   b4.Create(NULL, "b4", 0, xBut4, yButton, xBut4 + btnSize, yButton + btnSize);
   b4.Color(clrAquamarine);
   this.Add(b4);
-
 
   valueLabel.Create(NULL, "valueLabel", 0, 10, InpPanelHeight - 80, 1, 1);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
