@@ -1,6 +1,5 @@
 bool validVariables(double UpperBand,
                     double LowerBand,
-                    double MiddleBand,
                     double Last,
                     double Ask,
                     double Bid,
@@ -21,7 +20,6 @@ bool validVariables(double UpperBand,
         Print("----INPUT ERRORS: ");
         Print("UpperBand: ", UpperBand);
         Print("LowerBand: ", LowerBand);
-        Print("MiddleBand: ", MiddleBand);
         Print("Last: ", Last);
         Print("Ask: ", Ask);
         Print("Bid: ", Bid);

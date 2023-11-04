@@ -104,7 +104,11 @@ void printValues(string TMA_signalA, double lastA, double orderPriceA, double ba
     }
 }
 
-bool checkInputs(double Stoploss, double StoplossCross, int Atr_period, double Atr_multiplier, double StochUpper, double kPeriod, double dPeriod, double TriggerSLProcent, double NewSLProcent)
+bool checkInputs(double Stoploss, double StoplossCross,
+                 int Atr_period, double Atr_multiplier,
+                 double StochUpper, double kPeriod,
+                 double dPeriod, double TriggerSLProcent,
+                 double NewSLProcent, int InsureProcentOfAccount)
 {
 
     if (Stoploss <= 0 || Stoploss > 0.04)
@@ -153,9 +157,14 @@ bool checkInputs(double Stoploss, double StoplossCross, int Atr_period, double A
         Alert("NewSLProcent <= 0 || NewSLProcent > 1.2");
         return false;
     }
-    if (NewSLProcent + 0.2 > TriggerSLProcent )
+    if (NewSLProcent + 0.2 > TriggerSLProcent)
     {
         Alert("NewSLProcent < TriggerSLProcent+0.2");
+        return false;
+    }
+    if (InsureProcentOfAccount < 50 || InsureProcentOfAccount > 99)
+    {
+        Alert("InsureProcentOfAccount>50 || InsureProcentOfAccount<99");
         return false;
     }
     return true;
@@ -248,4 +257,3 @@ double getLots(double lastL, double levarL)
     double lotsConverted = lotsTotal - NormalizeDouble(MathMod(lotsTotal, 0.0004), 4);
     return NormalizeDouble(lotsConverted, 4);
 }
-

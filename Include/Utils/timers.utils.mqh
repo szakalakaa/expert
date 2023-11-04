@@ -4,6 +4,7 @@ void setTimerBlockadeForOrders(int MinutesToWait,
                                bool IsMainOrder,
                                bool &TimeBlockadeCross,
                                string Type_position,
+                               double Last,
                                double Ask,
                                double Bid,
                                double LowerBand,
@@ -12,8 +13,9 @@ void setTimerBlockadeForOrders(int MinutesToWait,
 {
 
     CurrentTimer = TimeCurrent();
-    
-    //calculating remain time
+    datetime time = iTime(_Symbol, PERIOD_M1, 0);
+
+    // calculating remain time
     RemainMinutes = (int)((TimerStart - CurrentTimer) / 60);
     if (RemainMinutes < 0)
         RemainMinutes = 0;
@@ -24,11 +26,13 @@ void setTimerBlockadeForOrders(int MinutesToWait,
         {
             TimerStart = TimeCurrent() + 60 * MinutesToWait;
             TimeBlockadeCross = true;
+            createObject(time, Last, 232, clrYellow, "2");
         }
         if ((Type_position == "SHORT"))
         {
             TimerStart = TimeCurrent() + 60 * MinutesToWait; // 60s * 60 min
             TimeBlockadeCross = true;
+            createObject(time, Last, 232, clrYellow, "2");
         }
     }
 
@@ -36,5 +40,6 @@ void setTimerBlockadeForOrders(int MinutesToWait,
     {
         TimeBlockadeCross = false;
         TimerStart = 0;
+        createObject(time, Last, 231, clrOrange, "2");
     }
 }

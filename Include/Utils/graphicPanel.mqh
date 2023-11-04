@@ -46,28 +46,22 @@ private:
   CLabel tma_period;
   CLabel stop_loss;
   CLabel tma_multiplayer;
-  CLabel tma_signal;
-  CLabel stoch_signal;
   CLabel type_positionLabel;
   CLabel lotsInPositionLabel;
   CLabel positionOpenPriceLabel;
   CLabel valueLabel;
-  CLabel cntBuyLabel;
-  CLabel cntSellLabel;
-  CLabel openPosMagicLabel;
+
   CLabel isMainOrderLabel;
   CLabel isCrossOrderLabel;
   CLabel timeBlockadeCrossLabel;
   CLabel stopLossWasSchiftedLabel;
+  CLabel currentBalanceLabel;
 
-  CButton crossBlockadeFlagButton;
-  CButton b1;
-  CButton b2;
-  CButton b3;
-  CButton b4;
+
 
   // buttons
   CButton m_bChangeColor;
+  CButton b1;
 
   // private methods
   bool CheckInputs();
@@ -137,7 +131,11 @@ void CGraphicalPanel::Update(void)
   else if (!isMainOrder)
     isMainOrderLabel.Color(clrLightCoral);
 
-
+  if (currentBalance)
+    currentBalanceLabel.Color(clrLightSkyBlue);
+  else if (!currentBalance)
+    currentBalanceLabel.Color(clrLightCoral);
+  currentBalanceLabel.Text((string)currentBalance);
 
   return;
 }
@@ -180,12 +178,10 @@ bool CGraphicalPanel::CreatePanel(void)
   main_header.FontSize(InpPanelFontSize);
   this.Add(main_header);
 
-  int yButt = 5;
-  int xBut = 150;
-
-  crossBlockadeFlagButton.Create(NULL, "crossBlockadeFlagButton", 0, xBut, yButt, xBut + btnSize, yButt + btnSize);
-  crossBlockadeFlagButton.Color(clrAquamarine);
-  this.Add(crossBlockadeFlagButton);
+  currentBalanceLabel.Create(NULL, "currentBalanceLabel", 0, (InpPanelWidth-60), 5, 1, 1);
+  currentBalanceLabel.Text((string)currentBalance);
+  currentBalanceLabel.Color(clrWheat);
+  this.Add(currentBalanceLabel);
 
   tma_period.Create(NULL, "tma_period", 0, 10, 20, 1, 1);
   tma_period.Text("tma period:       " + (string)atr_period);
@@ -250,25 +246,10 @@ bool CGraphicalPanel::CreatePanel(void)
 
   int yButton = 210;
   int xBut1 = 10;
-  int xBut2 = 30;
-  int xBut3 = 50;
-  int xBut4 = 70;
 
   b1.Create(NULL, "b1", 0, xBut1, yButton, xBut1 + btnSize, yButton + btnSize);
   b1.Color(clrAquamarine);
   this.Add(b1);
-
-  b2.Create(NULL, "b2", 0, xBut2, yButton, xBut2 + btnSize, yButton + btnSize);
-  b2.Color(clrAquamarine);
-  this.Add(b2);
-
-  b3.Create(NULL, "b3", 0, xBut3, yButton, xBut3 + btnSize, yButton + btnSize);
-  b3.Color(clrAquamarine);
-  this.Add(b3);
-
-  b4.Create(NULL, "b4", 0, xBut4, yButton, xBut4 + btnSize, yButton + btnSize);
-  b4.Color(clrAquamarine);
-  this.Add(b4);
 
   valueLabel.Create(NULL, "valueLabel", 0, 10, InpPanelHeight - 80, 1, 1);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
