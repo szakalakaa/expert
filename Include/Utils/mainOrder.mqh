@@ -17,7 +17,6 @@ bool mainOrder(double TMAbands_downL,
                double orderOffset,
                double lastCandleClose,
                bool IsMainOrder,
-               bool TimeBlockadeAfterSL,
                bool &StopLossWasSchifted)
 {
 
@@ -61,7 +60,7 @@ bool mainOrder(double TMAbands_downL,
     }
 
     // OPEN POSITION
-    if (!IsMainOrder && !TimeBlockadeAfterSL)
+    if (!IsMainOrder )
     {
         // buy order
         if ((lastLocal > offsetForBuy) && (lastLocal < TMAbands_downL))

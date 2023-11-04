@@ -16,7 +16,7 @@ bool buyOnBand(double TMAbands_downL,
                double stoplossCrossL,
                bool IsCrossOrder,
                bool IsMainOrder,
-               bool TimeBlockadeAfterSL)
+               bool TimeBlockadeCross)
 {
 
     datetime time = iTime(_Symbol, PERIOD_M1, 0);
@@ -57,7 +57,7 @@ bool buyOnBand(double TMAbands_downL,
     }
 
     // OPEN POSITION
-    if (!IsCrossOrder  && !TimeBlockadeAfterSL)
+    if (!IsCrossOrder  && !TimeBlockadeCross)
     {
         // buy order when no mainOrder
         if ((lastLocal < TMAbands_downL) && (type_positionL != "LONG") && (!IsMainOrder))

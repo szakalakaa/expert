@@ -57,7 +57,7 @@ private:
   CLabel openPosMagicLabel;
   CLabel isMainOrderLabel;
   CLabel isCrossOrderLabel;
-  CLabel timeBlockadeAfterSLLabel;
+  CLabel timeBlockadeCrossLabel;
   CLabel stopLossWasSchiftedLabel;
 
   CButton crossBlockadeFlagButton;
@@ -109,16 +109,21 @@ bool CGraphicalPanel::Oninit(void)
 
 void CGraphicalPanel::Update(void)
 {
-  if (timeBlockadeAfterSL)
-    timeBlockadeAfterSLLabel.Color(clrLightSkyBlue);
-  else if (!timeBlockadeAfterSL)
-    timeBlockadeAfterSLLabel.Color(clrLightCoral);
-  timeBlockadeAfterSLLabel.Text("timeBlockadeAfterSL: " + (string)(remainMinutes));
+  if (timeBlockadeCross)
+    timeBlockadeCrossLabel.Color(clrLightSkyBlue);
+  else if (!timeBlockadeCross)
+    timeBlockadeCrossLabel.Color(clrLightCoral);
+  timeBlockadeCrossLabel.Text("timeBlockadeCross: " + (string)(remainMinutes));
 
   if (stopLossWasSchifted)
     stopLossWasSchiftedLabel.Color(clrLightSkyBlue);
   else if (!stopLossWasSchifted)
-    stopLossWasSchiftedLabel.Color(clrLightCoral);
+    stopLossWasSchiftedLabel.Color(clrMistyRose);
+
+  if (isCrossOrder)
+    isCrossOrderLabel.Color(clrLightSkyBlue);
+  else if (!isCrossOrder)
+    isCrossOrderLabel.Color(clrLightCoral);
 
   type_positionLabel.Text((string)type_position);
   lotsInPositionLabel.Text((string)lotsInPosition);
@@ -127,8 +132,12 @@ void CGraphicalPanel::Update(void)
   PositionSelect(_Symbol);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
 
-  isMainOrderLabel.Text("isMainOrder: " + (string)isMainOrder);
-  isCrossOrderLabel.Text("isCrossOrder: " + (string)isCrossOrder);
+  if (isMainOrder)
+    isMainOrderLabel.Color(clrLightSkyBlue);
+  else if (!isMainOrder)
+    isMainOrderLabel.Color(clrLightCoral);
+
+
 
   return;
 }
@@ -216,22 +225,22 @@ bool CGraphicalPanel::CreatePanel(void)
   this.Add(positionOpenPriceLabel);
 
   isCrossOrderLabel.Create(NULL, "isCrossOrderLabel", 0, 20, 120, 1, 1);
-  isCrossOrderLabel.Text("isCrossOrder: " + (string)isCrossOrder);
+  isCrossOrderLabel.Text("isCrossOrder");
   isCrossOrderLabel.Color(clrWheat);
   isCrossOrderLabel.FontSize(InpPanelFontSize);
   this.Add(isCrossOrderLabel);
 
+  timeBlockadeCrossLabel.Create(NULL, "timeBlockadeCrossLabel", 0, 150, 120, 1, 1);
+  timeBlockadeCrossLabel.Text("timeBlockadeAfterSL: " + (string)remainMinutes);
+  timeBlockadeCrossLabel.Color(clrWheat);
+  timeBlockadeCrossLabel.FontSize(InpPanelFontSize);
+  this.Add(timeBlockadeCrossLabel);
+
   isMainOrderLabel.Create(NULL, "isMainOrderLabel", 0, 20, 140, 1, 1);
-  isMainOrderLabel.Text("isMainOrder: " + (string)isMainOrder);
+  isMainOrderLabel.Text("isMainOrder");
   isMainOrderLabel.Color(clrWheat);
   isMainOrderLabel.FontSize(InpPanelFontSize);
   this.Add(isMainOrderLabel);
-
-  timeBlockadeAfterSLLabel.Create(NULL, "timeBlockadeAfterSLLabel", 0, 20, 160, 1, 1);
-  timeBlockadeAfterSLLabel.Text("timeBlockadeAfterSL: " + (string)remainMinutes);
-  timeBlockadeAfterSLLabel.Color(clrWheat);
-  timeBlockadeAfterSLLabel.FontSize(InpPanelFontSize);
-  this.Add(timeBlockadeAfterSLLabel);
 
   stopLossWasSchiftedLabel.Create(NULL, "stopLossWasSchiftedLabel", 0, 20, 180, 1, 1);
   stopLossWasSchiftedLabel.Text("stopLossWasSchifted");

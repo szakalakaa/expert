@@ -2,7 +2,7 @@ void setTimerBlockadeForOrders(int MinutesToWait,
                                datetime &CurrentTimer,
                                datetime &TimerStart,
                                bool IsMainOrder,
-                               bool &BlockCross,
+                               bool &TimeBlockadeCross,
                                string Type_position,
                                double Ask,
                                double Bid,
@@ -18,23 +18,23 @@ void setTimerBlockadeForOrders(int MinutesToWait,
     if (RemainMinutes < 0)
         RemainMinutes = 0;
 
-    if ((!IsMainOrder) && (!BlockCross))
+    if ((!IsMainOrder) && (!TimeBlockadeCross))
     {
-        if (Type_position == "LONG" && (Ask < (LowerBand - 100)))
+        if (Type_position == "LONG")
         {
             TimerStart = TimeCurrent() + 60 * MinutesToWait;
-            BlockCross = true;
+            TimeBlockadeCross = true;
         }
-        if ((Type_position == "SHORT") && (Bid > (UpperBand + 100)))
+        if ((Type_position == "SHORT"))
         {
             TimerStart = TimeCurrent() + 60 * MinutesToWait; // 60s * 60 min
-            BlockCross = true;
+            TimeBlockadeCross = true;
         }
     }
 
-    if ((CurrentTimer > TimerStart) && (BlockCross))
+    if ((CurrentTimer > TimerStart) && (TimeBlockadeCross))
     {
-        BlockCross = false;
+        TimeBlockadeCross = false;
         TimerStart = 0;
     }
 }
