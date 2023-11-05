@@ -71,7 +71,7 @@ void secondStoploss(CTrade &tradeL)
             }
 
             if (!tradeL.OrderDelete(orderTicket))
-                Print("---ERROR: Order:  " + (string)orderTicket + " was closed ");
+                Print("---ERROR3: Zlecenie:  " + (string)orderTicket + " nie zostalo zamkniete ");
 
             if (!tradeL.SellStop(posVolume, orderHigher, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop orderHigher"))
                 Print("---ERROR: SellStop on the orderHigher price: " + (string)orderHigher);
@@ -98,7 +98,7 @@ void secondStoploss(CTrade &tradeL)
             }
 
             if (!tradeL.OrderDelete(orderTicket))
-                Print("---ERROR: Order: " + (string)orderTicket + " was closed ");
+                Print("---ERROR4: Zlecenie: " + (string)orderTicket + " nie zostalo zamkniete ");
 
             if (!tradeL.BuyStop(posVolume, orderLower, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "BuyStop orderLower"))
                 Print("---ERROR: BuyStop on the orderLower price: " + (string)orderLower);

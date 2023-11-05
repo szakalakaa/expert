@@ -29,7 +29,10 @@ bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, 
             {
                 createObject(time, newSLPrice, 140, clrSkyBlue, "3");
                 if (!Trade.OrderDelete(orderTicket))
-                    Print("---ERROR: Order: " + (string)orderTicket + " was closed ");
+                {
+                    Print("---ERROR1: Zlecenie: " + (string)orderTicket + " nie zostalo zamkniete ");
+                    return false;
+                }
 
                 if (!Trade.SellStop(lotsToSchift, newSLPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop order shifted"))
                     Print("---ERROR: SellStop on the order price: " + (string)newSLPrice);
@@ -52,7 +55,10 @@ bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, 
             {
                 createObject(time, newSLPrice, 140, clrOrangeRed, "3");
                 if (!Trade.OrderDelete(orderTicket))
-                    Print("---ERROR: Order: " + (string)orderTicket + " was closed ");
+                {
+                    Print("---ERROR2: Zlecenie: " + (string)orderTicket + " nie zostalo zamkniete ");
+                    return false;
+                }
 
                 if (!Trade.BuyStop(lotsToSchift, newSLPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "BuyStop order shifted"))
                     Print("---ERROR: BuyStop on the order price: " + (string)newSLPrice);

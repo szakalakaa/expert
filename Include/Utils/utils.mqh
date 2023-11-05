@@ -147,7 +147,7 @@ bool checkInputs(double Stoploss, double StoplossCross,
         return false;
     }
 
-    if (TriggerSLProcent <= 0 || TriggerSLProcent > 1.2)
+    if (TriggerSLProcent <= 0 || TriggerSLProcent > 1.6)
     {
         Alert("TriggerSLProcent <= 0 || TriggerSLProcent > 1.2");
         return false;
@@ -159,7 +159,7 @@ bool checkInputs(double Stoploss, double StoplossCross,
     }
     if (NewSLProcent + 0.2 > TriggerSLProcent)
     {
-        Alert("NewSLProcent < TriggerSLProcent+0.2");
+        Alert("NewSLProcent + 0.2 > TriggerSLProcent");
         return false;
     }
     if (InsureProcentOfAccount < 50 || InsureProcentOfAccount > 99)
