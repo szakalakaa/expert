@@ -138,9 +138,9 @@ void CGraphicalPanel::Update(void)
   else if (!isMainOrder)
     isMainOrderLabel.Color(clrLightCoral);
 
-  if (currentBalance)
+  if (currentBalance > 100)
     currentBalanceLabel.Color(clrLightSkyBlue);
-  else if (!currentBalance)
+  else
     currentBalanceLabel.Color(clrLightCoral);
   currentBalanceLabel.Text((string)currentBalance);
 
@@ -190,7 +190,7 @@ bool CGraphicalPanel::CreatePanel(void)
   main_header.FontSize(InpPanelFontSize);
   this.Add(main_header);
 
-  currentBalanceLabel.Create(NULL, "currentBalanceLabel", 0, (InpPanelWidth - 60), row0, 1, 1);
+  currentBalanceLabel.Create(NULL, "currentBalanceLabel", 0, (InpPanelWidth - 70), row0, 1, 1);
   currentBalanceLabel.Text((string)currentBalance);
   currentBalanceLabel.Color(clrWheat);
   this.Add(currentBalanceLabel);

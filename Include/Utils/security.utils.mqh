@@ -2,7 +2,7 @@ bool accountGuardian(double InitialAccount, double &CurrentAccount, int InsurePr
 {
     CurrentAccount = AccountInfoDouble(ACCOUNT_BALANCE);
 
-    CurrentBalance = 100*CurrentAccount / InitialAccount;
+    CurrentBalance = NormalizeDouble(100 * CurrentAccount / InitialAccount, 2);
 
     if ((InitialAccount * InsureProcentOfAccount / 100) > CurrentAccount)
     {
