@@ -1,5 +1,5 @@
 // INVESTIGATION: SHIFT ORDER DOWN WHEN LAST HITS TRIGGER PRICE   ->tylko main order!
-bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, double Ask, double Bid, double Last, double lotsToSchift, bool &StopLossWasSchifted)
+bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, double Ask, double Bid, double Last, double lotsToSchift, bool &StopLossWasSchifted, int &ShiftAmount)
 {
     if (PositionsTotal())
     {
@@ -37,6 +37,7 @@ bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, 
                 if (!Trade.SellStop(lotsToSchift, newSLPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "SellStop order shifted"))
                     Print("---ERROR: SellStop on the order price: " + (string)newSLPrice);
                 StopLossWasSchifted = true;
+                ShiftAmount += 1;
             }
         }
 
@@ -63,6 +64,7 @@ bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, 
                 if (!Trade.BuyStop(lotsToSchift, newSLPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "BuyStop order shifted"))
                     Print("---ERROR: BuyStop on the order price: " + (string)newSLPrice);
                 StopLossWasSchifted = true;
+                ShiftAmount += 1;
             }
         }
     }

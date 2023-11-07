@@ -57,7 +57,9 @@ private:
   CLabel stopLossWasSchiftedLabel;
   CLabel currentBalanceLabel;
 
-
+  CLabel crossAmountLabel;
+  CLabel mainAmountLabel;
+  CLabel shiftAmountLabel;
 
   // buttons
   CButton m_bChangeColor;
@@ -103,6 +105,11 @@ bool CGraphicalPanel::Oninit(void)
 
 void CGraphicalPanel::Update(void)
 {
+
+  crossAmountLabel.Text("crossAmount:" + (string)crossAmount);
+  mainAmountLabel.Text("mainAmount:  " + (string)mainAmount);
+  shiftAmountLabel.Text("shiftAmount:  " + (string)shiftAmount);
+
   if (timeBlockadeCross)
     timeBlockadeCrossLabel.Color(clrLightSkyBlue);
   else if (!timeBlockadeCross)
@@ -172,34 +179,59 @@ bool CGraphicalPanel::CreatePanel(void)
   // create dialog panel
   this.Create(NULL, "Tie Range EA", 0, 0, 60, InpPanelWidth, InpPanelHeight);
 
-  main_header.Create(NULL, "main_header", 0, 10, 5, 1, 1);
+  int row0 = 5;
+  int row1 = 20;
+  int row2 = 35;
+  int row3 = 50;
+
+  main_header.Create(NULL, "main_header", 0, 10, row0, 1, 1);
   main_header.Text("Inputs:");
   main_header.Color(clrLime);
   main_header.FontSize(InpPanelFontSize);
   this.Add(main_header);
 
-  currentBalanceLabel.Create(NULL, "currentBalanceLabel", 0, (InpPanelWidth-60), 5, 1, 1);
+  currentBalanceLabel.Create(NULL, "currentBalanceLabel", 0, (InpPanelWidth - 60), row0, 1, 1);
   currentBalanceLabel.Text((string)currentBalance);
   currentBalanceLabel.Color(clrWheat);
   this.Add(currentBalanceLabel);
 
-  tma_period.Create(NULL, "tma_period", 0, 10, 20, 1, 1);
+  tma_period.Create(NULL, "tma_period", 0, 10, row1, 1, 1);
   tma_period.Text("tma period:       " + (string)atr_period);
   tma_period.Color(clrWheat);
   tma_period.FontSize(InpPanelFontSize);
   this.Add(tma_period);
 
-  tma_multiplayer.Create(NULL, "tma_multiplayer", 0, 10, 35, 1, 1);
+  tma_multiplayer.Create(NULL, "tma_multiplayer", 0, 10, row2, 1, 1);
   tma_multiplayer.Text("tma multiplayer:  " + (string)atr_multiplier);
   tma_multiplayer.Color(clrWheat);
   tma_multiplayer.FontSize(InpPanelFontSize);
   this.Add(tma_multiplayer);
 
-  stop_loss.Create(NULL, "stoploss", 0, 10, 50, 1, 1);
+  stop_loss.Create(NULL, "stoploss", 0, 10, row3, 1, 1);
   stop_loss.Text("stoploss:         " + (string)stoploss);
   stop_loss.Color(clrWheat);
   stop_loss.FontSize(InpPanelFontSize);
   this.Add(stop_loss);
+
+  int amountX = 250;
+
+  crossAmountLabel.Create(NULL, "crossAmountLabel", 0, amountX, row1, 1, 1);
+  crossAmountLabel.Text("crossAmount:  " + (string)crossAmount);
+  crossAmountLabel.Color(clrWheat);
+  crossAmountLabel.FontSize(InpPanelFontSize);
+  this.Add(crossAmountLabel);
+
+  mainAmountLabel.Create(NULL, "mainAmountLabel", 0, amountX, row2, 1, 1);
+  mainAmountLabel.Text("mainAmount:  " + (string)mainAmount);
+  mainAmountLabel.Color(clrWheat);
+  mainAmountLabel.FontSize(InpPanelFontSize);
+  this.Add(mainAmountLabel);
+
+  shiftAmountLabel.Create(NULL, "shiftAmountLabel", 0, amountX, row3, 1, 1);
+  shiftAmountLabel.Text("shiftAmount:  " + (string)shiftAmount);
+  shiftAmountLabel.Color(clrWheat);
+  shiftAmountLabel.FontSize(InpPanelFontSize);
+  this.Add(shiftAmountLabel);
 
   int posY = 100;
   type_positionLabel.Create(NULL, "type_positionLabel", 0, 10, posY, 1, 1);
@@ -208,19 +240,19 @@ bool CGraphicalPanel::CreatePanel(void)
   type_positionLabel.FontSize(InpPanelFontSize);
   this.Add(type_positionLabel);
 
-  lotsInPositionLabel.Create(NULL, "lotsInPositionLabel", 0, 100, posY, 1, 1);
+  lotsInPositionLabel.Create(NULL, "lotsInPositionLabel", 0, 120, posY, 1, 1);
   lotsInPositionLabel.Text((string)lotsInPosition);
   lotsInPositionLabel.Color(clrWheat);
   lotsInPositionLabel.FontSize(InpPanelFontSize);
   this.Add(lotsInPositionLabel);
 
-  positionOpenPriceLabel.Create(NULL, "positionOpenPriceLabel", 0, 160, posY, 1, 1);
+  positionOpenPriceLabel.Create(NULL, "positionOpenPriceLabel", 0, 180, posY, 1, 1);
   positionOpenPriceLabel.Text((string)positionOpenPrice);
   positionOpenPriceLabel.Color(clrWheat);
   positionOpenPriceLabel.FontSize(InpPanelFontSize);
   this.Add(positionOpenPriceLabel);
 
-  isCrossOrderLabel.Create(NULL, "isCrossOrderLabel", 0, 20, 120, 1, 1);
+  isCrossOrderLabel.Create(NULL, "isCrossOrderLabel", 0, 10, 120, 1, 1);
   isCrossOrderLabel.Text("isCrossOrder");
   isCrossOrderLabel.Color(clrWheat);
   isCrossOrderLabel.FontSize(InpPanelFontSize);
@@ -232,13 +264,13 @@ bool CGraphicalPanel::CreatePanel(void)
   timeBlockadeCrossLabel.FontSize(InpPanelFontSize);
   this.Add(timeBlockadeCrossLabel);
 
-  isMainOrderLabel.Create(NULL, "isMainOrderLabel", 0, 20, 140, 1, 1);
+  isMainOrderLabel.Create(NULL, "isMainOrderLabel", 0, 10, 140, 1, 1);
   isMainOrderLabel.Text("isMainOrder");
   isMainOrderLabel.Color(clrWheat);
   isMainOrderLabel.FontSize(InpPanelFontSize);
   this.Add(isMainOrderLabel);
 
-  stopLossWasSchiftedLabel.Create(NULL, "stopLossWasSchiftedLabel", 0, 20, 180, 1, 1);
+  stopLossWasSchiftedLabel.Create(NULL, "stopLossWasSchiftedLabel", 0, 10, 180, 1, 1);
   stopLossWasSchiftedLabel.Text("stopLossWasSchifted");
   stopLossWasSchiftedLabel.Color(clrWheat);
   stopLossWasSchiftedLabel.FontSize(InpPanelFontSize);

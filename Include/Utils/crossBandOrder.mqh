@@ -16,7 +16,8 @@ bool buyOnBand(double TMAbands_downL,
                double stoplossCrossL,
                bool IsCrossOrder,
                bool IsMainOrder,
-               bool TimeBlockadeCross)
+               bool TimeBlockadeCross,
+               int &CrossAmount)
 {
 
     datetime time = iTime(_Symbol, PERIOD_M1, 0);
@@ -31,6 +32,10 @@ bool buyOnBand(double TMAbands_downL,
                 // jest short to musimy kupic po tej cenie
                 if (!tradeL.Buy(lotsL, NULL, askLocal, 0, 0, "close only cross band short position "))
                     Print("--ERROR 8D close only cross band short position");
+                
+                CrossAmount += 1;
+
+                //TODO: potrzebne?
                 if (OrdersTotal() != 0)
                     if (removeOrderWithValue(tradeL, lotsL))
                     {
@@ -46,6 +51,8 @@ bool buyOnBand(double TMAbands_downL,
             {
                 if (!tradeL.Sell(lotsL, NULL, bidLocal, bidLocal + 50, bidLocal - 60, "close only cross band long position"))
                     Print("--ERROR 8D close only cross band long position");
+                
+                CrossAmount += 1;
                 if (OrdersTotal() != 0)
                     if (removeOrderWithValue(tradeL, lotsL))
                     {
@@ -57,7 +64,7 @@ bool buyOnBand(double TMAbands_downL,
     }
 
     // OPEN POSITION
-    if (!IsCrossOrder  && !TimeBlockadeCross)
+    if (!IsCrossOrder && !TimeBlockadeCross)
     {
         // buy order when no mainOrder
         if ((lastLocal < TMAbands_downL) && (type_positionL != "LONG") && (!IsMainOrder))
@@ -68,6 +75,7 @@ bool buyOnBand(double TMAbands_downL,
             if (!tradeL.SellStop(lotsL, SellStopPriceCross, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss for band cross"))
                 Print("--ERROR 7A on sell stop loss triggered");
 
+            CrossAmount += 1;
             type_positionL = "LONG";
             createObject(time, lastLocal, 140, clrDodgerBlue, "1");
             return true;
@@ -82,6 +90,7 @@ bool buyOnBand(double TMAbands_downL,
             if (!tradeL.SellStop(lotsL, SellStopPriceCross, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss for additional band cross"))
                 Print("--ERROR 734A on sell stop loss triggered add");
 
+            CrossAmount += 1;
             createObject(time, lastLocal, 140, clrDodgerBlue, "1");
             return true;
         }
@@ -93,7 +102,7 @@ bool buyOnBand(double TMAbands_downL,
                 Print("--ERROR 6B sell on band cross");
             if (!tradeL.BuyStop(lotsL, BuyStopPriceCross, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss on band cross"))
                 Print("--ERROR 7B on buy stop loss triggered");
-
+            CrossAmount += 1;
             type_positionL = "SHORT";
             createObject(time, lastLocal, 140, clrIndianRed, "1");
             return true;
@@ -105,7 +114,7 @@ bool buyOnBand(double TMAbands_downL,
                 Print("--ERROR 6B sell on band cross");
             if (!tradeL.BuyStop(lotsL, BuyStopPriceCross, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss on band cross"))
                 Print("--ERROR 7B on buy stop loss triggered");
-
+            CrossAmount += 1;
             type_positionL = "SHORT";
             createObject(time, lastLocal, 140, clrIndianRed, "1");
             return true;
