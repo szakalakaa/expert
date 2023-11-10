@@ -104,8 +104,7 @@ void printValues(string TMA_signalA, double lastA, double orderPriceA, double ba
     }
 }
 
-bool checkInputs(double Stoploss, double StoplossCross,
-                 int Atr_period, double Atr_multiplier,
+bool checkInputs(double Stoploss, double StoplossCross, double StoplossStoch, int Atr_period, double Atr_multiplier,
                  double StochUpper, double kPeriod,
                  double dPeriod, double TriggerSLProcent,
                  double NewSLProcent, int InsureProcentOfAccount)
@@ -121,6 +120,11 @@ bool checkInputs(double Stoploss, double StoplossCross,
         Alert("stoplossCross <= 0 || stoplossCross > 0.04");
         return false;
     }
+    if (StoplossStoch <= 0 || StoplossStoch > 0.04)
+    {
+        Alert("StoplossStoch <= 0 || StoplossStoch > 0.04");
+        return false;
+    }
     if (Atr_period > 300 || Atr_period < 100)
     {
         Alert("atr_period > 300 || atr_period < 100");
@@ -131,9 +135,9 @@ bool checkInputs(double Stoploss, double StoplossCross,
         Alert("atr_multiplier > 3 || atr_multiplier < 0.5");
         return false;
     }
-    if (StochUpper > 90 || StochUpper < 10)
+    if (StochUpper > 95 || StochUpper < 5)
     {
-        Alert("stochUpper > 90 || stochUpper < 10");
+        Alert("stochUpper > 95 || stochUpper < 5");
         return false;
     }
     if (kPeriod > 25 || kPeriod < 2)

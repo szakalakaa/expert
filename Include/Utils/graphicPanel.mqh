@@ -60,6 +60,7 @@ private:
   CLabel crossAmountLabel;
   CLabel mainAmountLabel;
   CLabel shiftAmountLabel;
+  CLabel stochAmountLabel;
 
   // buttons
   CButton m_bChangeColor;
@@ -109,6 +110,7 @@ void CGraphicalPanel::Update(void)
   crossAmountLabel.Text("crossAmount:" + (string)crossAmount);
   mainAmountLabel.Text("mainAmount:  " + (string)mainAmount);
   shiftAmountLabel.Text("shiftAmount:  " + (string)shiftAmount);
+  stochAmountLabel.Text("stochAmount:  " + (string)stochAmount);
 
   if (timeBlockadeCross)
     timeBlockadeCrossLabel.Color(clrLightSkyBlue);
@@ -183,6 +185,7 @@ bool CGraphicalPanel::CreatePanel(void)
   int row1 = 20;
   int row2 = 35;
   int row3 = 50;
+  int row4 = 65;
 
   main_header.Create(NULL, "main_header", 0, 10, row0, 1, 1);
   main_header.Text("Inputs:");
@@ -232,6 +235,12 @@ bool CGraphicalPanel::CreatePanel(void)
   shiftAmountLabel.Color(clrWheat);
   shiftAmountLabel.FontSize(InpPanelFontSize);
   this.Add(shiftAmountLabel);
+
+  stochAmountLabel.Create(NULL, "stochAmountLabel", 0, amountX, row4, 1, 1);
+  stochAmountLabel.Text("stochAmount:  " + (string)stochAmount);
+  stochAmountLabel.Color(clrWheat);
+  stochAmountLabel.FontSize(InpPanelFontSize);
+  this.Add(stochAmountLabel);
 
   int posY = 100;
   type_positionLabel.Create(NULL, "type_positionLabel", 0, 10, posY, 1, 1);
