@@ -34,10 +34,6 @@ bool stochOrder(double &kPeriod[],
                 double SellStopPriceStoch,
                 double BuyStopPriceStoch,
                 string &type_positionL,
-
-                // double StoplossStoch,
-                // bool IsCrossOrder,
-                // bool IsMainOrder,
                 int &StochAmount)
 {
     datetime time = iTime(_Symbol, PERIOD_M1, 0);
@@ -52,11 +48,11 @@ bool stochOrder(double &kPeriod[],
     }
 
     // BUY STOCH
-    if (IsMainOrder && type_positionL=="LONG")
+    if (IsMainOrder)
     {
         if (kPeriod[0] < StochLower && dPeriod[0] < StochLower && kPeriod[0] > dPeriod[0] && kPeriod[1] < dPeriod[1])   //cross d and p under stochlower
         {
-            if (Last > lastCandleClose)
+            if (Last > lastCandleClose && type_positionL=="LONG")
             {
                 // OPEN
                 if (!IsStochOrder)
@@ -67,8 +63,7 @@ bool stochOrder(double &kPeriod[],
                     if (!Trade.SellStop(LotsStoch, SellStopPriceStoch, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop stoch"))
                         Print("--ERROR 62A on sell stop loss stoch triggered");
                     StochAmount += 1;
-                    createObject(time, Last, 141, clrGreen, "1");                    
-                    type_positionL = "LONG";
+                    createObject(time, Last, 141, clrGreen, "1"); 
                     return true;
                 }
                 // CLOSE
@@ -87,11 +82,11 @@ bool stochOrder(double &kPeriod[],
     }
 
     // SELL STOCH
-    if (IsMainOrder && type_positionL=="SHORT")
+    if (IsMainOrder)
     {
         if (kPeriod[0] > StochUpper && dPeriod[0] > StochUpper && kPeriod[0] < dPeriod[0] && kPeriod[1] > dPeriod[1])
         {
-            if (Last < lastCandleClose)
+            if (Last < lastCandleClose  && type_positionL=="SHORT")
             {
                 // OPEN
                 if (!IsStochOrder)

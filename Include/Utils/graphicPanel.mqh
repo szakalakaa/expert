@@ -53,6 +53,7 @@ private:
 
   CLabel isMainOrderLabel;
   CLabel isCrossOrderLabel;
+  CLabel isStochOrderLabel;
   CLabel timeBlockadeCrossLabel;
   CLabel stopLossWasSchiftedLabel;
   CLabel currentBalanceLabel;
@@ -128,17 +129,22 @@ void CGraphicalPanel::Update(void)
   else if (!isCrossOrder)
     isCrossOrderLabel.Color(clrLightCoral);
 
+  if (isStochOrder)
+    isStochOrderLabel.Color(clrLightSkyBlue);
+  else if (!isStochOrder)
+    isStochOrderLabel.Color(clrLightCoral);
+
+  if (isMainOrder)
+    isMainOrderLabel.Color(clrLightSkyBlue);
+  else if (!isMainOrder)
+    isMainOrderLabel.Color(clrLightCoral);
+
   type_positionLabel.Text((string)type_position);
   lotsInPositionLabel.Text((string)lotsInPosition);
   positionOpenPriceLabel.Text((string)positionOpenPrice);
 
   PositionSelect(_Symbol);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
-
-  if (isMainOrder)
-    isMainOrderLabel.Color(clrLightSkyBlue);
-  else if (!isMainOrder)
-    isMainOrderLabel.Color(clrLightCoral);
 
   if (currentBalance > 100)
     currentBalanceLabel.Color(clrLightSkyBlue);
@@ -273,7 +279,13 @@ bool CGraphicalPanel::CreatePanel(void)
   timeBlockadeCrossLabel.FontSize(InpPanelFontSize);
   this.Add(timeBlockadeCrossLabel);
 
-  isMainOrderLabel.Create(NULL, "isMainOrderLabel", 0, 10, 140, 1, 1);
+  isStochOrderLabel.Create(NULL, "isStochOrderLabel", 0, 10, 140, 1, 1);
+  isStochOrderLabel.Text("isStochOrder");
+  isStochOrderLabel.Color(clrWheat);
+  isStochOrderLabel.FontSize(InpPanelFontSize);
+  this.Add(isStochOrderLabel);
+
+  isMainOrderLabel.Create(NULL, "isMainOrderLabel", 0, 10, 160, 1, 1);
   isMainOrderLabel.Text("isMainOrder");
   isMainOrderLabel.Color(clrWheat);
   isMainOrderLabel.FontSize(InpPanelFontSize);
