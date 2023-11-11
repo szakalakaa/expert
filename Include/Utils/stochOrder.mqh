@@ -50,7 +50,7 @@ bool stochOrder(double &kPeriod[],
     // BUY STOCH
     if (IsMainOrder)
     {
-        if (kPeriod[0] < StochLower && dPeriod[0] < StochLower && kPeriod[0] > dPeriod[0] && kPeriod[1] < dPeriod[1])   //cross d and p under stochlower
+        if (kPeriod[0] < StochLower && dPeriod[0] < StochLower && kPeriod[0] > dPeriod[0] && kPeriod[1] < dPeriod[1]) // cross d and p under stochlower
         {
             if (Last > lastCandleClose && type_positionL=="LONG")
             {

@@ -32,8 +32,14 @@ bool mainOrder(double TMAbands_downL,
         {
             if (type_positionL == "SHORT")
             {
-                tradeL.PositionClose(PositionGetTicket(0));
-                removeAllOrders(tradeL);
+                // tradeL.PositionClose(PositionGetTicket(0));
+                // removeAllOrders(tradeL);
+                if (!tradeL.Buy(lotsL, NULL, askLocal, 0, 0, "close only main short position "))
+                    Print("--ERROR 9D close only main short position");
+                if (OrdersTotal() != 0)
+                {
+                    removeAllOrders(tradeL);
+                }
                 MainAmount += 1;
                 StopLossWasSchifted = false;
                 type_positionL = "LONG";
@@ -45,8 +51,14 @@ bool mainOrder(double TMAbands_downL,
         {
             if (type_positionL == "LONG")
             {
-                tradeL.PositionClose(PositionGetTicket(0));
-                removeAllOrders(tradeL);
+                // tradeL.PositionClose(PositionGetTicket(0));
+                // removeAllOrders(tradeL);
+                if (!tradeL.Sell(lotsL, NULL, bidLocal, 0, 0, "close only main long position"))
+                    Print("--ERROR 8D close only main long position");
+                if (OrdersTotal() != 0)
+                {
+                    removeAllOrders(tradeL);
+                }
                 MainAmount += 1;
                 StopLossWasSchifted = false;
                 type_positionL = "SHORT";
@@ -60,7 +72,7 @@ bool mainOrder(double TMAbands_downL,
         // buy order
         if ((lastLocal > offsetForBuy) && (lastLocal < TMAbands_downL))
         {
-            removeAllOrders(tradeL);
+            // removeAllOrders(tradeL);
             if (!tradeL.Buy(lotsL, NULL, askLocal, 0, 0, "buy main"))
                 Print("--ERROR 33A buy main");
 
@@ -73,7 +85,7 @@ bool mainOrder(double TMAbands_downL,
         // sell order
         if ((lastLocal < offsetForSell) && (lastLocal > TMAbands_upL))
         {
-            removeAllOrders(tradeL);
+            // removeAllOrders(tradeL);
             if (!tradeL.Sell(lotsL, NULL, bidLocal, 0, 0, "sell main"))
                 Print("--ERROR 35B sell main");
             if (!tradeL.BuyStop(lotsL, BuyStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss main"))
