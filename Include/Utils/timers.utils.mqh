@@ -1,7 +1,8 @@
 void setTimerBlockadeForOrders(int MinutesToWait,
-                               datetime &CurrentTimer,
+                               datetime CurrentTimer,
                                datetime &TimerStart,
                                bool IsMainOrder,
+                               bool IsCrossOrder,
                                bool &TimeBlockadeCross,
                                string Type_position,
                                double Last,
@@ -12,7 +13,7 @@ void setTimerBlockadeForOrders(int MinutesToWait,
                                int &RemainMinutes)
 {
 
-    CurrentTimer = TimeCurrent();
+
     datetime time = iTime(_Symbol, PERIOD_M1, 0);
 
     // calculating remain time
@@ -20,7 +21,7 @@ void setTimerBlockadeForOrders(int MinutesToWait,
     if (RemainMinutes < 0)
         RemainMinutes = 0;
 
-    if ((!IsMainOrder) && (!TimeBlockadeCross) && (!isBetweenBands(Last, LowerBand, UpperBand)))
+    if ((!IsMainOrder) && (!IsCrossOrder) && (!TimeBlockadeCross))
     {
         if (Type_position == "LONG")
         {

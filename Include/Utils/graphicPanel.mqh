@@ -31,8 +31,9 @@
 static int InpPanelWidth = 600;               // width in pixel
 static int InpPanelHeight = 360;              // height in pixel
 static int InpPanelFontSize = 10;             // width in pixel
+static int ButtonFontSize = 10;               // width in pixel
 static int InpPanelTextColor = clrWhiteSmoke; // text clr
-static int btnSize = 100;
+static int btnSize = 50;
 //+------------------------------------------------------------------+
 //| Class CGraphicalPanel                                                                  |
 //+------------------------------------------------------------------+
@@ -65,6 +66,9 @@ private:
 
   // buttons
   CButton resetTimer;
+  CButton setTimer;
+  CButton startExpertButton;
+  CButton stopExpertButton;
 
   // private methods
   bool CheckInputs();
@@ -296,13 +300,48 @@ bool CGraphicalPanel::CreatePanel(void)
   stopLossWasSchiftedLabel.FontSize(InpPanelFontSize);
   this.Add(stopLossWasSchiftedLabel);
 
-  int yButton = 210;
+  int btnHeight = 30;
+  int btnWidth = 100;
+  int btnYRow = 210;
   int xBut1 = 10;
+  int yBut1 = btnYRow;
 
-  resetTimer.Create(NULL, "resetTimer", 0, xBut1, yButton, xBut1 + btnSize, yButton + btnSize);
-  resetTimer.Color(clrBlue);
+  resetTimer.Create(NULL, "resetTimer", 0, xBut1, yBut1, xBut1 + btnWidth, yBut1 + btnHeight);
+  resetTimer.Color(clrBlack);
+  ObjectSetInteger(NULL, "resetTimer", OBJPROP_BGCOLOR, clrSeaGreen);
   resetTimer.Text("Reset timer");
+  resetTimer.FontSize(ButtonFontSize);
   this.Add(resetTimer);
+
+  int xBut2 = 120;
+  int yBut2 = btnYRow;
+
+  setTimer.Create(NULL, "setTimer", 0, xBut2, yBut2, xBut2 + btnWidth, yBut2 + btnHeight);
+  setTimer.Color(clrBlack);
+  ObjectSetInteger(NULL, "setTimer", OBJPROP_BGCOLOR, clrLightBlue);
+  setTimer.Text("Set timer");
+  setTimer.FontSize(ButtonFontSize);
+  this.Add(setTimer);
+
+  int xBut3 = InpPanelWidth - 230;
+  int yBut3 = btnYRow;
+
+  startExpertButton.Create(NULL, "startExpertButton", 0, xBut3, yBut3, xBut3 + btnWidth, yBut3 + btnHeight);
+  startExpertButton.Color(clrBlack);
+  ObjectSetInteger(NULL, "startExpertButton", OBJPROP_BGCOLOR, clrSkyBlue);
+  startExpertButton.Text("Start expert");
+  startExpertButton.FontSize(ButtonFontSize);
+  this.Add(startExpertButton);
+
+  int xBut4 = InpPanelWidth - 120;
+  int yBut4 = btnYRow;
+
+  stopExpertButton.Create(NULL, "stopExpertButton", 0, xBut4, yBut4, xBut4 + btnWidth, yBut4 + btnHeight);
+  stopExpertButton.Color(clrBlack);
+  ObjectSetInteger(NULL, "stopExpertButton", OBJPROP_BGCOLOR, clrTomato);
+  stopExpertButton.Text("Stop expert");
+  stopExpertButton.FontSize(ButtonFontSize);
+  this.Add(stopExpertButton);
 
   valueLabel.Create(NULL, "valueLabel", 0, 10, InpPanelHeight - 80, 1, 1);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
@@ -332,3 +371,40 @@ void CGraphicalPanel::PanelChartEvent(const int id, const long &lparam, const do
 //+------------------------------------------------------------------+
 
 
+void OnChartEvent(const int id,         // Event identifier
+                  const long &lparam,   // Event parameter of long type
+                  const double &dparam, // Event parameter of double type
+                  const string &sparam  // Event parameter of string type
+)
+{
+
+    if (id == CHARTEVENT_OBJECT_CLICK)
+    {
+
+        if (sparam == "resetTimer")
+        {
+            Print(">>>>  resetTimer clicked!");
+            timerStart = 0;
+            timeBlockadeCross = false;
+            createObject(currentTimer, last, 231, clrOrange, "73");
+        }
+
+        if (sparam == "setTimer")
+        {
+            Print(">>>>  setTimer clicked!");
+            timerStart = TimeCurrent() + 60 * 60; // 60 s / 60 min
+            timeBlockadeCross = true;
+            createObject(currentTimer, last, 232, clrDarkGray, "2");
+        }
+        if (sparam == "startExpertButton")
+        {
+            Print(">>>>  startExpert clicked!");
+            stopExpert = false;
+        }
+        if (sparam == "stopExpertButton")
+        {
+            Print(">>>>  stopExpert clicked!");
+            stopExpert = true;
+        }
+    }
+}
