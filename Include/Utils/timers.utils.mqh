@@ -20,7 +20,7 @@ void setTimerBlockadeForOrders(int MinutesToWait,
     if (RemainMinutes < 0)
         RemainMinutes = 0;
 
-    if ((!IsMainOrder) && (!TimeBlockadeCross))
+    if ((!IsMainOrder) && (!TimeBlockadeCross) && (!isBetweenBands(Last, LowerBand, UpperBand)))
     {
         if (Type_position == "LONG")
         {

@@ -196,14 +196,11 @@ bool removeOrderWithValue(CTrade &tradeClass, double lotsToRemove)
 
 void removeAllOrders(CTrade &tradeLL)
 {
-    if (OrdersTotal() != 0)
+    ulong ticket = 0;
+    for (int i = 0; i < OrdersTotal(); i++)
     {
-        ulong ticket = 0;
-        for (int i = 0; i < OrdersTotal(); i++)
-        {
-            Print("Order ", i, "deleted!");
-            if (!tradeLL.OrderDelete(OrderGetTicket(i)))
-                Print("--ERROR 9");
-        }
+        Print("-----Order ", i, "deleted! ----  ", OrderGetTicket(i));
+        if (!tradeLL.OrderDelete(OrderGetTicket(i)))
+            Print("--ERROR 9");
     }
 }

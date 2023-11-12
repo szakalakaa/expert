@@ -22,88 +22,6 @@ void getTypePosition(string &Type_position, double &LotsInPosition, double &Posi
     }
 }
 
-void getMagicFromOpenPosition(long &OpenPosMagic)
-{
-    if (PositionsTotal())
-    {
-        PositionGetTicket(0);
-
-        if (!PositionGetInteger(POSITION_MAGIC, OpenPosMagic))
-        {
-            Print("Failed to get magic from open position ");
-        }
-    }
-}
-
-bool countOpenPositions(int &countBuy, int &conutSell)
-{
-    countBuy = 0;
-    conutSell = 0;
-    int inpMagicFake = 5;
-    int total = PositionsTotal();
-    for (int i = total - 1; i >= 0; i--)
-    {
-        ulong positionTicket = PositionGetTicket(i);
-        if (positionTicket <= 0)
-        {
-            Print("Failed to get ticket");
-            return false;
-        }
-        if (!PositionSelectByTicket(positionTicket))
-        {
-            Print("Failed to select position");
-            return false;
-        }
-        long magic;
-        if (!PositionGetInteger(POSITION_MAGIC, magic))
-        {
-            Print("Failed to get magic ");
-            return false;
-        }
-        if (magic == inpMagicFake)
-        {
-            long type;
-            if (!PositionGetInteger(POSITION_TYPE, type))
-            {
-                Print("Failed to get type ");
-                return false;
-            }
-            if (type == POSITION_TYPE_BUY)
-            {
-                countBuy++;
-            }
-            if (type == POSITION_TYPE_SELL)
-            {
-                conutSell++;
-            }
-        }
-    }
-
-    return true;
-}
-
-void printValues(string TMA_signalA, double lastA, double orderPriceA, double bandA, double candleClose, double offsetPriceA)
-{
-    if (TMA_signalA == "buy")
-    {
-        Print(" *TMA_signal: " + (string)TMA_signalA);
-        Print("   last: " + (string)lastA);
-        Print("   ask: " + (string)orderPriceA);
-        Print("   TMAbands_down[0]: " + (string)bandA);
-        Print("   candle[1].close: " + (string)candleClose);
-        Print("   offsetForBuy: " + (string)offsetPriceA);
-    }
-    if (TMA_signalA == "sell")
-    {
-        Print(" *TMA_signal: " + (string)TMA_signalA);
-        Print("   last: " + (string)lastA);
-        Print("   bid: " + (string)orderPriceA);
-        Print("   TMAbands_up[0]: " + (string)bandA);
-        Print("   candle[1].close: " + (string)candleClose);
-        Print("   offsetForSell: " + (string)offsetPriceA);
-    }
-}
-
 bool checkInputs(double Stoploss, double StoplossCross, double StoplossStoch, int Atr_period, double Atr_multiplier,
                  double StochUpper, double kPeriod,
                  double dPeriod, double TriggerSLProcent,
@@ -174,15 +92,6 @@ bool checkInputs(double Stoploss, double StoplossCross, double StoplossStoch, in
     return true;
 }
 
-void printTime()
-{
-    MqlDateTime t;
-    TimeToStruct(iTime(_Symbol, PERIOD_M1, 0), t);
-    t.hour = t.hour + 2;
-    datetime time = StructToTime(t);
-    Print("time: ", time);
-}
-
 bool NormalizePrice(double price, double &normalizedPrice)
 {
     double tickSize = 0;
@@ -216,17 +125,6 @@ bool shouldProcess(ENUM_TIMEFRAMES ProcessPeriod)
     return false;
 }
 
-string getTmaSignal(double lastL, double TMAbands_downL, double TMAbands_upL, string type_positionL)
-{
-    if ((lastL < TMAbands_downL) && (type_positionL != "LONG"))
-        return "buy";
-
-    if ((lastL > TMAbands_upL) && (type_positionL != "SHORT"))
-        return "sell";
-    else
-        return "";
-}
-
 // F1->Wingdings  kody ikon
 void createObject(datetime time, double price, int iconCode, color clr, string txt)
 {
@@ -242,22 +140,10 @@ void createObject(datetime time, double price, int iconCode, color clr, string t
         Print("createObject went wrong!");
 }
 
-void findOpenPosition(string &type_positionL)
+bool isBetweenBands(double Price, double Lower, double Upper)
 {
-    if (PositionsTotal())
-        PositionSelect(_Symbol);
-    {
-        if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
-            type_positionL = "LONG";
-
-        if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
-            type_positionL = "SHORT";
-    }
-}
-
-double getLots(double lastL, double levarL)
-{
-    double lotsTotal = NormalizeDouble((levarL * 0.95 * AccountInfoDouble(ACCOUNT_BALANCE) / lastL), 4);
-    double lotsConverted = lotsTotal - NormalizeDouble(MathMod(lotsTotal, 0.0004), 4);
-    return NormalizeDouble(lotsConverted, 4);
+    if (Price <= Upper && Price >= Lower)
+        return true;
+    else
+        return false;
 }

@@ -32,7 +32,7 @@ static int InpPanelWidth = 600;               // width in pixel
 static int InpPanelHeight = 360;              // height in pixel
 static int InpPanelFontSize = 10;             // width in pixel
 static int InpPanelTextColor = clrWhiteSmoke; // text clr
-static int btnSize = 10;
+static int btnSize = 100;
 //+------------------------------------------------------------------+
 //| Class CGraphicalPanel                                                                  |
 //+------------------------------------------------------------------+
@@ -64,8 +64,7 @@ private:
   CLabel stochAmountLabel;
 
   // buttons
-  CButton m_bChangeColor;
-  CButton b1;
+  CButton resetTimer;
 
   // private methods
   bool CheckInputs();
@@ -300,9 +299,10 @@ bool CGraphicalPanel::CreatePanel(void)
   int yButton = 210;
   int xBut1 = 10;
 
-  b1.Create(NULL, "b1", 0, xBut1, yButton, xBut1 + btnSize, yButton + btnSize);
-  b1.Color(clrAquamarine);
-  this.Add(b1);
+  resetTimer.Create(NULL, "resetTimer", 0, xBut1, yButton, xBut1 + btnSize, yButton + btnSize);
+  resetTimer.Color(clrBlue);
+  resetTimer.Text("Reset timer");
+  this.Add(resetTimer);
 
   valueLabel.Create(NULL, "valueLabel", 0, 10, InpPanelHeight - 80, 1, 1);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
@@ -330,3 +330,5 @@ void CGraphicalPanel::PanelChartEvent(const int id, const long &lparam, const do
   ChartEvent(id, lparam, dparam, sparam);
 }
 //+------------------------------------------------------------------+
+
+

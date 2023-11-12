@@ -13,10 +13,10 @@ bool mainOrder(double TMAbands_downL,
                CTrade &tradeL,
                double lotsL,
                double stoplossL,
-               // new then crossBandOrder
                double orderOffset,
                double lastCandleClose,
                bool IsMainOrder,
+               bool IsStochOrder,
                bool &StopLossWasSchifted,
                int &MainAmount)
 {
@@ -32,17 +32,10 @@ bool mainOrder(double TMAbands_downL,
         {
             if (type_positionL == "SHORT")
             {
-                // tradeL.PositionClose(PositionGetTicket(0));
-                // removeAllOrders(tradeL);
-                if (!tradeL.Buy(lotsL, NULL, askLocal, 0, 0, "close only main short position "))
-                    Print("--ERROR 9D close only main short position");
-                if (OrdersTotal() != 0)
-                {
-                    removeAllOrders(tradeL);
-                }
-                MainAmount += 1;
+                tradeL.PositionClose(PositionGetTicket(0));
+                removeAllOrders(tradeL);
+                removeOrderWithValue(tradeL,lotsL);
                 StopLossWasSchifted = false;
-                type_positionL = "LONG";
             }
             return true;
         }
@@ -51,17 +44,10 @@ bool mainOrder(double TMAbands_downL,
         {
             if (type_positionL == "LONG")
             {
-                // tradeL.PositionClose(PositionGetTicket(0));
-                // removeAllOrders(tradeL);
-                if (!tradeL.Sell(lotsL, NULL, bidLocal, 0, 0, "close only main long position"))
-                    Print("--ERROR 8D close only main long position");
-                if (OrdersTotal() != 0)
-                {
-                    removeAllOrders(tradeL);
-                }
-                MainAmount += 1;
+                tradeL.PositionClose(PositionGetTicket(0));
+                removeAllOrders(tradeL);
+                removeOrderWithValue(tradeL,lotsL);
                 StopLossWasSchifted = false;
-                type_positionL = "SHORT";
             }
         }
     }
