@@ -46,7 +46,7 @@ bool stochOrder(double &kPeriod[],
     {
         return false;
     }
-
+//TODO nie moze sie skasowac order jak nie ma maina
     // BUY STOCH
     if (IsMainOrder)
     {
