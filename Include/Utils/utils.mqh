@@ -140,7 +140,7 @@ void createObject(datetime time, double price, int iconCode, color clr, string t
         Print("createObject went wrong!");
 }
 
-bool isBetweenBands(double Price, double Lower, double Upper)
+bool getIsBetweenBands(double Price, double Lower, double Upper)
 {
     if (Price <= Upper && Price >= Lower)
         return true;

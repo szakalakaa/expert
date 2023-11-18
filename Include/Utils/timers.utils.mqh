@@ -10,9 +10,9 @@ void setTimerBlockadeForOrders(int MinutesToWait,
                                double Bid,
                                double LowerBand,
                                double UpperBand,
-                               int &RemainMinutes)
+                               int &RemainMinutes,
+                               double IsBetweenBands)
 {
-
 
     datetime time = iTime(_Symbol, PERIOD_M1, 0);
 
@@ -21,7 +21,7 @@ void setTimerBlockadeForOrders(int MinutesToWait,
     if (RemainMinutes < 0)
         RemainMinutes = 0;
 
-    if ((!IsMainOrder) && (!IsCrossOrder) && (!TimeBlockadeCross))
+    if ((!IsMainOrder) && (!IsCrossOrder) && (!TimeBlockadeCross) && (!IsBetweenBands))
     {
         if (Type_position == "LONG")
         {

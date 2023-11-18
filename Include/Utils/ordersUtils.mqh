@@ -1,7 +1,14 @@
 // INVESTIGATION: SHIFT ORDER DOWN WHEN LAST HITS TRIGGER PRICE   ->tylko main order!
-bool shiftStoploss(CTrade &Trade, double TriggerSLProcent, double NewSLProcent, double Ask, double Bid, double Last, double lotsToSchift, bool &StopLossWasSchifted, int &ShiftAmount)
+bool shiftStoploss(CTrade &Trade,
+                   double TriggerSLProcent,
+                   double NewSLProcent,
+                   double Ask, double Bid, double Last,
+                   double lotsToSchift,
+                   bool &StopLossWasSchifted,
+                   int &ShiftAmount,
+                   bool IsMainOrder)
 {
-    if (PositionsTotal())
+    if (PositionsTotal() && IsMainOrder)
     {
         PositionGetSymbol(0);
         positionOpenPrice = NormalizeDouble(PositionGetDouble(POSITION_PRICE_OPEN), 0);

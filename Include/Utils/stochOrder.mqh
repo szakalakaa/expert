@@ -46,72 +46,66 @@ bool stochOrder(double &kPeriod[],
     {
         return false;
     }
-//TODO nie moze sie skasowac order jak nie ma maina
-    // BUY STOCH
-    if (IsMainOrder)
+    //  BUY STOCH
+
+    if (kPeriod[0] < StochLower && dPeriod[0] < StochLower && kPeriod[0] > dPeriod[0] && kPeriod[1] < dPeriod[1]) // cross d and p under stochlower
     {
-        if (kPeriod[0] < StochLower && dPeriod[0] < StochLower && kPeriod[0] > dPeriod[0] && kPeriod[1] < dPeriod[1]) // cross d and p under stochlower
+        if (Last > lastCandleClose && type_positionL == "LONG")
         {
-            if (Last > lastCandleClose && type_positionL=="LONG")
+            // OPEN
+            if (!IsStochOrder && IsMainOrder)
             {
-                // OPEN
-                if (!IsStochOrder)
-                {
-                    if (!Trade.Buy(LotsStoch, NULL, Ask, 0, 0, "buy stoch"))
-                        Print("--ERROR 52A buy stoch");
+                if (!Trade.Buy(LotsStoch, NULL, Ask, 0, 0, "buy stoch"))
+                    Print("--ERROR 52A buy stoch");
 
-                    if (!Trade.SellStop(LotsStoch, SellStopPriceStoch, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop stoch"))
-                        Print("--ERROR 62A on sell stop loss stoch triggered");
-                    StochAmount += 1;
-                    createObject(time, Last, 141, clrGreen, "1"); 
-                    return true;
-                }
-                // CLOSE
-                if (IsStochOrder && type_positionL != "LONG")
-                {
-                    Trade.PositionClose(PositionGetTicket(0));
+                if (!Trade.SellStop(LotsStoch, SellStopPriceStoch, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop stoch"))
+                    Print("--ERROR 62A on sell stop loss stoch triggered");
+                StochAmount += 1;
+                createObject(time, Last, 141, clrGreen, "1");
+                return true;
+            }
+            // CLOSE
+            if (IsStochOrder && type_positionL != "LONG")
+            {
+                Trade.PositionClose(PositionGetTicket(0));
 
-                    if (OrdersTotal() != 0)
-                    {
-                        removeAllOrders(Trade);
-                    }
-                    return true;
+                if (OrdersTotal() != 0)
+                {
+                    removeAllOrders(Trade);
                 }
+                return true;
             }
         }
     }
 
     // SELL STOCH
-    if (IsMainOrder)
+    if (kPeriod[0] > StochUpper && dPeriod[0] > StochUpper && kPeriod[0] < dPeriod[0] && kPeriod[1] > dPeriod[1])
     {
-        if (kPeriod[0] > StochUpper && dPeriod[0] > StochUpper && kPeriod[0] < dPeriod[0] && kPeriod[1] > dPeriod[1])
+        if (Last < lastCandleClose && type_positionL == "SHORT")
         {
-            if (Last < lastCandleClose  && type_positionL=="SHORT")
+            // OPEN
+            if (!IsStochOrder && IsMainOrder)
             {
-                // OPEN
-                if (!IsStochOrder)
-                {
-                    if (!Trade.Sell(LotsStoch, NULL, Bid, 0, 0, "sell stoch"))
-                        Print("--ERROR 52S sell stoch");
+                if (!Trade.Sell(LotsStoch, NULL, Bid, 0, 0, "sell stoch"))
+                    Print("--ERROR 52S sell stoch");
 
-                    if (!Trade.BuyStop(LotsStoch, BuyStopPriceStoch, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop stoch"))
-                        Print("--ERROR 62A on sell stop loss stoch triggered");
+                if (!Trade.BuyStop(LotsStoch, BuyStopPriceStoch, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop stoch"))
+                    Print("--ERROR 62A on sell stop loss stoch triggered");
 
-                    StochAmount += 1;
-                    createObject(time, Last, 141, clrGreen, "1");
-                    type_positionL = "SHORT";
-                    return true;
-                }
-                // CLOSE
-                if (IsStochOrder && type_positionL != "SHORT")
+                StochAmount += 1;
+                createObject(time, Last, 141, clrGreen, "1");
+                type_positionL = "SHORT";
+                return true;
+            }
+            // CLOSE
+            if (IsStochOrder && type_positionL != "SHORT")
+            {
+                Trade.PositionClose(PositionGetTicket(0));
+                if (OrdersTotal() != 0)
                 {
-                    Trade.PositionClose(PositionGetTicket(0));
-                    if (OrdersTotal() != 0)
-                    {
-                        removeAllOrders(Trade);
-                    }
-                    return true;
+                    removeAllOrders(Trade);
                 }
+                return true;
             }
         }
     }
