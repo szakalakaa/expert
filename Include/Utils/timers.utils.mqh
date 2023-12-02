@@ -1,46 +1,24 @@
-void setTimerBlockadeForOrders(int MinutesToWait,
-                               datetime CurrentTimer,
-                               datetime &TimerStart,
-                               bool IsMainOrder,
-                               bool IsCrossOrder,
-                               bool &TimeBlockadeCross,
-                               string Type_position,
-                               double Last,
-                               double Ask,
-                               double Bid,
-                               double LowerBand,
-                               double UpperBand,
+bool setTimerBlockadeForOrders(int MinutesToWait,
                                int &RemainMinutes,
-                               double IsBetweenBands)
+                               string BuyComment,
+                               string SellComment)
+
 {
+    bool shouldBlockCross = false;
 
-    datetime time = iTime(_Symbol, PERIOD_M1, 0);
+    HistorySelect((TimeCurrent() - MinutesToWait * 60), TimeCurrent());
+    int total = HistoryDealsTotal();
 
-    // calculating remain time
-    RemainMinutes = (int)((TimerStart - CurrentTimer) / 60);
-    if (RemainMinutes < 0)
-        RemainMinutes = 0;
-
-    if ((!IsMainOrder) && (!IsCrossOrder) && (!TimeBlockadeCross) && (!IsBetweenBands))
+    for (int i = total - 1; i >= 0; i--)
     {
-        if (Type_position == "LONG")
+        ulong ticket = HistoryDealGetTicket(i);
+        string comment = HistoryDealGetString(ticket, DEAL_COMMENT);
+        if (comment == BuyComment || comment == SellComment)
         {
-            TimerStart = TimeCurrent() + 60 * MinutesToWait;
-            TimeBlockadeCross = true;
-            createObject(time, Last, 232, clrYellow, "2");
-        }
-        if ((Type_position == "SHORT"))
-        {
-            TimerStart = TimeCurrent() + 60 * MinutesToWait; // 60s * 60 min
-            TimeBlockadeCross = true;
-            createObject(time, Last, 232, clrYellow, "2");
+            RemainMinutes = (int)(MinutesToWait - (TimeCurrent() - HistoryDealGetInteger(ticket, DEAL_TIME)) / 60);
+            shouldBlockCross = true;
         }
     }
 
-    if ((CurrentTimer > TimerStart) && (TimeBlockadeCross))
-    {
-        TimeBlockadeCross = false;
-        TimerStart = 0;
-        createObject(time, Last, 231, clrOrange, "2");
-    }
+    return shouldBlockCross;
 }

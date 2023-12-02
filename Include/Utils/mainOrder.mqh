@@ -18,7 +18,8 @@ bool mainOrder(double TMAbands_downL,
                bool IsMainOrder,
                bool IsStochOrder,
                bool &StopLossWasSchifted,
-               int &MainAmount)
+               int &MainAmount,
+               bool TimeBlockadeMain)
 {
 
     double offsetForBuy = NormalizeDouble(lastCandleClose * (10000 + orderOffset) / 10000, 0);
@@ -59,7 +60,7 @@ bool mainOrder(double TMAbands_downL,
     }
 
     // OPEN POSITION
-    if (!IsMainOrder)
+    if (!IsMainOrder && !TimeBlockadeMain)
     {
         // buy order
         if ((Last > offsetForBuy) && (Last < TMAbands_downL))
@@ -68,7 +69,7 @@ bool mainOrder(double TMAbands_downL,
             if (!tradeL.Buy(LotsMain, NULL, Ask, 0, 0, "buy main"))
                 Print("--ERROR 33A buy main");
 
-            if (!tradeL.SellStop(LotsMain, SellStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "sell stop loss main"))
+            if (!tradeL.SellStop(LotsMain, SellStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, sellComment[3]))
                 Print("--ERROR 34A on sell stop loss triggered");
             MainAmount += 1;
             createObject(time, Last, 141, clrDodgerBlue, "1");
@@ -80,7 +81,7 @@ bool mainOrder(double TMAbands_downL,
             // removeAllOrders(tradeL);
             if (!tradeL.Sell(LotsMain, NULL, Bid, 0, 0, "sell main"))
                 Print("--ERROR 35B sell main");
-            if (!tradeL.BuyStop(LotsMain, BuyStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, "buy stop loss main"))
+            if (!tradeL.BuyStop(LotsMain, BuyStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, buyComment[3]))
                 Print("--ERROR 36B on buy stop loss triggered");
             MainAmount += 1;
             createObject(time, Last, 141, clrIndianRed, "1");

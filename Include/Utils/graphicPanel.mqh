@@ -56,6 +56,8 @@ private:
   CLabel isCrossOrderLabel;
   CLabel isStochOrderLabel;
   CLabel timeBlockadeCrossLabel;
+  CLabel timeBlockadeMainLabel;
+
   CLabel stopLossWasSchiftedLabel;
   CLabel currentBalanceLabel;
 
@@ -116,32 +118,48 @@ void CGraphicalPanel::Update(void)
   shiftAmountLabel.Text("shiftAmount:  " + (string)shiftAmount);
   stochAmountLabel.Text("stochAmount:  " + (string)stochAmount);
 
-  if (timeBlockadeCross)
-    timeBlockadeCrossLabel.Color(clrLightSkyBlue);
-  else if (!timeBlockadeCross)
-    timeBlockadeCrossLabel.Color(clrLightCoral);
-  timeBlockadeCrossLabel.Text("timeBlockadeCross: " + (string)(remainMinutes));
-
   if (stopLossWasSchifted)
     stopLossWasSchiftedLabel.Color(clrLightSkyBlue);
   else if (!stopLossWasSchifted)
     stopLossWasSchiftedLabel.Color(clrMistyRose);
 
+  // isCrossOrder
   if (isCrossOrder)
     isCrossOrderLabel.Color(clrLightSkyBlue);
   else if (!isCrossOrder)
     isCrossOrderLabel.Color(clrLightCoral);
 
+  if (timeBlockadeCross)
+  {
+    timeBlockadeCrossLabel.Color(clrLightSkyBlue);
+    isCrossOrderLabel.Color(CONTROLS_DIALOG_COLOR_CLIENT_BG);
+  }
+  else
+    timeBlockadeCrossLabel.Color(CONTROLS_DIALOG_COLOR_CLIENT_BG);
+  timeBlockadeCrossLabel.Text("timeBlockadeCross: " + (string)(crossRemainMinutes));
+
+  // isStochOrder
   if (isStochOrder)
     isStochOrderLabel.Color(clrLightSkyBlue);
   else if (!isStochOrder)
     isStochOrderLabel.Color(clrLightCoral);
 
+  // isMainOrder
   if (isMainOrder)
     isMainOrderLabel.Color(clrLightSkyBlue);
   else if (!isMainOrder)
     isMainOrderLabel.Color(clrLightCoral);
+  Comment("timeBlockadeMainLabel ", timeBlockadeMain);
+  if (timeBlockadeMain)
+  {
+    timeBlockadeMainLabel.Color(clrLightSkyBlue);
+    isMainOrderLabel.Color(CONTROLS_DIALOG_COLOR_CLIENT_BG);
+  }
+  else
+    timeBlockadeMainLabel.Color(CONTROLS_DIALOG_COLOR_CLIENT_BG);
+  timeBlockadeMainLabel.Text("timeBlockadeMain: " + (string)(mainRemainMinutes));
 
+  //
   type_positionLabel.Text((string)type_position);
   lotsInPositionLabel.Text((string)lotsInPosition);
   positionOpenPriceLabel.Text((string)positionOpenPrice);
@@ -270,29 +288,38 @@ bool CGraphicalPanel::CreatePanel(void)
   positionOpenPriceLabel.FontSize(InpPanelFontSize);
   this.Add(positionOpenPriceLabel);
 
-  isCrossOrderLabel.Create(NULL, "isCrossOrderLabel", 0, 10, 120, 1, 1);
+  int orderY = 120;
+  int orderX = 10;
+
+  isCrossOrderLabel.Create(NULL, "isCrossOrderLabel", 0, orderX, orderY, 1, 1);
   isCrossOrderLabel.Text("isCrossOrder");
   isCrossOrderLabel.Color(clrWheat);
   isCrossOrderLabel.FontSize(InpPanelFontSize);
   this.Add(isCrossOrderLabel);
 
-  timeBlockadeCrossLabel.Create(NULL, "timeBlockadeCrossLabel", 0, 150, 120, 1, 1);
-  timeBlockadeCrossLabel.Text("timeBlockadeAfterSL: " + (string)remainMinutes);
+  timeBlockadeCrossLabel.Create(NULL, "timeBlockadeCrossLabel", 0, orderX, orderY, 1, 1);
+  timeBlockadeCrossLabel.Text("timeBlockadeCross: " + (string)crossRemainMinutes);
   timeBlockadeCrossLabel.Color(clrWheat);
   timeBlockadeCrossLabel.FontSize(InpPanelFontSize);
   this.Add(timeBlockadeCrossLabel);
 
-  isStochOrderLabel.Create(NULL, "isStochOrderLabel", 0, 10, 140, 1, 1);
+  isStochOrderLabel.Create(NULL, "isStochOrderLabel", 0, orderX, orderY + 20, 1, 1);
   isStochOrderLabel.Text("isStochOrder");
   isStochOrderLabel.Color(clrWheat);
   isStochOrderLabel.FontSize(InpPanelFontSize);
   this.Add(isStochOrderLabel);
 
-  isMainOrderLabel.Create(NULL, "isMainOrderLabel", 0, 10, 160, 1, 1);
+  isMainOrderLabel.Create(NULL, "isMainOrderLabel", 0, orderX, +orderY + 40, 1, 1);
   isMainOrderLabel.Text("isMainOrder");
   isMainOrderLabel.Color(clrWheat);
   isMainOrderLabel.FontSize(InpPanelFontSize);
   this.Add(isMainOrderLabel);
+
+  timeBlockadeMainLabel.Create(NULL, "timeBlockadeMainLabel", 0, orderX, orderY + 40, 1, 1);
+  timeBlockadeMainLabel.Text("timeBlockadeMain: " + (string)mainRemainMinutes);
+  timeBlockadeMainLabel.Color(clrWheat);
+  timeBlockadeMainLabel.FontSize(InpPanelFontSize);
+  this.Add(timeBlockadeMainLabel);
 
   stopLossWasSchiftedLabel.Create(NULL, "stopLossWasSchiftedLabel", 0, 10, 180, 1, 1);
   stopLossWasSchiftedLabel.Text("stopLossWasSchifted");
@@ -370,7 +397,6 @@ void CGraphicalPanel::PanelChartEvent(const int id, const long &lparam, const do
 }
 //+------------------------------------------------------------------+
 
-
 void OnChartEvent(const int id,         // Event identifier
                   const long &lparam,   // Event parameter of long type
                   const double &dparam, // Event parameter of double type
@@ -378,33 +404,33 @@ void OnChartEvent(const int id,         // Event identifier
 )
 {
 
-    if (id == CHARTEVENT_OBJECT_CLICK)
+  if (id == CHARTEVENT_OBJECT_CLICK)
+  {
+
+    if (sparam == "resetTimer")
     {
-
-        if (sparam == "resetTimer")
-        {
-            Print(">>>>  resetTimer clicked!");
-            timerStart = 0;
-            timeBlockadeCross = false;
-            createObject(currentTimer, last, 231, clrOrange, "73");
-        }
-
-        if (sparam == "setTimer")
-        {
-            Print(">>>>  setTimer clicked!");
-            timerStart = TimeCurrent() + 60 * 60; // 60 s / 60 min
-            timeBlockadeCross = true;
-            createObject(currentTimer, last, 232, clrDarkGray, "2");
-        }
-        if (sparam == "startExpertButton")
-        {
-            Print(">>>>  startExpert clicked!");
-            stopExpert = false;
-        }
-        if (sparam == "stopExpertButton")
-        {
-            Print(">>>>  stopExpert clicked!");
-            stopExpert = true;
-        }
+      Print(">>>>  resetTimer clicked!");
+      timerStart = 0;
+      timeBlockadeCross = false;
+      createObject(currentTimer, last, 231, clrOrange, "73");
     }
+
+    if (sparam == "setTimer")
+    {
+      Print(">>>>  setTimer clicked!");
+      timerStart = TimeCurrent() + 60 * 60; // 60 s / 60 min
+      timeBlockadeCross = true;
+      createObject(currentTimer, last, 232, clrDarkGray, "2");
+    }
+    if (sparam == "startExpertButton")
+    {
+      Print(">>>>  startExpert clicked!");
+      stopExpert = false;
+    }
+    if (sparam == "stopExpertButton")
+    {
+      Print(">>>>  stopExpert clicked!");
+      stopExpert = true;
+    }
+  }
 }
