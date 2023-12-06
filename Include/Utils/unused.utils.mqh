@@ -117,42 +117,6 @@ void secondStoploss(CTrade &tradeL)
         Print("secondStoploss failed. One position and one order required!");
 }
 
-
-//unused
-// FirstPrice is price closer to last
-void shiftStoplosses(double firstPrice, double secPrice, string &type_positionL, double stoplossL, CTrade &tradeL)
-{
-    int ordersAmount = OrdersTotal();
-    ulong orderTicket1 = OrderGetTicket(0);
-    double orderPrice1 = OrderGetDouble(ORDER_PRICE_OPEN);
-
-    if (ordersAmount == 2)
-    {
-        ulong orderTicket2 = OrderGetTicket(1);
-        double orderPrice2 = OrderGetDouble(ORDER_PRICE_OPEN);
-        if (type_positionL == "LONG")
-        {
-            double newPrice1 = MathMax(orderPrice1, firstPrice);
-            double newPrice2 = MathMax(orderPrice2, secPrice);
-
-            tradeL.OrderModify(OrderGetTicket(0), newPrice1, 0, 0, ORDER_TIME_GTC, 0, 0);
-            tradeL.OrderModify(OrderGetTicket(1), newPrice2, 0, 0, ORDER_TIME_GTC, 0, 0);
-        }
-        if (type_positionL == "SHORT")
-        {
-            double newPrice1 = MathMin(orderPrice1, firstPrice);
-            double newPrice2 = MathMin(orderPrice2, secPrice);
-
-            tradeL.OrderModify(OrderGetTicket(0), newPrice1, 0, 0, ORDER_TIME_GTC, 0, 0);
-            tradeL.OrderModify(OrderGetTicket(1), newPrice2, 0, 0, ORDER_TIME_GTC, 0, 0);
-        }
-    }
-    if (ordersAmount == 1)
-        tradeL.OrderModify(OrderGetTicket(0), firstPrice, 0, 0, ORDER_TIME_GTC, 0, 0);
-}
-
-
-
 //unused
 bool removeOrders(CTrade &tradeClass)
 {

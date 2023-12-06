@@ -132,12 +132,14 @@ void CGraphicalPanel::Update(void)
   if (timeBlockadeCross)
   {
     timeBlockadeCrossLabel.Color(clrLightSkyBlue);
+    timeBlockadeCrossLabel.Text("timeBlockadeCross: " + (string)(crossRemainMinutes));
     isCrossOrderLabel.Color(CONTROLS_DIALOG_COLOR_CLIENT_BG);
   }
   else
+  {
     timeBlockadeCrossLabel.Color(CONTROLS_DIALOG_COLOR_CLIENT_BG);
-  timeBlockadeCrossLabel.Text("timeBlockadeCross: " + (string)(crossRemainMinutes));
-
+    timeBlockadeCrossLabel.Text("");
+  }
   // isStochOrder
   if (isStochOrder)
     isStochOrderLabel.Color(clrLightSkyBlue);
@@ -149,15 +151,18 @@ void CGraphicalPanel::Update(void)
     isMainOrderLabel.Color(clrLightSkyBlue);
   else if (!isMainOrder)
     isMainOrderLabel.Color(clrLightCoral);
-  Comment("timeBlockadeMainLabel ", timeBlockadeMain);
+
   if (timeBlockadeMain)
   {
     timeBlockadeMainLabel.Color(clrLightSkyBlue);
+    timeBlockadeMainLabel.Text("timeBlockadeMain: " + (string)(mainRemainMinutes));
     isMainOrderLabel.Color(CONTROLS_DIALOG_COLOR_CLIENT_BG);
   }
   else
+  {
     timeBlockadeMainLabel.Color(CONTROLS_DIALOG_COLOR_CLIENT_BG);
-  timeBlockadeMainLabel.Text("timeBlockadeMain: " + (string)(mainRemainMinutes));
+    timeBlockadeMainLabel.Text("");
+  }
 
   //
   type_positionLabel.Text((string)type_position);
@@ -298,7 +303,7 @@ bool CGraphicalPanel::CreatePanel(void)
   this.Add(isCrossOrderLabel);
 
   timeBlockadeCrossLabel.Create(NULL, "timeBlockadeCrossLabel", 0, orderX, orderY, 1, 1);
-  timeBlockadeCrossLabel.Text("timeBlockadeCross: " + (string)crossRemainMinutes);
+  // timeBlockadeCrossLabel.Text("timeBlockadeCross: " + (string)crossRemainMinutes);
   timeBlockadeCrossLabel.Color(clrWheat);
   timeBlockadeCrossLabel.FontSize(InpPanelFontSize);
   this.Add(timeBlockadeCrossLabel);
@@ -316,7 +321,7 @@ bool CGraphicalPanel::CreatePanel(void)
   this.Add(isMainOrderLabel);
 
   timeBlockadeMainLabel.Create(NULL, "timeBlockadeMainLabel", 0, orderX, orderY + 40, 1, 1);
-  timeBlockadeMainLabel.Text("timeBlockadeMain: " + (string)mainRemainMinutes);
+  // timeBlockadeMainLabel.Text("timeBlockadeMain: " + (string)mainRemainMinutes);
   timeBlockadeMainLabel.Color(clrWheat);
   timeBlockadeMainLabel.FontSize(InpPanelFontSize);
   this.Add(timeBlockadeMainLabel);
