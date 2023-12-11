@@ -154,6 +154,36 @@ bool removeOrderWithValue(CTrade &tradeClass, double lotsToRemove)
     return false;
 }
 
+bool removeOrderWithComment(CTrade &Trade, string commentToRemove)
+{
+    int total = OrdersTotal();
+    if (total)
+    {
+        for (int i = total - 1; i >= 0; i--)
+        {
+            ulong orderTicket = OrderGetTicket(i);
+            if (orderTicket <= 0)
+            {
+                Print("Failed to get order ticket");
+                return true;
+            }
+            if (!OrderSelect(orderTicket))
+            {
+                Print("Failed to select order");
+                return true;
+            }
+            string comment = OrderGetString(ORDER_COMMENT);
+
+            if (comment == commentToRemove)
+            {
+                if (!Trade.OrderDelete(orderTicket))
+                    Print("--ERROR ON REMOVE ORDER: commentToRemove ", commentToRemove);
+            }
+        }
+    }
+    return false;
+}
+
 void removeAllOrders(CTrade &tradeLL)
 {
     ulong ticket = 0;

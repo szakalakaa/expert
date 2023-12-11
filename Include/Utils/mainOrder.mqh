@@ -19,7 +19,9 @@ bool mainOrder(double TMAbands_downL,
                bool IsStochOrder,
                bool &StopLossWasSchifted,
                int &MainAmount,
-               bool TimeBlockadeMain)
+               bool TimeBlockadeMain,
+               string &SellComment[],
+               string &BuyComment[])
 {
 
     double offsetForBuy = NormalizeDouble(lastCandleClose * (10000 + orderOffset) / 10000, 0);
@@ -35,10 +37,10 @@ bool mainOrder(double TMAbands_downL,
             {
                 tradeL.PositionClose(PositionGetTicket(0));
                 removeAllOrders(tradeL);
-                if (StopLossWasSchifted)
-                {
-                    removeOrderWithValue(tradeL, LotsMain);
-                }
+                // if (StopLossWasSchifted)
+                // {
+                //     removeOrderWithValue(tradeL, LotsMain);
+                // }
                 StopLossWasSchifted = false;
             }
             return true;
@@ -50,10 +52,10 @@ bool mainOrder(double TMAbands_downL,
             {
                 tradeL.PositionClose(PositionGetTicket(0));
                 removeAllOrders(tradeL);
-                if (StopLossWasSchifted)
-                {
-                    removeOrderWithValue(tradeL, LotsMain);
-                }
+                // if (StopLossWasSchifted)
+                // {
+                //     removeOrderWithValue(tradeL, LotsMain);
+                // }
                 StopLossWasSchifted = false;
             }
         }
@@ -65,12 +67,11 @@ bool mainOrder(double TMAbands_downL,
         // buy order
         if ((Last > offsetForBuy) && (Last < TMAbands_downL))
         {
-            // removeAllOrders(tradeL);
-            if (!tradeL.Buy(LotsMain, NULL, Ask, 0, 0, "buy main"))
-                Print("--ERROR 33A buy main");
+            if (!tradeL.Buy(LotsMain, NULL, Ask, 0, 0, BuyComment[5]))
+                Print("--ERROR BUY MAIN 1: ", BuyComment[5]);
 
             if (!tradeL.SellStop(LotsMain, SellStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, sellComment[3]))
-                Print("--ERROR 34A on sell stop loss triggered");
+                Print("--ERROR SELLSTOP MAIN 2: " + sellComment[3]);
             MainAmount += 1;
             createObject(time, Last, 141, clrDodgerBlue, "1");
             return true;
@@ -78,11 +79,10 @@ bool mainOrder(double TMAbands_downL,
         // sell order
         if ((Last < offsetForSell) && (Last > TMAbands_upL))
         {
-            // removeAllOrders(tradeL);
-            if (!tradeL.Sell(LotsMain, NULL, Bid, 0, 0, "sell main"))
-                Print("--ERROR 35B sell main");
+            if (!tradeL.Sell(LotsMain, NULL, Bid, 0, 0, SellComment[5]))
+                Print("--ERROR SELL MAIN 3: " + SellComment[5]);
             if (!tradeL.BuyStop(LotsMain, BuyStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, buyComment[3]))
-                Print("--ERROR 36B on buy stop loss triggered");
+                Print("--ERROR BUYSTOP MAIN 4: " + buyComment[3]);
             MainAmount += 1;
             createObject(time, Last, 141, clrIndianRed, "1");
             return true;

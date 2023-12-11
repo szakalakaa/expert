@@ -24,8 +24,7 @@ void getTypePosition(string &Type_position, double &LotsInPosition, double &Posi
 
 bool checkInputs(double Stoploss, double StoplossCross, double StoplossStoch, int Atr_period, double Atr_multiplier,
                  double StochUpper, double kPeriod,
-                 double dPeriod, double TriggerSLProcent,
-                 double NewSLProcent, int InsureProcentOfAccount)
+                 double dPeriod, int InsureProcentOfAccount)
 {
 
     if (Stoploss <= 0 || Stoploss > 0.04)
@@ -66,22 +65,6 @@ bool checkInputs(double Stoploss, double StoplossCross, double StoplossStoch, in
     if (dPeriod > 25 || dPeriod < 2)
     {
         Alert("dPeriod > 25 || dPeriod < 2");
-        return false;
-    }
-
-    if (TriggerSLProcent <= 0 || TriggerSLProcent > 1.6)
-    {
-        Alert("TriggerSLProcent <= 0 || TriggerSLProcent > 1.2");
-        return false;
-    }
-    if (NewSLProcent <= 0 || NewSLProcent > 1.2)
-    {
-        Alert("NewSLProcent <= 0 || NewSLProcent > 1.2");
-        return false;
-    }
-    if (NewSLProcent + 0.2 > TriggerSLProcent)
-    {
-        Alert("NewSLProcent + 0.2 > TriggerSLProcent");
         return false;
     }
     if (InsureProcentOfAccount < 50 || InsureProcentOfAccount > 99)
