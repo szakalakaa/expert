@@ -139,9 +139,19 @@ void orderOnInit(CTrade &tradeL, double Lots, double StopLoss, string &SellComme
     double sellStopPrice = NormalizeDouble(Bid * (1 - StopLoss), 0);
     double buyStopPrice = NormalizeDouble(Ask * (1 + StopLoss), 0);
 
-    // BUY
-    // SellComment[3] BuyComment[5]   => main
-    // SellComment[2] BuyComment[0]   => cross
-    trade.SellStop(Lots, sellStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, SellComment[2]);
-    trade.Buy(Lots, NULL, Ask, 0, 0, BuyComment[0]);
+    // BUY MAIN
+    // trade.SellStop(Lots, sellStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, SellComment[3]);
+    // trade.Buy(Lots, NULL, Ask, 0, 0, BuyComment[5]);
+
+    // BUY CROSS
+    // trade.SellStop(Lots, sellStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, SellComment[2]);
+    // trade.Buy(Lots, NULL, Ask, 0, 0, BuyComment[0]);
+
+    // SELL CROSS
+    // trade.Sell(Lots, NULL, Bid, 0, 0, SellComment[0]);
+    // trade.BuyStop(Lots, buyStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, BuyComment[2]);
+
+    // SELL MAIN
+    // trade.Sell(Lots, NULL, Bid, 0, 0, SellComment[5]);
+    // trade.BuyStop(Lots, buyStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, BuyComment[3]);
 }

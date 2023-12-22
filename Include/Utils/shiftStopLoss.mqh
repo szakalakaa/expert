@@ -3,8 +3,7 @@
 void updateStopLoss(double LotsToShift,
                     string Type_position,
                     CTrade &tradeClass,
-                    string &SellComment[],
-                    string &BuyComment[],
+                    string &CommentOrders[],
                     double &targetProfits[],
                     double &stopLossPercentages[])
 {
@@ -25,9 +24,12 @@ void updateStopLoss(double LotsToShift,
             if (percentProfit >= targetProfits[i])
             {
                 bool hasComment = false;
+                string baseComment = Type_position == "LONG" ? (string)CommentOrders[1] : (string)CommentOrders[0];
+
                 for (int j = i; j < ArraySize(targetProfits); j++)
                 {
-                    string commentFor = (string)SellComment[3] + (string)stopLossPercentages[j];
+
+                    string commentFor = baseComment + (string)stopLossPercentages[j];
                     ulong orderTicketFor = getOrderTicketByComment(commentFor);
                     if ((orderTicketFor > 0 && orderTicketFor < 1000))
                     {
@@ -40,21 +42,37 @@ void updateStopLoss(double LotsToShift,
                     return;
                 }
 
-                double newStopLossLevel = NormalizeDouble(openPrice - (openPrice * stopLossPercentages[i]), 0);
+                // if (Type_position == "LONG")
+                // {
+                //     // to adjust!
+                //     double newStopLossLevel = NormalizeDouble(openPrice - (openPrice * stopLossPercentages[i]), 0);
+                //     string setComment = (string)CommentOrders[1] + (string)stopLossPercentages[i];
+                //     // TODO: remove only one order!
+                //     removeAllOrders(tradeClass);
 
-                if (Type_position == "LONG")
+                //     if (!tradeClass.SellStop(LotsToShift, newStopLossLevel, _Symbol, 0, 0, ORDER_TIME_GTC, 0, setComment))
+                //     {
+                //         Print("------Failed to removeee order, last", NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_LAST), _Digits));
+                //         return;
+                //     }
+                //     createObject(time, last, 140, clrBlueViolet, "3");
+                // }
+                // break;
+
+                if (Type_position == "SHORT")
                 {
-
-                    string setComment = (string)SellComment[3] + (string)stopLossPercentages[i];
+                    // to adjust!
+                    double newStopLossLevel = NormalizeDouble(openPrice + (openPrice * stopLossPercentages[i]), 0);
+                    string setComment = (string)CommentOrders[0] + (string)stopLossPercentages[i];
+                    // TODO: remove only one order!
                     removeAllOrders(tradeClass);
 
-                    if (!tradeClass.SellStop(LotsToShift, newStopLossLevel, _Symbol, 0, 0, ORDER_TIME_GTC, 0, setComment))
+                    if (!tradeClass.BuyStop(LotsToShift, newStopLossLevel, _Symbol, 0, 0, ORDER_TIME_GTC, 0, setComment))
                     {
-                        Print("------Failed to removeee order, last", NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_LAST), _Digits));
+                        Print("------Failed to removeee order, last 22 ", NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_LAST), _Digits));
                         return;
                     }
-
-                    createObject(time, last, 140, clrBlueViolet, "3");
+                    createObject(time, last, 140, clrDarkOrange, "3");
                 }
                 break;
             }
