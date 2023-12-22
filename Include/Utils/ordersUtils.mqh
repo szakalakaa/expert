@@ -1,4 +1,42 @@
 
+// OrderGetInteger(ORDER_TYPE)=5 for LONG type_position => sellStop order
+// OrderGetInteger(ORDER_TYPE)=4 for SHORT type_position => buyStop order
+bool isOrderWithComments(CTrade &tradeClass, string &commentsToFind[], string type_positionLL)
+{
+    bool hasOrder = false;
+    int total = OrdersTotal();
+    if (total)
+    {
+        for (int i = total - 1; i >= 0; i--)
+        {
+            ulong orderTicket = OrderGetTicket(i);
+            if (orderTicket <= 0)
+            {
+                Print("Failed to get order ticket");
+                return hasOrder;
+            }
+            if (!OrderSelect(orderTicket))
+            {
+                Print("Failed to select order");
+                return hasOrder;
+            }
+
+            string comment = OrderGetString(ORDER_COMMENT);
+
+            for (int i = ArraySize(commentsToFind) - 1; i >= 0; i--)
+            {
+
+                if ((comment == commentsToFind[i]))
+                {
+                    hasOrder = true;
+                    return hasOrder;
+                }
+            }
+        }
+    }
+    return hasOrder;
+}
+
 
 // OrderGetInteger(ORDER_TYPE)=5 for LONG type_position => sellStop order
 // OrderGetInteger(ORDER_TYPE)=4 for SHORT type_position => buyStop order

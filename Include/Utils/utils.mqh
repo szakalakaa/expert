@@ -130,3 +130,18 @@ bool getIsBetweenBands(double Price, double Lower, double Upper)
     else
         return false;
 }
+
+void orderOnInit(CTrade &tradeL, double Lots, double StopLoss, string &SellComment[], string &BuyComment[])
+{
+    double Ask = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_ASK), _Digits);
+    double Bid = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_BID), _Digits);
+
+    double sellStopPrice = NormalizeDouble(Bid * (1 - StopLoss), 0);
+    double buyStopPrice = NormalizeDouble(Ask * (1 + StopLoss), 0);
+
+    // BUY
+    // SellComment[3] BuyComment[5]   => main
+    // SellComment[2] BuyComment[0]   => cross
+    trade.SellStop(Lots, sellStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, SellComment[2]);
+    trade.Buy(Lots, NULL, Ask, 0, 0, BuyComment[0]);
+}

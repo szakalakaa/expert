@@ -4,10 +4,10 @@ void updateStopLoss(double LotsToShift,
                     string Type_position,
                     CTrade &tradeClass,
                     string &SellComment[],
-                    string &BuyComment[])
+                    string &BuyComment[],
+                    double &targetProfits[],
+                    double &stopLossPercentages[])
 {
-    double targetProfits[] = {0.07, 0.1, 0.2, 0.25};         // Lista docelowych zysków w procentach
-    double stopLossPercentages[] = {0.01, 0.02, 0.03, 0.05}; // Lista nowych poziomów stop loss w procentach
 
     double lastt = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_LAST), _Digits);
 
@@ -27,7 +27,6 @@ void updateStopLoss(double LotsToShift,
                 bool hasComment = false;
                 for (int j = i; j < ArraySize(targetProfits); j++)
                 {
-                    Print("--- i,j: ", i, "  ", j);
                     string commentFor = (string)SellComment[3] + (string)stopLossPercentages[j];
                     ulong orderTicketFor = getOrderTicketByComment(commentFor);
                     if ((orderTicketFor > 0 && orderTicketFor < 1000))
@@ -55,7 +54,7 @@ void updateStopLoss(double LotsToShift,
                         return;
                     }
 
-                    createObject(time, last, 140, clrSkyBlue, "3");
+                    createObject(time, last, 140, clrBlueViolet, "3");
                 }
                 break;
             }
