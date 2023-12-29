@@ -1,3 +1,47 @@
+
+void fillOrdersTable(string &SellComment[], string &BuyComment[])
+{
+    SellComment[0] = "cross sell";
+    SellComment[1] = "cross sell additional";
+    SellComment[2] = "cross sell stop loss ";
+    SellComment[3] = "main sell SL ";
+    SellComment[4] = "close cross sell";
+    SellComment[5] = "main sell";
+
+    BuyComment[0] = "cross buy";
+    BuyComment[1] = "cross buy additional"; // additional
+    BuyComment[2] = "cross buy stop loss ";
+    BuyComment[3] = "main buy SL ";
+    BuyComment[4] = "close cross buy";
+    BuyComment[5] = "main buy";
+}
+
+void fillCommentsTable(
+    string &tableOrderToUpdate[],
+    string BuyComment,
+    string SellComment,
+    double &StopLossPercentageTable[])
+{
+    tableOrderToUpdate[0] = BuyComment;
+    tableOrderToUpdate[1] = SellComment;
+
+    tableOrderToUpdate[2] = BuyComment + (string)StopLossPercentageTable[0];
+    tableOrderToUpdate[3] = BuyComment + (string)StopLossPercentageTable[1];
+    tableOrderToUpdate[4] = BuyComment + (string)StopLossPercentageTable[2];
+    tableOrderToUpdate[5] = BuyComment + (string)StopLossPercentageTable[3];
+
+    tableOrderToUpdate[6] = SellComment + (string)StopLossPercentageTable[0];
+    tableOrderToUpdate[7] = SellComment + (string)StopLossPercentageTable[1];
+    tableOrderToUpdate[8] = SellComment + (string)StopLossPercentageTable[2];
+    tableOrderToUpdate[9] = SellComment + (string)StopLossPercentageTable[3];
+}
+
+//
+//
+//
+//
+//
+//
 void getTypePosition(string &Type_position, double &LotsInPosition, double &PositionOpenPrice)
 {
     if (PositionsTotal())
@@ -88,7 +132,7 @@ bool NormalizePrice(double price, double &normalizedPrice)
 }
 
 // check if we have a bar open tick
-bool shouldProcess(ENUM_TIMEFRAMES ProcessPeriod)
+bool shouldProcess2(ENUM_TIMEFRAMES ProcessPeriod)
 {
     if ((ProcessPeriod == PERIOD_M2) ||
         (ProcessPeriod == PERIOD_M4) ||
@@ -103,6 +147,19 @@ bool shouldProcess(ENUM_TIMEFRAMES ProcessPeriod)
     if (prevTime != currentTime)
     {
         prevTime = currentTime;
+        return true;
+    }
+    return false;
+}
+
+bool shouldProcess()
+{
+    int interfalInSecond = 5;
+    MqlDateTime mqlTime;
+    TimeToStruct(TimeCurrent(), mqlTime);
+
+    if (!MathMod(mqlTime.sec, interfalInSecond))
+    {
         return true;
     }
     return false;

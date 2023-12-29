@@ -172,6 +172,8 @@ void CGraphicalPanel::Update(void)
   PositionSelect(_Symbol);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
 
+
+  //UPPR LEFT CORNER VALUR
   if (currentBalance > 100)
     currentBalanceLabel.Color(clrLightSkyBlue);
   else

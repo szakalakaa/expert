@@ -1,7 +1,7 @@
 19.10.2023    -> zjazd w dol
 14.01   1h      -> wjazd na gore 
 
-
+12.11  1h ->zjazd w dol 
 
 przezroczysty panel
 https://www.mql5.com/en/articles/4575
