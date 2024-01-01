@@ -38,10 +38,6 @@ void fillCommentsTable(
 
 //
 //
-//
-//
-//
-//
 void getTypePosition(string &Type_position, double &LotsInPosition, double &PositionOpenPrice)
 {
     if (PositionsTotal())
@@ -116,18 +112,6 @@ bool checkInputs(double Stoploss, double StoplossCross, double StoplossStoch, in
         Alert("InsureProcentOfAccount>50 || InsureProcentOfAccount<99");
         return false;
     }
-    return true;
-}
-
-bool NormalizePrice(double price, double &normalizedPrice)
-{
-    double tickSize = 0;
-    if (!SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_SIZE, tickSize))
-    {
-        Print("61 Failed to get ticksize");
-        return false;
-    }
-    normalizedPrice = NormalizeDouble(MathRound(price / tickSize) * tickSize, _Digits);
     return true;
 }
 
@@ -211,4 +195,24 @@ void orderOnInit(CTrade &tradeL, double Lots, double StopLoss, string &SellComme
     // SELL MAIN
     // trade.Sell(Lots, NULL, Bid, 0, 0, SellComment[5]);
     // trade.BuyStop(Lots, buyStopPrice, _Symbol, 0, 0, ORDER_TIME_GTC, 0, BuyComment[3]);
+}
+
+double getPercentageProfit(string Type_Position)
+{
+    if (PositionGetInteger(POSITION_TICKET) > 0)
+    {
+        double openPrice = PositionGetDouble(POSITION_PRICE_OPEN);
+        double currentPrice = PositionGetDouble(POSITION_PRICE_CURRENT);
+        double percentProfit = NormalizeDouble((((currentPrice - openPrice) / openPrice) * 100), 2);
+        percentProfit = MathAbs(percentProfit);
+
+        if (Type_Position == "SHORT")
+        {
+            percentProfit = -percentProfit;
+        }
+
+        return percentProfit;
+    }
+
+    return -100;
 }

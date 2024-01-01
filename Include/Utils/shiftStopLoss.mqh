@@ -12,9 +12,8 @@ void updateStopLoss(double LotsToShift,
 
     if (PositionGetInteger(POSITION_TICKET) > 0)
     {
-        double profit = PositionGetDouble(POSITION_PROFIT);
+        double percentProfit = getPercentageProfit(Type_position);
         double openPrice = PositionGetDouble(POSITION_PRICE_OPEN);
-        double percentProfit = NormalizeDouble((profit / openPrice) * 100, 2);
         datetime time = iTime(_Symbol, PERIOD_M1, 0);
         ulong orderTicketFor = -1;
 
@@ -31,7 +30,7 @@ void updateStopLoss(double LotsToShift,
 
                     string commentFor = baseComment + (string)stopLossPercentages[j];
                     orderTicketFor = getOrderTicketByComment(commentFor);
-                    if ((orderTicketFor > 0 && orderTicketFor < 1000))
+                    if (orderTicketFor > 0 && orderTicketFor < MathPow(10, 10))
                     {
                         hasComment = true;
                     }
@@ -42,42 +41,41 @@ void updateStopLoss(double LotsToShift,
                     return;
                 }
 
-
                 if (Type_position == "LONG")
                 {
-                    double newStopLossLevel = NormalizeDouble(openPrice + (openPrice * stopLossPercentages[i]), 0);
+                    double newStopLossLevel = NormalizeDouble(openPrice + (openPrice * stopLossPercentages[i] * 0.01), 0);
                     string setComment = (string)CommentOrders[1] + (string)stopLossPercentages[i];
-
-                    if (!tradeClass.OrderDelete(orderTicketFor))
-                    {
-                        Print("--ERROR ON REMOVE ORDER: orderTicketFor ", orderTicketFor);
-                        return;
-                    }
 
                     if (!tradeClass.SellStop(LotsToShift, newStopLossLevel, _Symbol, 0, 0, ORDER_TIME_GTC, 0, setComment))
                     {
                         Print("------Failed to removeee order, last", NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_LAST), _Digits));
                         return;
                     }
-                    createObject(time, last, 140, clrBlueViolet, "3");
-                }
-
-                if (Type_position == "SHORT")
-                {
-                    double newStopLossLevel = NormalizeDouble(openPrice - (openPrice * stopLossPercentages[i]), 0);
-                    string setComment = (string)CommentOrders[0] + (string)stopLossPercentages[i];
-
                     if (!tradeClass.OrderDelete(orderTicketFor))
                     {
                         Print("--ERROR ON REMOVE ORDER: orderTicketFor ", orderTicketFor);
                         return;
                     }
 
+                    createObject(time, last, 140, clrBlueViolet, "3");
+                }
+
+                if (Type_position == "SHORT")
+                {
+                    double newStopLossLevel = NormalizeDouble(openPrice - (openPrice * stopLossPercentages[i] * 0.01), 0);
+                    string setComment = (string)CommentOrders[0] + (string)stopLossPercentages[i];
+
                     if (!tradeClass.BuyStop(LotsToShift, newStopLossLevel, _Symbol, 0, 0, ORDER_TIME_GTC, 0, setComment))
                     {
                         Print("------Failed to removeee order, last 22 ", NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_LAST), _Digits));
                         return;
                     }
+                    if (!tradeClass.OrderDelete(orderTicketFor))
+                    {
+                        Print("--ERROR ON REMOVE ORDER: orderTicketFor ", orderTicketFor);
+                        return;
+                    }
+
                     createObject(time, last, 140, clrDarkOrange, "3");
                 }
                 break;

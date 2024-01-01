@@ -31,9 +31,9 @@
 static int InpPanelWidth = 600;               // width in pixel
 static int InpPanelHeight = 360;              // height in pixel
 static int InpPanelFontSize = 10;             // width in pixel
-static int ButtonFontSize = 10;               // width in pixel
+static int ButtonFontSize = 7;                // width in pixel
 static int InpPanelTextColor = clrWhiteSmoke; // text clr
-static int btnSize = 50;
+static int btnSize = 40;
 //+------------------------------------------------------------------+
 //| Class CGraphicalPanel                                                                  |
 //+------------------------------------------------------------------+
@@ -67,8 +67,10 @@ private:
   CLabel stochAmountLabel;
 
   // buttons
-  CButton resetTimer;
-  CButton setTimer;
+  CButton resetCrossTimer;
+  CButton resetMainTimer;
+  CButton setCrossTimer;
+  CButton setMainTimer;
   CButton startExpertButton;
   CButton stopExpertButton;
 
@@ -172,8 +174,7 @@ void CGraphicalPanel::Update(void)
   PositionSelect(_Symbol);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
 
-
-  //UPPR LEFT CORNER VALUR
+  // UPPR LEFT CORNER VALUR
   if (currentBalance > 100)
     currentBalanceLabel.Color(clrLightSkyBlue);
   else
@@ -334,28 +335,42 @@ bool CGraphicalPanel::CreatePanel(void)
   stopLossWasSchiftedLabel.FontSize(InpPanelFontSize);
   this.Add(stopLossWasSchiftedLabel);
 
-  int btnHeight = 30;
-  int btnWidth = 100;
+  int btnHeight = 20;
+  int btnWidth = 90;
   int btnYRow = 210;
   int xBut1 = 10;
   int yBut1 = btnYRow;
 
-  resetTimer.Create(NULL, "resetTimer", 0, xBut1, yBut1, xBut1 + btnWidth, yBut1 + btnHeight);
-  resetTimer.Color(clrBlack);
-  ObjectSetInteger(NULL, "resetTimer", OBJPROP_BGCOLOR, clrSeaGreen);
-  resetTimer.Text("Reset timer");
-  resetTimer.FontSize(ButtonFontSize);
-  this.Add(resetTimer);
+  resetCrossTimer.Create(NULL, "resetCrossTimer", 0, xBut1, yBut1, xBut1 + btnWidth, yBut1 + btnHeight);
+  resetCrossTimer.Color(clrBlack);
+  ObjectSetInteger(NULL, "resetCrossTimer", OBJPROP_BGCOLOR, clrSeaGreen);
+  resetCrossTimer.Text("Reset cross timer");
+  resetCrossTimer.FontSize(ButtonFontSize);
+  this.Add(resetCrossTimer);
+
+  int yBut2 = btnYRow + 25;
+  resetMainTimer.Create(NULL, "resetMainTimer", 0, xBut1, yBut2, xBut1 + btnWidth, yBut2 + btnHeight);
+  resetMainTimer.Color(clrBlack);
+  ObjectSetInteger(NULL, "resetMainTimer", OBJPROP_BGCOLOR, clrSeaGreen);
+  resetMainTimer.Text("Reset main timer");
+  resetMainTimer.FontSize(ButtonFontSize);
+  this.Add(resetMainTimer);
 
   int xBut2 = 120;
-  int yBut2 = btnYRow;
 
-  setTimer.Create(NULL, "setTimer", 0, xBut2, yBut2, xBut2 + btnWidth, yBut2 + btnHeight);
-  setTimer.Color(clrBlack);
-  ObjectSetInteger(NULL, "setTimer", OBJPROP_BGCOLOR, clrLightBlue);
-  setTimer.Text("Set timer");
-  setTimer.FontSize(ButtonFontSize);
-  this.Add(setTimer);
+  setCrossTimer.Create(NULL, "setCrossTimer", 0, xBut2, yBut1, xBut2 + btnWidth, yBut1 + btnHeight);
+  setCrossTimer.Color(clrBlack);
+  ObjectSetInteger(NULL, "setCrossTimer", OBJPROP_BGCOLOR, clrLightBlue);
+  setCrossTimer.Text("Set cross timer");
+  setCrossTimer.FontSize(ButtonFontSize);
+  this.Add(setCrossTimer);
+
+  setMainTimer.Create(NULL, "setMainTimer", 0, xBut2, yBut2, xBut2 + btnWidth, yBut2 + btnHeight);
+  setMainTimer.Color(clrBlack);
+  ObjectSetInteger(NULL, "setMainTimer", OBJPROP_BGCOLOR, clrLightBlue);
+  setMainTimer.Text("Set main timer");
+  setMainTimer.FontSize(ButtonFontSize);
+  this.Add(setMainTimer);
 
   int xBut3 = InpPanelWidth - 230;
   int yBut3 = btnYRow;
@@ -414,19 +429,35 @@ void OnChartEvent(const int id,         // Event identifier
   if (id == CHARTEVENT_OBJECT_CLICK)
   {
 
-    if (sparam == "resetTimer")
+    if (sparam == "resetCrossTimer")
     {
-      Print(">>>>  resetTimer clicked!");
-      timerStart = 0;
+      Print(">>>>  resetCrossTimer clicked!");
+      crossRemainMinutes = 0;
       timeBlockadeCross = false;
       createObject(currentTimer, last, 231, clrOrange, "73");
     }
 
-    if (sparam == "setTimer")
+    if (sparam == "resetMainTimer")
     {
-      Print(">>>>  setTimer clicked!");
-      timerStart = TimeCurrent() + 60 * 60; // 60 s / 60 min
+      Print(">>>>  resetMainTimer clicked!");
+      mainRemainMinutes = 0;
+      timeBlockadeMain = false;
+      createObject(currentTimer, last, 231, clrOrange, "73");
+    }
+
+    if (sparam == "setCrossTimer")
+    {
+      Print(">>>>  setCrossTimer clicked!");
+      crossRemainMinutes  = 50;
       timeBlockadeCross = true;
+      createObject(currentTimer, last, 232, clrDarkGray, "2");
+    }   
+    
+    if (sparam == "setMainTimer")
+    {
+      Print(">>>>  setMainTimer clicked!");
+      mainRemainMinutes  = 50;
+      timeBlockadeMain = true;
       createObject(currentTimer, last, 232, clrDarkGray, "2");
     }
     if (sparam == "startExpertButton")
