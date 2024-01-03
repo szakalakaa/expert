@@ -1,16 +1,15 @@
-bool setTimerBlockadeForOrders(int MinutesToWait,
-                               int &RemainMinutes,
-                               string BuyComment,
-                               string SellComment,
-                               bool isOrder,
-                               double &memoryPrice,
-                               double LowerBand,
-                               double UpperBand,
-                               double Last)
+bool setTimerBlockadeForOrders(
+    GlobalStruct &G,
+    int MinutesToWait,
+    int &RemainMinutes,
+    string BuyComment,
+    string SellComment,
+    bool isOrder,
+    double &memoryPrice)
 
 {
     bool shouldBlockCross = false;
-    double triggerAgainPercent = 0.01;
+    double triggerAgainPercent = 0.03;
 
     HistorySelect((TimeCurrent() - MinutesToWait * 60), TimeCurrent());
     int total = HistoryDealsTotal();
@@ -33,14 +32,16 @@ bool setTimerBlockadeForOrders(int MinutesToWait,
             shouldBlockCross = true;
         }
 
-        if (LowerBand > Last && memoryPrice > (1 + triggerAgainPercent) * Last)
+        if (G.lowerBand > G.last && memoryPrice > (1 + triggerAgainPercent) * G.last)
         {
+
             shouldBlockCross = false;
             // memoryPrice = 0;
         }
 
-        if (UpperBand < Last && memoryPrice < (1 - triggerAgainPercent) * Last && memoryPrice > 0)
+        if (G.upperBand < G.last && memoryPrice < (1 - triggerAgainPercent) * G.last && memoryPrice > 0)
         {
+
             shouldBlockCross = false;
             // memoryPrice = 0;
         }

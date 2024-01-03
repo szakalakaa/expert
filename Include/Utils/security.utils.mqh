@@ -11,11 +11,11 @@ bool accountGuardian(double InitialAccount, double &CurrentAccount, int InsurePr
         return false;
     }
 
-    if (!checkPositionAndOrdersAmount())
-    {
-        StopExpert = true;
-        return false;
-    }
+    // if (!checkPositionAndOrdersAmount())
+    // {
+    //     StopExpert = true;
+    //     return false;
+    // }
 
     if (StopExpert)
     {
@@ -58,7 +58,8 @@ bool checkPositionAndOrdersAmount()
                 }
             }
         }
-
+        lotsOrders = NormalizeDouble(lotsOrders, 4);
+        
         if (lotsPosition != lotsOrders)
         {
             Print("lotsPosition: ", lotsPosition);

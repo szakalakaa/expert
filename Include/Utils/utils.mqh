@@ -1,3 +1,4 @@
+#include <Utils\global.variables.mqh>
 
 void fillOrdersTable(string &SellComment[], string &BuyComment[])
 {
@@ -62,22 +63,23 @@ void getTypePosition(string &Type_position, double &LotsInPosition, double &Posi
     }
 }
 
-bool checkInputs(double Stoploss, double StoplossCross, double StoplossStoch, int Atr_period, double Atr_multiplier,
+bool checkInputs(InitialStruct &I,
+                 int Atr_period, double Atr_multiplier,
                  double StochUpper, double kPeriod,
                  double dPeriod, int InsureProcentOfAccount)
 {
 
-    if (Stoploss <= 0 || Stoploss > 0.04)
+    if (I.stoplossMain <= 0 || I.stoplossMain > 0.04)
     {
-        Alert("stoploss <= 0 || stoploss > 0.04");
+        Alert("stoplossMain <= 0 || stoplossMain > 0.04");
         return false;
     }
-    if (StoplossCross <= 0 || StoplossCross > 0.04)
+    if (I.stoplossCross <= 0 || I.stoplossCross > 0.04)
     {
         Alert("stoplossCross <= 0 || stoplossCross > 0.04");
         return false;
     }
-    if (StoplossStoch <= 0 || StoplossStoch > 0.04)
+    if (I.stoplossStoch <= 0 || I.stoplossStoch > 0.04)
     {
         Alert("StoplossStoch <= 0 || StoplossStoch > 0.04");
         return false;

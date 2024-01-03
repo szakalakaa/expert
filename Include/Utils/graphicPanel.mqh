@@ -126,9 +126,9 @@ void CGraphicalPanel::Update(void)
     stopLossWasSchiftedLabel.Color(clrMistyRose);
 
   // isCrossOrder
-  if (isCrossOrder)
+  if (global.isCrossOrder)
     isCrossOrderLabel.Color(clrLightSkyBlue);
-  else if (!isCrossOrder)
+  else if (!global.isCrossOrder)
     isCrossOrderLabel.Color(clrLightCoral);
 
   if (timeBlockadeCross)
@@ -149,9 +149,9 @@ void CGraphicalPanel::Update(void)
     isStochOrderLabel.Color(clrLightCoral);
 
   // isMainOrder
-  if (isMainOrder)
+  if (global.isMainOrder)
     isMainOrderLabel.Color(clrLightSkyBlue);
-  else if (!isMainOrder)
+  else if (!global.isMainOrder)
     isMainOrderLabel.Color(clrLightCoral);
 
   if (timeBlockadeMain)
@@ -425,6 +425,7 @@ void OnChartEvent(const int id,         // Event identifier
                   const string &sparam  // Event parameter of string type
 )
 {
+  datetime currentTimer = TimeCurrent();
 
   if (id == CHARTEVENT_OBJECT_CLICK)
   {
@@ -448,15 +449,15 @@ void OnChartEvent(const int id,         // Event identifier
     if (sparam == "setCrossTimer")
     {
       Print(">>>>  setCrossTimer clicked!");
-      crossRemainMinutes  = 50;
+      crossRemainMinutes = 50;
       timeBlockadeCross = true;
       createObject(currentTimer, last, 232, clrDarkGray, "2");
-    }   
-    
+    }
+
     if (sparam == "setMainTimer")
     {
       Print(">>>>  setMainTimer clicked!");
-      mainRemainMinutes  = 50;
+      mainRemainMinutes = 50;
       timeBlockadeMain = true;
       createObject(currentTimer, last, 232, clrDarkGray, "2");
     }
