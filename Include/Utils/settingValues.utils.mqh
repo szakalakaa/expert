@@ -56,4 +56,7 @@ void updateInitial(InitialStruct &Initial, double Stoploss, double LotsCross, do
 
     Initial.crossMinutesToWait = 90;
     Initial.mainMinutesToWait = 60;
+
+    Initial.offset = 2; // offset buy/sell  1 = 0.000 1%
+    Initial.insureProcentOfAccount = 75;
 }

@@ -58,7 +58,7 @@ private:
   CLabel timeBlockadeCrossLabel;
   CLabel timeBlockadeMainLabel;
 
-  CLabel stopLossWasSchiftedLabel;
+
   CLabel currentBalanceLabel;
 
   CLabel crossAmountLabel;
@@ -120,11 +120,6 @@ void CGraphicalPanel::Update(void)
   shiftAmountLabel.Text("shiftAmount:  " + (string)shiftAmount);
   stochAmountLabel.Text("stochAmount:  " + (string)stochAmount);
 
-  if (stopLossWasSchifted)
-    stopLossWasSchiftedLabel.Color(clrLightSkyBlue);
-  else if (!stopLossWasSchifted)
-    stopLossWasSchiftedLabel.Color(clrMistyRose);
-
   // isCrossOrder
   if (global.isCrossOrder)
     isCrossOrderLabel.Color(clrLightSkyBlue);
@@ -172,7 +167,7 @@ void CGraphicalPanel::Update(void)
   positionOpenPriceLabel.Text((string)positionOpenPrice);
 
   PositionSelect(_Symbol);
-  valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
+  valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * global.last, 0)) + " USD");
 
   // UPPR LEFT CORNER VALUR
   if (currentBalance > 100)
@@ -329,12 +324,6 @@ bool CGraphicalPanel::CreatePanel(void)
   timeBlockadeMainLabel.FontSize(InpPanelFontSize);
   this.Add(timeBlockadeMainLabel);
 
-  stopLossWasSchiftedLabel.Create(NULL, "stopLossWasSchiftedLabel", 0, 10, 180, 1, 1);
-  stopLossWasSchiftedLabel.Text("stopLossWasSchifted");
-  stopLossWasSchiftedLabel.Color(clrWheat);
-  stopLossWasSchiftedLabel.FontSize(InpPanelFontSize);
-  this.Add(stopLossWasSchiftedLabel);
-
   int btnHeight = 20;
   int btnWidth = 90;
   int btnYRow = 210;
@@ -393,7 +382,7 @@ bool CGraphicalPanel::CreatePanel(void)
   this.Add(stopExpertButton);
 
   valueLabel.Create(NULL, "valueLabel", 0, 10, InpPanelHeight - 80, 1, 1);
-  valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * last, 0)) + " USD");
+  valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * global.last, 0)) + " USD");
   valueLabel.Color(clrWheat);
   valueLabel.FontSize(InpPanelFontSize);
   this.Add(valueLabel);
@@ -435,7 +424,7 @@ void OnChartEvent(const int id,         // Event identifier
       Print(">>>>  resetCrossTimer clicked!");
       crossRemainMinutes = 0;
       timeBlockadeCross = false;
-      createObject(currentTimer, last, 231, clrOrange, "73");
+      createObject(currentTimer, global.last, 231, clrOrange, "73");
     }
 
     if (sparam == "resetMainTimer")
@@ -443,7 +432,7 @@ void OnChartEvent(const int id,         // Event identifier
       Print(">>>>  resetMainTimer clicked!");
       mainRemainMinutes = 0;
       timeBlockadeMain = false;
-      createObject(currentTimer, last, 231, clrOrange, "73");
+      createObject(currentTimer, global.last, 231, clrOrange, "73");
     }
 
     if (sparam == "setCrossTimer")
@@ -451,7 +440,7 @@ void OnChartEvent(const int id,         // Event identifier
       Print(">>>>  setCrossTimer clicked!");
       crossRemainMinutes = 50;
       timeBlockadeCross = true;
-      createObject(currentTimer, last, 232, clrDarkGray, "2");
+      createObject(currentTimer, global.last, 232, clrDarkGray, "2");
     }
 
     if (sparam == "setMainTimer")
@@ -459,7 +448,7 @@ void OnChartEvent(const int id,         // Event identifier
       Print(">>>>  setMainTimer clicked!");
       mainRemainMinutes = 50;
       timeBlockadeMain = true;
-      createObject(currentTimer, last, 232, clrDarkGray, "2");
+      createObject(currentTimer, global.last, 232, clrDarkGray, "2");
     }
     if (sparam == "startExpertButton")
     {

@@ -66,7 +66,7 @@ void getTypePosition(string &Type_position, double &LotsInPosition, double &Posi
 bool checkInputs(InitialStruct &I,
                  int Atr_period, double Atr_multiplier,
                  double StochUpper, double kPeriod,
-                 double dPeriod, int InsureProcentOfAccount)
+                 double dPeriod)
 {
 
     if (I.stoplossMain <= 0 || I.stoplossMain > 0.04)
@@ -109,7 +109,7 @@ bool checkInputs(InitialStruct &I,
         Alert("dPeriod > 25 || dPeriod < 2");
         return false;
     }
-    if (InsureProcentOfAccount < 50 || InsureProcentOfAccount > 99)
+    if (I.insureProcentOfAccount < 50 || I.insureProcentOfAccount > 99)
     {
         Alert("InsureProcentOfAccount>50 || InsureProcentOfAccount<99");
         return false;
@@ -206,7 +206,6 @@ double getPercentageProfit(string Type_Position)
         double openPrice = PositionGetDouble(POSITION_PRICE_OPEN);
         double currentPrice = PositionGetDouble(POSITION_PRICE_CURRENT);
         double percentProfit = NormalizeDouble((((currentPrice - openPrice) / openPrice) * 100), 2);
-        percentProfit = MathAbs(percentProfit);
 
         if (Type_Position == "SHORT")
         {
@@ -216,5 +215,5 @@ double getPercentageProfit(string Type_Position)
         return percentProfit;
     }
 
-    return -100;
+    return -999;
 }

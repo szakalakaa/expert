@@ -3,5 +3,7 @@
 
 12.11  1h ->zjazd w dol 
 
+14,11 -> zjazd w dol 
+
 przezroczysty panel
 https://www.mql5.com/en/articles/4575

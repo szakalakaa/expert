@@ -26,7 +26,7 @@ bool crossOrder(GlobalStruct &G,
 
                 CrossAmount += 1;
 
-                removeOrderWithComment(tradeL, BuyComment[2]);
+                removeOrderWithValue(tradeL,I.lotsCross);
             }
             return true;
         }
@@ -38,8 +38,9 @@ bool crossOrder(GlobalStruct &G,
                 if (!tradeL.Sell(I.lotsCross, NULL, G.bid, 0, 0, BuyComment[4]))
                     Print("--ERROR SELL CROSS 2: " + BuyComment[4]);
 
-                CrossAmount += 1;
-                removeOrderWithComment(tradeL, SellComment[2]);
+                CrossAmount += 1; 
+
+                removeOrderWithValue(tradeL,I.lotsCross);
             }
             return true;
         }

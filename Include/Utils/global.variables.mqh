@@ -28,4 +28,11 @@ struct InitialStruct
 
     int crossMinutesToWait;
     int mainMinutesToWait;
+
+    int offset;
+    int insureProcentOfAccount;
+};
+
+struct StatsStruct {
+
 };

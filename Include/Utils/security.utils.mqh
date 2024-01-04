@@ -1,13 +1,13 @@
-bool accountGuardian(double InitialAccount, double &CurrentAccount, int InsureProcentOfAccount, double &CurrentBalance, bool &StopExpert)
+bool accountGuardian(InitialStruct &I,double InitialAccount, double &CurrentAccount, double &CurrentBalance, bool &StopExpert)
 {
     CurrentAccount = AccountInfoDouble(ACCOUNT_BALANCE);
 
     CurrentBalance = NormalizeDouble(100 * CurrentAccount / InitialAccount, 2);
 
-    if ((InitialAccount * InsureProcentOfAccount / 100) > CurrentAccount)
+    if ((InitialAccount * I.insureProcentOfAccount / 100) > CurrentAccount)
     {
         StopExpert = true;
-        Print("Saldo konta spadło " + (string)(100 - InsureProcentOfAccount) + " % od początku pracy expert advisora!!!");
+        Print("Saldo konta spadło " + (string)(100 - I.insureProcentOfAccount) + " % od początku pracy expert advisora!!!");
         return false;
     }
 
