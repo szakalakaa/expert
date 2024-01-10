@@ -34,16 +34,14 @@ bool setTimerBlockadeForOrders(
 
         if (G.lowerBand > G.last && memoryPrice > (1 + triggerAgainPercent) * G.last)
         {
-            Print("*****memoryPrice: ", memoryPrice);
-            Print("*****(1 + triggerAgainPercent) * G.last: ", ((1 + triggerAgainPercent) * G.last));
+       
             shouldBlockCross = false;
             // memoryPrice = 0;
         }
 
         if (G.upperBand < G.last && memoryPrice < (1 - triggerAgainPercent) * G.last && memoryPrice > 0)
         {
-            Print("==*****memoryPrice: ", memoryPrice);
-            Print("==*****(1 - triggerAgainPercent) * G.last: ", ((1 - triggerAgainPercent) * G.last));
+           
             shouldBlockCross = false;
             // memoryPrice = 0;
         }

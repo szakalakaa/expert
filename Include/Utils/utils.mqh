@@ -3,18 +3,20 @@
 void fillOrdersTable(string &SellComment[], string &BuyComment[])
 {
     SellComment[0] = "cross sell";
-    SellComment[1] = "cross sell additional";
+    SellComment[1] = "cross sell";
     SellComment[2] = "cross sell stop loss ";
     SellComment[3] = "main sell SL ";
     SellComment[4] = "close cross sell";
     SellComment[5] = "main sell";
+    SellComment[6] = "main aux sell stop";
 
     BuyComment[0] = "cross buy";
-    BuyComment[1] = "cross buy additional"; // additional
+    BuyComment[1] = "cross buy"; // additional
     BuyComment[2] = "cross buy stop loss ";
     BuyComment[3] = "main buy SL ";
     BuyComment[4] = "close cross buy";
     BuyComment[5] = "main buy";
+    BuyComment[6] = "main aux buy stop";
 }
 
 void fillCommentsTable(
@@ -74,9 +76,9 @@ bool checkInputs(InitialStruct &I,
         Alert("stoplossMain <= 0 || stoplossMain > 0.04");
         return false;
     }
-    if (I.stoplossCross <= 0 || I.stoplossCross > 0.04)
+    if (I.stoplossCross <= 0 || I.stoplossCross > 0.05)
     {
-        Alert("stoplossCross <= 0 || stoplossCross > 0.04");
+        Alert("stoplossCross <= 0 || stoplossCross > 0.05");
         return false;
     }
     if (I.stoplossStoch <= 0 || I.stoplossStoch > 0.04)

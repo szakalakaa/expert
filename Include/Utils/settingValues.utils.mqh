@@ -47,12 +47,15 @@ void updatePrices(GlobalStruct &Global, InitialStruct &I, double &TMA_down[], do
 void updateInitial(InitialStruct &Initial, double Stoploss, double LotsCross, double LotsMain)
 {
 
-    Initial.stoplossCross = Stoploss;
+    Initial.stoplossCross = 1.5 * Stoploss;
     Initial.stoplossMain = Stoploss;
     Initial.stoplossStoch = Stoploss;
 
-    Initial.lotsCross = LotsCross;
-    Initial.lotsMain = LotsMain;
+    Initial.lotsCross = 2 * LotsCross;
+    Initial.lotsCrossAux = LotsCross;
+
+    Initial.lotsMain = 2 * LotsMain;
+    Initial.lotsMainAux = LotsMain;
 
     Initial.crossMinutesToWait = 90;
     Initial.mainMinutesToWait = 60;

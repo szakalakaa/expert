@@ -5,8 +5,7 @@ void updateStopLoss(double LotsToShift,
                     CTrade &tradeClass,
                     string &CommentOrders[],
                     double &targetProfits[],
-                    double &stopLossPercentages[],
-                    int &IndexMemory)
+                    double &stopLossPercentages[])
 {
 
     double lastt = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_LAST), _Digits);
@@ -32,9 +31,7 @@ void updateStopLoss(double LotsToShift,
                     string commentFor = baseComment + (string)stopLossPercentages[j];
                     orderTicketFor = getOrderTicketByComment(commentFor);
                     if (orderTicketFor > 0 && orderTicketFor < MathPow(10, 10))
-                    {
-
-                        IndexMemory = 1;
+                    {                        
                         hasComment = true;
                     }
                 }

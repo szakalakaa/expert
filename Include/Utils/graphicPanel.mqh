@@ -453,12 +453,12 @@ void OnChartEvent(const int id,         // Event identifier
     if (sparam == "startExpertButton")
     {
       Print(">>>>  startExpert clicked!");
-      stopExpert = false;
+      global.stopExpert = false;
     }
     if (sparam == "stopExpertButton")
     {
       Print(">>>>  stopExpert clicked!");
-      stopExpert = true;
+      global.stopExpert = true;
     }
   }
 }

@@ -2,7 +2,7 @@
 #include <Utils\ordersUtils.mqh>
 #include <Utils\utils.mqh>
 
-bool mainOrder(GlobalStruct &G,
+void mainOrder(GlobalStruct &G,
                InitialStruct &I,
                string type_positionL,
                CTrade &tradeL,
@@ -27,7 +27,6 @@ bool mainOrder(GlobalStruct &G,
                 tradeL.PositionClose(PositionGetTicket(0));
                 removeAllOrders(tradeL);
             }
-            return true;
         }
 
         if ((G.last > G.upperBand) && (G.last < offsetForSell) && (type_positionL != "SHORT"))
@@ -39,34 +38,51 @@ bool mainOrder(GlobalStruct &G,
             }
         }
     }
-
     // OPEN POSITION
     if (!G.isMainOrder && !TimeBlockadeMain)
     {
         // buy order
         if ((G.last > offsetForBuy) && (G.last < G.lowerBand))
         {
-            if (!tradeL.Buy(I.lotsMain, NULL, G.ask, 0, 0, BuyComment[5]))
+            if (!tradeL.Buy((I.lotsMain + I.lotsMainAux), NULL, G.ask, 0, 0, BuyComment[5]))
+            {
                 Print("--ERROR BUY MAIN 1: ", BuyComment[5]);
-
+                G.stopExpert = true;
+            }
             if (!tradeL.SellStop(I.lotsMain, G.sellStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, sellComment[3]))
+            {
                 Print("--ERROR SELLSTOP MAIN 2: " + sellComment[3]);
+                G.stopExpert = true;
+            }
+            if (!tradeL.SellStop(I.lotsMainAux, G.sellStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, sellComment[6]))
+            {
+                Print("--ERROR SELLSTOP AUX MAIN 2: " + sellComment[6]);
+                G.stopExpert = true;
+            }
+
             MainAmount += 1;
             createObject(time, G.last, 141, clrDodgerBlue, "1");
-            return true;
         }
         // sell order
         if ((G.last < offsetForSell) && (G.last > G.upperBand))
         {
-            if (!tradeL.Sell(I.lotsMain, NULL, G.bid, 0, 0, SellComment[5]))
+            if (!tradeL.Sell((I.lotsMain + I.lotsMainAux), NULL, G.bid, 0, 0, SellComment[5]))
+            {
                 Print("--ERROR SELL MAIN 3: " + SellComment[5]);
+                G.stopExpert = true;
+            }
             if (!tradeL.BuyStop(I.lotsMain, G.buyStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, buyComment[3]))
+            {
                 Print("--ERROR BUYSTOP MAIN 4: " + buyComment[3]);
+                G.stopExpert = true;
+            }
+            if (!tradeL.BuyStop(I.lotsMainAux, G.buyStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, buyComment[6]))
+            {
+                Print("--ERROR BUYSTOP MAIN 4: " + buyComment[6]);
+                G.stopExpert = true;
+            }
             MainAmount += 1;
             createObject(time, G.last, 141, clrIndianRed, "1");
-            return true;
         }
     }
-
-    return true;
 }

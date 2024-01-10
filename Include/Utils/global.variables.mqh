@@ -14,7 +14,10 @@ struct GlobalStruct
 
     bool isCrossOrder;
     bool isMainOrder;
+    bool isMainAuxOrder;
     bool isStochOrder;
+
+    bool stopExpert;
 };
 
 struct InitialStruct
@@ -24,7 +27,9 @@ struct InitialStruct
     double stoplossStoch;
 
     double lotsCross;
+    double lotsCrossAux;
     double lotsMain;
+    double lotsMainAux;
 
     int crossMinutesToWait;
     int mainMinutesToWait;
