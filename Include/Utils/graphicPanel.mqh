@@ -54,7 +54,7 @@ private:
 
   CLabel isMainOrderLabel;
   CLabel isCrossOrderLabel;
-  CLabel isStochOrderLabel;
+  CLabel isMainAuxOrderLabel;
   CLabel timeBlockadeCrossLabel;
   CLabel timeBlockadeMainLabel;
 
@@ -137,11 +137,11 @@ void CGraphicalPanel::Update(void)
     timeBlockadeCrossLabel.Color(CONTROLS_DIALOG_COLOR_CLIENT_BG);
     timeBlockadeCrossLabel.Text("");
   }
-  // isStochOrder
-  // if (isStochOrder)
-  //   isStochOrderLabel.Color(clrLightSkyBlue);
-  // else if (!isStochOrder)
-  //   isStochOrderLabel.Color(clrLightCoral);
+  // isMainAuxOrder
+  if (global.isMainAuxOrder)
+    isMainAuxOrderLabel.Color(clrLightSkyBlue);
+  else if (!global.isMainAuxOrder)
+    isMainAuxOrderLabel.Color(clrLightCoral);
 
   // isMainOrder
   if (global.isMainOrder)
@@ -266,11 +266,6 @@ bool CGraphicalPanel::CreatePanel(void)
   shiftAmountLabel.FontSize(InpPanelFontSize);
   this.Add(shiftAmountLabel);
 
-  // stochAmountLabel.Create(NULL, "stochAmountLabel", 0, amountX, row4, 1, 1);
-  // stochAmountLabel.Text("stochAmount:  " + (string)stochAmount);
-  // stochAmountLabel.Color(clrWheat);
-  // stochAmountLabel.FontSize(InpPanelFontSize);
-  // this.Add(stochAmountLabel);
 
   int posY = 100;
   type_positionLabel.Create(NULL, "type_positionLabel", 0, 10, posY, 1, 1);
@@ -306,11 +301,11 @@ bool CGraphicalPanel::CreatePanel(void)
   timeBlockadeCrossLabel.FontSize(InpPanelFontSize);
   this.Add(timeBlockadeCrossLabel);
 
-  isStochOrderLabel.Create(NULL, "isStochOrderLabel", 0, orderX, orderY + 20, 1, 1);
-  isStochOrderLabel.Text("isStochOrder");
-  isStochOrderLabel.Color(clrWheat);
-  isStochOrderLabel.FontSize(InpPanelFontSize);
-  this.Add(isStochOrderLabel);
+  isMainAuxOrderLabel.Create(NULL, "isMainAuxOrderLabel", 0, orderX, orderY + 20, 1, 1);
+  isMainAuxOrderLabel.Text("isMainAuxOrder");
+  isMainAuxOrderLabel.Color(clrWheat);
+  isMainAuxOrderLabel.FontSize(InpPanelFontSize);
+  this.Add(isMainAuxOrderLabel);
 
   isMainOrderLabel.Create(NULL, "isMainOrderLabel", 0, orderX, +orderY + 40, 1, 1);
   isMainOrderLabel.Text("isMainOrder");

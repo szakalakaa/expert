@@ -14,15 +14,20 @@ struct GlobalStruct
     double lotsInPosition;
     double positionOpenPrice;
 
-    bool isCrossOrder;
     bool isMainOrder;
     bool isMainAuxOrder;
+
+    bool isCrossOrder;
 
     bool stopExpert;
 };
 
 struct InitialStruct
 {
+
+    bool applyCross;
+    bool applyMain;
+
     double stoplossCross;
     double stoplossMain;
 

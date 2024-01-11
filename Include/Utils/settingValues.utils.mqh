@@ -14,7 +14,7 @@ int coppyBuffersAndTick(int &Tma_handle, double &TMAbands_downL[], double &TMAba
     int values = CopyBuffer(Tma_handle, 3, 0, 2, TMAbands_downL) +
                  CopyBuffer(Tma_handle, 2, 0, 2, TMAbands_upL);
 
-                     if (values != 4)
+    if (values != 4)
     {
         Alert("Failed to get indicator values! ", values);
         return false;
@@ -23,7 +23,7 @@ int coppyBuffersAndTick(int &Tma_handle, double &TMAbands_downL[], double &TMAba
     return true;
 }
 
-void updatePrices(GlobalStruct &Global, InitialStruct &I, double &TMA_down[], double &TMA_up[])
+void updateGlobal(GlobalStruct &Global, InitialStruct &I, double &TMA_down[], double &TMA_up[])
 {
     Global.ask = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_ASK), _Digits);
     Global.bid = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_BID), _Digits);
@@ -35,22 +35,24 @@ void updatePrices(GlobalStruct &Global, InitialStruct &I, double &TMA_down[], do
     Global.sellStopPriceMain = NormalizeDouble(Global.bid * (1 - I.stoplossMain), 0);
     Global.buyStopPriceMain = NormalizeDouble(Global.ask * (1 + I.stoplossMain), 0);
 
-
     Global.isCrossOrder = isOrderWithComments(trade, crossOrders, type_position);
     Global.isMainOrder = isOrderWithComments(trade, mainOrders, type_position);
+    Global.isMainAuxOrder = isOrderWithComments(trade, mainAuxOrders, type_position);
 }
 
-void updateInitial(InitialStruct &Initial, double Stoploss, double LotsCross, double LotsMain)
+void updateInitial(InitialStruct &Initial, double Stoploss, double LotsCross,
+                   double LotsMain, double LotsMainAux, bool ApplyCross, bool ApplyMain)
 {
+    Initial.applyCross = ApplyCross;
+    Initial.applyMain = ApplyMain;
 
     Initial.stoplossCross = 1.5 * Stoploss;
     Initial.stoplossMain = Stoploss;
 
-    Initial.lotsCross = 2 * LotsCross;
-    Initial.lotsCrossAux = LotsCross;
+    Initial.lotsCross = LotsCross;
 
-    Initial.lotsMain = 2 * LotsMain;
-    Initial.lotsMainAux = LotsMain;
+    Initial.lotsMain = LotsMain;
+    Initial.lotsMainAux = LotsMainAux;
 
     Initial.crossMinutesToWait = 90;
     Initial.mainMinutesToWait = 60;

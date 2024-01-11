@@ -13,12 +13,17 @@ void mainOrder(GlobalStruct &G,
                string &BuyComment[])
 {
 
+    if (!I.applyMain)
+    {
+        return;
+    }
+
     double offsetForBuy = NormalizeDouble(lastCandleClose * (10000 + I.offset) / 10000, 0);
     double offsetForSell = NormalizeDouble(lastCandleClose * (10000 - I.offset) / 10000, 0);
     datetime time = iTime(_Symbol, PERIOD_M1, 0);
 
     // CLOSE POSITION ->it will be later in different block with parametrers of close pos
-    if (G.isMainOrder)
+    if (G.isMainOrder || G.isMainAuxOrder)
     {
         if ((G.last < G.lowerBand) && (G.last > offsetForBuy) && (type_positionL != "LONG"))
         {
