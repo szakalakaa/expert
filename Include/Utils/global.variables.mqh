@@ -11,11 +11,12 @@ struct GlobalStruct
     double buyStopPriceMain;
     double sellStopPriceStoch;
     double buyStopPriceStoch;
+    double lotsInPosition;
+    double positionOpenPrice;
 
     bool isCrossOrder;
     bool isMainOrder;
     bool isMainAuxOrder;
-    bool isStochOrder;
 
     bool stopExpert;
 };
@@ -24,7 +25,6 @@ struct InitialStruct
 {
     double stoplossCross;
     double stoplossMain;
-    double stoplossStoch;
 
     double lotsCross;
     double lotsCrossAux;
@@ -38,6 +38,6 @@ struct InitialStruct
     int insureProcentOfAccount;
 };
 
-struct StatsStruct {
-
+struct StatsStruct
+{
 };

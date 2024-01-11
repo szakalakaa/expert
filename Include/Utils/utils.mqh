@@ -8,7 +8,7 @@ void fillOrdersTable(string &SellComment[], string &BuyComment[])
     SellComment[3] = "main sell SL ";
     SellComment[4] = "close cross sell";
     SellComment[5] = "main sell";
-    SellComment[6] = "main aux sell stop";
+    SellComment[6] = "main aux sell stop ";
 
     BuyComment[0] = "cross buy";
     BuyComment[1] = "cross buy"; // additional
@@ -16,7 +16,7 @@ void fillOrdersTable(string &SellComment[], string &BuyComment[])
     BuyComment[3] = "main buy SL ";
     BuyComment[4] = "close cross buy";
     BuyComment[5] = "main buy";
-    BuyComment[6] = "main aux buy stop";
+    BuyComment[6] = "main aux buy stop ";
 }
 
 void fillCommentsTable(
@@ -65,10 +65,7 @@ void getTypePosition(string &Type_position, double &LotsInPosition, double &Posi
     }
 }
 
-bool checkInputs(InitialStruct &I,
-                 int Atr_period, double Atr_multiplier,
-                 double StochUpper, double kPeriod,
-                 double dPeriod)
+bool checkInputs(InitialStruct &I, int Atr_period, double Atr_multiplier)
 {
 
     if (I.stoplossMain <= 0 || I.stoplossMain > 0.04)
@@ -81,11 +78,6 @@ bool checkInputs(InitialStruct &I,
         Alert("stoplossCross <= 0 || stoplossCross > 0.05");
         return false;
     }
-    if (I.stoplossStoch <= 0 || I.stoplossStoch > 0.04)
-    {
-        Alert("StoplossStoch <= 0 || StoplossStoch > 0.04");
-        return false;
-    }
     if (Atr_period > 300 || Atr_period < 100)
     {
         Alert("atr_period > 300 || atr_period < 100");
@@ -96,21 +88,7 @@ bool checkInputs(InitialStruct &I,
         Alert("atr_multiplier > 3 || atr_multiplier < 0.5");
         return false;
     }
-    if (StochUpper > 95 || StochUpper < 5)
-    {
-        Alert("stochUpper > 95 || stochUpper < 5");
-        return false;
-    }
-    if (kPeriod > 25 || kPeriod < 2)
-    {
-        Alert("kPeriod > 25 || kPeriod < 2");
-        return false;
-    }
-    if (dPeriod > 25 || dPeriod < 2)
-    {
-        Alert("dPeriod > 25 || dPeriod < 2");
-        return false;
-    }
+
     if (I.insureProcentOfAccount < 50 || I.insureProcentOfAccount > 99)
     {
         Alert("InsureProcentOfAccount>50 || InsureProcentOfAccount<99");

@@ -2,7 +2,6 @@
 #include <Utils\ordersUtils.mqh>
 
 int coppyBuffersAndTick(int &Tma_handle, double &TMAbands_downL[], double &TMAbands_upL[],
-                        int &Stoch_handle, double &K_periodL[], double &D_periodL[],
                         MqlTick &Tick)
 {
 
@@ -13,11 +12,9 @@ int coppyBuffersAndTick(int &Tma_handle, double &TMAbands_downL[], double &TMAba
     }
 
     int values = CopyBuffer(Tma_handle, 3, 0, 2, TMAbands_downL) +
-                 CopyBuffer(Tma_handle, 2, 0, 2, TMAbands_upL) +
-                 CopyBuffer(Stoch_handle, 0, 0, 3, K_periodL) +
-                 CopyBuffer(Stoch_handle, 1, 0, 3, D_periodL);
+                 CopyBuffer(Tma_handle, 2, 0, 2, TMAbands_upL);
 
-    if (values != 10)
+                     if (values != 4)
     {
         Alert("Failed to get indicator values! ", values);
         return false;
@@ -37,8 +34,7 @@ void updatePrices(GlobalStruct &Global, InitialStruct &I, double &TMA_down[], do
     Global.buyStopPriceCross = NormalizeDouble(Global.ask * (1 + I.stoplossCross), 0);
     Global.sellStopPriceMain = NormalizeDouble(Global.bid * (1 - I.stoplossMain), 0);
     Global.buyStopPriceMain = NormalizeDouble(Global.ask * (1 + I.stoplossMain), 0);
-    Global.sellStopPriceStoch = NormalizeDouble(Global.bid * (1 - I.stoplossStoch), 0);
-    Global.buyStopPriceStoch = NormalizeDouble(Global.ask * (1 + I.stoplossStoch), 0);
+
 
     Global.isCrossOrder = isOrderWithComments(trade, crossOrders, type_position);
     Global.isMainOrder = isOrderWithComments(trade, mainOrders, type_position);
@@ -49,7 +45,6 @@ void updateInitial(InitialStruct &Initial, double Stoploss, double LotsCross, do
 
     Initial.stoplossCross = 1.5 * Stoploss;
     Initial.stoplossMain = Stoploss;
-    Initial.stoplossStoch = Stoploss;
 
     Initial.lotsCross = 2 * LotsCross;
     Initial.lotsCrossAux = LotsCross;

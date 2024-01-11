@@ -118,7 +118,7 @@ void CGraphicalPanel::Update(void)
   crossAmountLabel.Text("crossAmount:" + (string)crossAmount);
   mainAmountLabel.Text("mainAmount:  " + (string)mainAmount);
   shiftAmountLabel.Text("shiftAmount:  " + (string)shiftAmount);
-  stochAmountLabel.Text("stochAmount:  " + (string)stochAmount);
+
 
   // isCrossOrder
   if (global.isCrossOrder)
@@ -138,10 +138,10 @@ void CGraphicalPanel::Update(void)
     timeBlockadeCrossLabel.Text("");
   }
   // isStochOrder
-  if (isStochOrder)
-    isStochOrderLabel.Color(clrLightSkyBlue);
-  else if (!isStochOrder)
-    isStochOrderLabel.Color(clrLightCoral);
+  // if (isStochOrder)
+  //   isStochOrderLabel.Color(clrLightSkyBlue);
+  // else if (!isStochOrder)
+  //   isStochOrderLabel.Color(clrLightCoral);
 
   // isMainOrder
   if (global.isMainOrder)
@@ -163,8 +163,8 @@ void CGraphicalPanel::Update(void)
 
   //
   type_positionLabel.Text((string)type_position);
-  lotsInPositionLabel.Text((string)lotsInPosition);
-  positionOpenPriceLabel.Text((string)positionOpenPrice);
+  lotsInPositionLabel.Text((string)global.lotsInPosition);
+  positionOpenPriceLabel.Text((string)global.positionOpenPrice);
 
   PositionSelect(_Symbol);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * global.last, 0)) + " USD");
@@ -266,11 +266,11 @@ bool CGraphicalPanel::CreatePanel(void)
   shiftAmountLabel.FontSize(InpPanelFontSize);
   this.Add(shiftAmountLabel);
 
-  stochAmountLabel.Create(NULL, "stochAmountLabel", 0, amountX, row4, 1, 1);
-  stochAmountLabel.Text("stochAmount:  " + (string)stochAmount);
-  stochAmountLabel.Color(clrWheat);
-  stochAmountLabel.FontSize(InpPanelFontSize);
-  this.Add(stochAmountLabel);
+  // stochAmountLabel.Create(NULL, "stochAmountLabel", 0, amountX, row4, 1, 1);
+  // stochAmountLabel.Text("stochAmount:  " + (string)stochAmount);
+  // stochAmountLabel.Color(clrWheat);
+  // stochAmountLabel.FontSize(InpPanelFontSize);
+  // this.Add(stochAmountLabel);
 
   int posY = 100;
   type_positionLabel.Create(NULL, "type_positionLabel", 0, 10, posY, 1, 1);
@@ -280,13 +280,13 @@ bool CGraphicalPanel::CreatePanel(void)
   this.Add(type_positionLabel);
 
   lotsInPositionLabel.Create(NULL, "lotsInPositionLabel", 0, 120, posY, 1, 1);
-  lotsInPositionLabel.Text((string)lotsInPosition);
+  lotsInPositionLabel.Text((string)global.lotsInPosition);
   lotsInPositionLabel.Color(clrWheat);
   lotsInPositionLabel.FontSize(InpPanelFontSize);
   this.Add(lotsInPositionLabel);
 
   positionOpenPriceLabel.Create(NULL, "positionOpenPriceLabel", 0, 180, posY, 1, 1);
-  positionOpenPriceLabel.Text((string)positionOpenPrice);
+  positionOpenPriceLabel.Text((string)global.positionOpenPrice);
   positionOpenPriceLabel.Color(clrWheat);
   positionOpenPriceLabel.FontSize(InpPanelFontSize);
   this.Add(positionOpenPriceLabel);

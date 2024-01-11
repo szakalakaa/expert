@@ -37,7 +37,6 @@ bool isOrderWithComments(CTrade &tradeClass, string &commentsToFind[], string ty
     return hasOrder;
 }
 
-
 // OrderGetInteger(ORDER_TYPE)=5 for LONG type_position => sellStop order
 // OrderGetInteger(ORDER_TYPE)=4 for SHORT type_position => buyStop order
 bool isOrderWithValue(CTrade &tradeClass, double lotsOfOrderToFind, string type_positionLL)
@@ -184,8 +183,11 @@ bool removeOrderWithValue(CTrade &tradeClass, double lotsToRemove)
             if (orderVolume == lotsToRemove)
             {
                 if (!tradeClass.OrderDelete(orderTicket))
+                {
                     Print("--ERROR 88");
-                Print("OrderTicket: ", orderTicket, " with volume: ", orderVolume, " lots was removed.");
+                    Print("OrderTicket: ", orderTicket, " with volume: ", orderVolume, " lots was removed.");
+                    return true;
+                }
             }
         }
     }
