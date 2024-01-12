@@ -23,6 +23,13 @@ int coppyBuffersAndTick(int &Tma_handle, double &TMAbands_downL[], double &TMAba
     return true;
 }
 
+void updateGlobalOnInit(GlobalStruct &Global)
+{
+    Global.stopExpert = false;
+    Global.timeBlockadeCross = false;
+    Global.timeBlockadeMain = false;
+}
+
 void updateGlobal(GlobalStruct &Global, InitialStruct &I, double &TMA_down[], double &TMA_up[])
 {
     Global.ask = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_ASK), _Digits);

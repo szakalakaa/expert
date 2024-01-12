@@ -1,5 +1,8 @@
 struct GlobalStruct
 {
+    int crossRemainMinutes;
+    int mainRemainMinutes;
+
     double ask;
     double bid;
     double last;
@@ -14,12 +17,18 @@ struct GlobalStruct
     double lotsInPosition;
     double positionOpenPrice;
 
+    double memorySLCross;
+    double memorySLMain;
+    double initialAccount;
+    double currentAccount;
+    double currentBalance;
+
     bool isMainOrder;
     bool isMainAuxOrder;
-
     bool isCrossOrder;
-
     bool stopExpert;
+    bool timeBlockadeCross;
+    bool timeBlockadeMain;
 };
 
 struct InitialStruct

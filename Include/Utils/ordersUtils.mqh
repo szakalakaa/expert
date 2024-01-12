@@ -226,7 +226,11 @@ bool removeOrderWithComment(CTrade &Trade, string commentToRemove)
 
 void removeAllOrders(CTrade &tradeLL)
 {
-    ulong ticket = 0;
+    for (int i = 0; i < OrdersTotal(); i++)
+    {
+        if (!tradeLL.OrderDelete(OrderGetTicket(i)))
+            Print("--ERROR 9");
+    }
     for (int i = 0; i < OrdersTotal(); i++)
     {
         if (!tradeLL.OrderDelete(OrderGetTicket(i)))

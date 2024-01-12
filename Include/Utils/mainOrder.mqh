@@ -8,7 +8,6 @@ void mainOrder(GlobalStruct &G,
                CTrade &tradeL,
                double lastCandleClose,
                int &MainAmount,
-               bool TimeBlockadeMain,
                string &SellComment[],
                string &BuyComment[])
 {
@@ -44,7 +43,7 @@ void mainOrder(GlobalStruct &G,
         }
     }
     // OPEN POSITION
-    if (!G.isMainOrder && !TimeBlockadeMain)
+    if (!G.isMainOrder && !G.timeBlockadeMain)
     {
         // buy order
         if ((G.last > offsetForBuy) && (G.last < G.lowerBand))

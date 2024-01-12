@@ -1,23 +1,25 @@
-bool accountGuardian(InitialStruct &I,double InitialAccount, double &CurrentAccount, double &CurrentBalance, bool &StopExpert)
+#include <Utils\global.variables.mqh>
+
+bool accountGuardian(InitialStruct &I, GlobalStruct &G)
 {
-    CurrentAccount = AccountInfoDouble(ACCOUNT_BALANCE);
+    G.currentAccount = AccountInfoDouble(ACCOUNT_BALANCE);
 
-    CurrentBalance = NormalizeDouble(100 * CurrentAccount / InitialAccount, 2);
+    G.currentBalance = NormalizeDouble(100 * G.currentAccount / G.initialAccount, 2);
 
-    if ((InitialAccount * I.insureProcentOfAccount / 100) > CurrentAccount)
+    if ((G.initialAccount * I.insureProcentOfAccount / 100) > G.currentAccount)
     {
-        StopExpert = true;
+        G.stopExpert = true;
         Print("Saldo konta spadło " + (string)(100 - I.insureProcentOfAccount) + " % od początku pracy expert advisora!!!");
         return false;
     }
 
-    // if (!checkPositionAndOrdersAmount())
-    // {
-    //     StopExpert = true;
-    //     return false;
-    // }
+    if (!checkPositionAndOrdersAmount())
+    {
+        G.stopExpert = true;
+        return false;
+    }
 
-    if (StopExpert)
+    if (G.stopExpert)
     {
         return false;
     }
@@ -59,7 +61,7 @@ bool checkPositionAndOrdersAmount()
             }
         }
         lotsOrders = NormalizeDouble(lotsOrders, 4);
-        
+
         if (lotsPosition != lotsOrders)
         {
             Print("lotsPosition: ", lotsPosition);

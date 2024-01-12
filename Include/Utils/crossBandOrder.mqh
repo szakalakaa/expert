@@ -7,7 +7,6 @@ void crossOrder(GlobalStruct &G,
                 InitialStruct &I,
                 string &type_positionL,
                 CTrade &tradeL,
-                bool TimeBlockadeCross,
                 int &CrossAmount,
                 string &SellComment[], string &BuyComment[])
 {
@@ -57,7 +56,7 @@ void crossOrder(GlobalStruct &G,
     }
 
     // OPEN POSITION
-    if (!G.isCrossOrder && !TimeBlockadeCross)
+    if (!G.isCrossOrder && !G.timeBlockadeCross)
     {
         // OPTIMIZE
         //  buy order when no mainOrder

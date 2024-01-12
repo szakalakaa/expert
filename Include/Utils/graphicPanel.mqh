@@ -126,10 +126,10 @@ void CGraphicalPanel::Update(void)
   else if (!global.isCrossOrder)
     isCrossOrderLabel.Color(clrLightCoral);
 
-  if (timeBlockadeCross)
+  if (global.timeBlockadeCross)
   {
     timeBlockadeCrossLabel.Color(clrLightSkyBlue);
-    timeBlockadeCrossLabel.Text("timeBlockadeCross: " + (string)(crossRemainMinutes));
+    timeBlockadeCrossLabel.Text("timeBlockadeCross: " + (string)(global.crossRemainMinutes));
     isCrossOrderLabel.Color(CONTROLS_DIALOG_COLOR_CLIENT_BG);
   }
   else
@@ -149,10 +149,10 @@ void CGraphicalPanel::Update(void)
   else if (!global.isMainOrder)
     isMainOrderLabel.Color(clrLightCoral);
 
-  if (timeBlockadeMain)
+  if (global.timeBlockadeMain)
   {
     timeBlockadeMainLabel.Color(clrLightSkyBlue);
-    timeBlockadeMainLabel.Text("timeBlockadeMain: " + (string)(mainRemainMinutes));
+    timeBlockadeMainLabel.Text("timeBlockadeMain: " + (string)(global.mainRemainMinutes));
     isMainOrderLabel.Color(CONTROLS_DIALOG_COLOR_CLIENT_BG);
   }
   else
@@ -170,11 +170,11 @@ void CGraphicalPanel::Update(void)
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * global.last, 0)) + " USD");
 
   // UPPR LEFT CORNER VALUR
-  if (currentBalance > 100)
+  if (global.currentBalance > 100)
     currentBalanceLabel.Color(clrLightSkyBlue);
   else
     currentBalanceLabel.Color(clrLightCoral);
-  currentBalanceLabel.Text((string)currentBalance);
+  currentBalanceLabel.Text((string)global.currentBalance);
 
   return;
 }
@@ -224,7 +224,7 @@ bool CGraphicalPanel::CreatePanel(void)
   this.Add(main_header);
 
   currentBalanceLabel.Create(NULL, "currentBalanceLabel", 0, (InpPanelWidth - 70), row0, 1, 1);
-  currentBalanceLabel.Text((string)currentBalance);
+  currentBalanceLabel.Text((string)global.currentBalance);
   currentBalanceLabel.Color(clrWheat);
   this.Add(currentBalanceLabel);
 
@@ -417,32 +417,32 @@ void OnChartEvent(const int id,         // Event identifier
     if (sparam == "resetCrossTimer")
     {
       Print(">>>>  resetCrossTimer clicked!");
-      crossRemainMinutes = 0;
-      timeBlockadeCross = false;
+      global.crossRemainMinutes = 0;
+      global.timeBlockadeCross = false;
       createObject(currentTimer, global.last, 231, clrOrange, "73");
     }
 
     if (sparam == "resetMainTimer")
     {
       Print(">>>>  resetMainTimer clicked!");
-      mainRemainMinutes = 0;
-      timeBlockadeMain = false;
+      global.mainRemainMinutes = 0;
+      global.timeBlockadeMain = false;
       createObject(currentTimer, global.last, 231, clrOrange, "73");
     }
 
     if (sparam == "setCrossTimer")
     {
       Print(">>>>  setCrossTimer clicked!");
-      crossRemainMinutes = 50;
-      timeBlockadeCross = true;
+      global.crossRemainMinutes = 50;
+      global.timeBlockadeCross = true;
       createObject(currentTimer, global.last, 232, clrDarkGray, "2");
     }
 
     if (sparam == "setMainTimer")
     {
       Print(">>>>  setMainTimer clicked!");
-      mainRemainMinutes = 50;
-      timeBlockadeMain = true;
+      global.mainRemainMinutes = 50;
+      global.timeBlockadeMain = true;
       createObject(currentTimer, global.last, 232, clrDarkGray, "2");
     }
     if (sparam == "startExpertButton")
