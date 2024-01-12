@@ -3,7 +3,7 @@
 void fillOrdersTable(string &SellComment[], string &BuyComment[])
 {
     SellComment[0] = "cross sell";
-    SellComment[1] = "cross sell";
+    SellComment[1] = "cross sell additional";
     SellComment[2] = "cross sell stop loss ";
     SellComment[3] = "main sell SL ";
     SellComment[4] = "close cross sell";
@@ -13,7 +13,7 @@ void fillOrdersTable(string &SellComment[], string &BuyComment[])
     SellComment[8] = "sec rev sell stop ";
 
     BuyComment[0] = "cross buy";
-    BuyComment[1] = "cross buy"; // additional
+    BuyComment[1] = "cross buy additional"; // additional
     BuyComment[2] = "cross buy stop loss ";
     BuyComment[3] = "main buy SL ";
     BuyComment[4] = "close cross buy";

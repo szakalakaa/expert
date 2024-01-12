@@ -182,7 +182,7 @@ void CGraphicalPanel::Update(void)
     currentBalanceLabel.Color(clrLightSkyBlue);
   else
     currentBalanceLabel.Color(clrLightCoral);
-  currentBalanceLabel.Text((string)initial.testBool);
+  currentBalanceLabel.Text((string)global.currentBalance);
 
   return;
 }

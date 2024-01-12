@@ -1,9 +1,8 @@
-bool isCandleCloseWickLong(MqlRates &Candle, string TypePosition)
+bool isCandleCloseWickLong(MqlRates &Candle, string TypePosition,int WickLength)
 {
-    int wickLength = 230; // 0.5%
     if (TypePosition == "SHORT")
     {
-        if ((Candle.close - Candle.low) > wickLength)
+        if ((Candle.close - Candle.low) > WickLength)
         {
             return true;
         }
@@ -11,7 +10,7 @@ bool isCandleCloseWickLong(MqlRates &Candle, string TypePosition)
 
     if (TypePosition == "LONG")
     {
-        if ((Candle.high - Candle.close) > wickLength)
+        if ((Candle.high - Candle.close) > WickLength)
         {
             return true;
         }

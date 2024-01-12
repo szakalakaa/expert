@@ -30,7 +30,10 @@ void mainOrder(GlobalStruct &G,
             {
                 tradeL.PositionClose(PositionGetTicket(0));
                 removeAllOrders(tradeL);
+                Sleep(3000);
+                removeAllOrders(tradeL);
             }
+            return;
         }
 
         if ((G.last > G.upperBand) && (G.last < offsetForSell) && (type_positionL != "SHORT"))
@@ -39,7 +42,10 @@ void mainOrder(GlobalStruct &G,
             {
                 tradeL.PositionClose(PositionGetTicket(0));
                 removeAllOrders(tradeL);
+                Sleep(3000);
+                removeAllOrders(tradeL);
             }
+            return;
         }
     }
     // OPEN POSITION
@@ -65,7 +71,6 @@ void mainOrder(GlobalStruct &G,
             }
 
             MainAmount += 1;
-            createObject(time, G.last, 141, clrDodgerBlue, "1");
         }
         // sell order
         if ((G.last < offsetForSell) && (G.last > G.upperBand))
@@ -86,7 +91,6 @@ void mainOrder(GlobalStruct &G,
                 G.stopExpert = true;
             }
             MainAmount += 1;
-            createObject(time, G.last, 141, clrIndianRed, "1");
         }
     }
 }

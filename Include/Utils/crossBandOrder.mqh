@@ -33,8 +33,9 @@ void crossOrder(GlobalStruct &G,
                 }
 
                 CrossAmount += 1;
-
                 removeOrderWithValue(tradeL, I.lotsCross);
+                Sleep(3000);
+                removeAllOrders(tradeL);
             }
         }
 
@@ -49,12 +50,12 @@ void crossOrder(GlobalStruct &G,
                 }
 
                 CrossAmount += 1;
-
                 removeOrderWithValue(tradeL, I.lotsCross);
+                Sleep(3000);
+                removeAllOrders(tradeL);
             }
         }
     }
-
     // OPEN POSITION
     if (!G.isCrossOrder && !G.timeBlockadeCross)
     {
@@ -73,14 +74,14 @@ void crossOrder(GlobalStruct &G,
                 Print("--ERROR SELLSTOP CROSS 4" + SellComment[2]);
                 G.stopExpert = true;
             }
-
             CrossAmount += 1;
             type_positionL = "LONG";
-            createObject(time, G.last, 140, clrDodgerBlue, "1");
+            Sleep(1000);
+            return;
         }
 
         // buy additional piece
-        if ((G.last < G.lowerBand) && (type_positionL == "LONG") && (G.isMainOrder  && !G.isMainAuxOrder))
+        if ((G.last < G.lowerBand) && (type_positionL == "LONG") && (G.isMainOrder && !G.isMainAuxOrder))
         {
             if (!tradeL.Buy(I.lotsCross, NULL, G.ask, 0, 0, BuyComment[1]))
             {
@@ -93,13 +94,13 @@ void crossOrder(GlobalStruct &G,
                 Print("--ERROR SELLSTOP CROSS 6: " + SellComment[2]);
                 G.stopExpert = true;
             }
-
-            CrossAmount += 1;
-            createObject(time, G.last, 140, clrDodgerBlue, "1");
+            CrossAmount += 1;      
+            Sleep(1000);
+            return;
         }
 
         // sell order when no mainOrder
-        if ((G.last > G.upperBand) && (type_positionL != "SHORT") && (!G.isMainOrder  && !G.isMainAuxOrder))
+        if ((G.last > G.upperBand) && (type_positionL != "SHORT") && (!G.isMainOrder && !G.isMainAuxOrder))
         {
             if (!tradeL.Sell(I.lotsCross, NULL, G.bid, 0, 0, SellComment[0]))
             {
@@ -113,10 +114,11 @@ void crossOrder(GlobalStruct &G,
             }
             CrossAmount += 1;
             type_positionL = "SHORT";
-            createObject(time, G.last, 140, clrIndianRed, "1");
+            Sleep(1000);
+            return;
         }
         // sell additional piece
-        if ((G.last > G.upperBand) && (type_positionL == "SHORT") && (G.isMainOrder  && !G.isMainAuxOrder))
+        if ((G.last > G.upperBand) && (type_positionL == "SHORT") && (G.isMainOrder && !G.isMainAuxOrder))
         {
             if (!tradeL.Sell(I.lotsCross, NULL, G.bid, 0, 0, SellComment[1]))
             {
@@ -130,7 +132,8 @@ void crossOrder(GlobalStruct &G,
             }
             CrossAmount += 1;
             type_positionL = "SHORT";
-            createObject(time, G.last, 140, clrIndianRed, "1");
+            Sleep(1000);
+            return;
         }
     }
 }

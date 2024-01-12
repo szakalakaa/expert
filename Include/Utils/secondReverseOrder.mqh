@@ -19,13 +19,23 @@ void secondReverseOrder(GlobalStruct &G,
         return;
     }
 
-    I.testBool = isCandleCloseWickLong(Candle[2], type_positionL);
-    bool isSecondWickLong = isCandleCloseWickLong(Candle[2], type_positionL);
+    bool isFirstWickLong = isCandleCloseWickLong(Candle[1], type_positionL, 230);
+    bool isSecondWickLong = isCandleCloseWickLong(Candle[2], type_positionL, 230);  // czy jest wiekszy niz 230?
 
-    if (G.isMainOrder && !G.isSecondReverseOrder) // && !isSecondWickLong)
+    datetime time = iTime(_Symbol, PERIOD_M1, 0);
+    if (G.isMainOrder && !G.isSecondReverseOrder && !isSecondWickLong && !isFirstWickLong)
     {
+        int firstBodyMinHeight = 50;
+        bool isFirstBodyLong = MathAbs(NormalizeDouble((Candle[1].open - Candle[1].close), 0)) > firstBodyMinHeight;
+
         // OPEN LONG POSITION
-        if ((G.last < G.lowerBand) && (Candle[2].close < Candle[1].close) && (G.last > Candle[1].close) && (type_positionL == "LONG"))
+        if ((G.last < G.lowerBand) &&
+            (Candle[1].close < G.lowerBand) &&
+            (Candle[2].close < G.lowerBand) &&
+            (Candle[2].close < Candle[1].close) &&
+            (G.last > Candle[1].close) &&
+            (isFirstBodyLong) &&
+            (type_positionL == "LONG"))
         {
             double sl = Candle[2].low - 200;
 
@@ -40,12 +50,19 @@ void secondReverseOrder(GlobalStruct &G,
                 Print("--ERROR SELLSTOP SECOND REVERSE: " + sellComment[8]);
                 G.stopExpert = true;
             }
+            createObject(time, G.last, 141, clrBlue, "1");
         }
 
         // OPEN SHORT POSITION
-        if ((G.last > G.upperBand) && (Candle[2].close < Candle[1].close) && (G.last < Candle[1].close) && (type_positionL == "SHORT"))
+        if ((G.last > G.upperBand) &&
+            (Candle[1].close > G.upperBand) &&
+            (Candle[2].close > G.upperBand) &&
+            (Candle[2].close < Candle[1].close) &&
+            (G.last < Candle[1].close) &&
+            (isFirstBodyLong) &&
+            (type_positionL == "SHORT"))
         {
-            
+
             double sl = Candle[2].high + 200;
 
             if (!tradeL.Sell(I.lotsSecondReverse, NULL, G.bid, 0, 0, SellComment[7]))
@@ -58,7 +75,7 @@ void secondReverseOrder(GlobalStruct &G,
                 Print("--ERROR BUYSTOP SECOND REVERSE: " + buyComment[8]);
                 G.stopExpert = true;
             }
+            createObject(time, G.last, 141, clrIndianRed, "1");
         }
-
     }
 }
