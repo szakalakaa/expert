@@ -1,24 +1,26 @@
 struct GlobalStruct
 {
+
     int crossRemainMinutes;
     int mainRemainMinutes;
+    int secondReverseRemainMinutes;
 
     double ask;
     double bid;
     double last;
     double upperBand;
     double lowerBand;
+
     double sellStopPriceCross;
-    double buyStopPriceCross;
+    double buyStopPriceCross;    
     double sellStopPriceMain;
     double buyStopPriceMain;
-    double sellStopPriceStoch;
-    double buyStopPriceStoch;
+
     double lotsInPosition;
     double positionOpenPrice;
-
     double memorySLCross;
     double memorySLMain;
+    double memorySLSecondReverse;
     double initialAccount;
     double currentAccount;
     double currentBalance;
@@ -26,9 +28,12 @@ struct GlobalStruct
     bool isMainOrder;
     bool isMainAuxOrder;
     bool isCrossOrder;
+    bool isSecondReverseOrder;
+
     bool stopExpert;
     bool timeBlockadeCross;
     bool timeBlockadeMain;
+    bool timeBlockadeSecondReverse;
 };
 
 struct InitialStruct
@@ -36,6 +41,7 @@ struct InitialStruct
 
     bool applyCross;
     bool applyMain;
+    bool applySecondReverse;
 
     double stoplossCross;
     double stoplossMain;
@@ -44,12 +50,20 @@ struct InitialStruct
     double lotsCrossAux;
     double lotsMain;
     double lotsMainAux;
+    double lotsSecondReverse;
 
     int crossMinutesToWait;
     int mainMinutesToWait;
 
     int offset;
     int insureProcentOfAccount;
+
+
+    bool testBool;
+    int testInt;
+    double testDouble;
+    string testString;
+
 };
 
 struct StatsStruct

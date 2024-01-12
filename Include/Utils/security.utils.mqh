@@ -13,11 +13,11 @@ bool accountGuardian(InitialStruct &I, GlobalStruct &G)
         return false;
     }
 
-    if (!checkPositionAndOrdersAmount())
-    {
-        G.stopExpert = true;
-        return false;
-    }
+    // if (!checkPositionAndOrdersAmount())
+    // {
+    //     G.stopExpert = true;
+    //     return false;
+    // }
 
     if (G.stopExpert)
     {

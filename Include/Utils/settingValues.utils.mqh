@@ -28,6 +28,7 @@ void updateGlobalOnInit(GlobalStruct &Global)
     Global.stopExpert = false;
     Global.timeBlockadeCross = false;
     Global.timeBlockadeMain = false;
+    Global.timeBlockadeSecondReverse = false;
 }
 
 void updateGlobal(GlobalStruct &Global, InitialStruct &I, double &TMA_down[], double &TMA_up[])
@@ -39,27 +40,31 @@ void updateGlobal(GlobalStruct &Global, InitialStruct &I, double &TMA_down[], do
     Global.lowerBand = NormalizeDouble(TMA_down[0], 0);
     Global.sellStopPriceCross = NormalizeDouble(Global.bid * (1 - I.stoplossCross), 0);
     Global.buyStopPriceCross = NormalizeDouble(Global.ask * (1 + I.stoplossCross), 0);
+
     Global.sellStopPriceMain = NormalizeDouble(Global.bid * (1 - I.stoplossMain), 0);
     Global.buyStopPriceMain = NormalizeDouble(Global.ask * (1 + I.stoplossMain), 0);
 
     Global.isCrossOrder = isOrderWithComments(trade, crossOrders, type_position);
     Global.isMainOrder = isOrderWithComments(trade, mainOrders, type_position);
     Global.isMainAuxOrder = isOrderWithComments(trade, mainAuxOrders, type_position);
+    Global.isSecondReverseOrder = isOrderWithComments(trade, isSecondReverseOrders, type_position);
 }
 
 void updateInitial(InitialStruct &Initial, double Stoploss, double LotsCross,
-                   double LotsMain, double LotsMainAux, bool ApplyCross, bool ApplyMain)
+                   double LotsMain, double LotsMainAux, double LotsSecondReverse, bool ApplyCross, bool ApplyMain, bool ApplySecondReverse)
 {
     Initial.applyCross = ApplyCross;
     Initial.applyMain = ApplyMain;
+    Initial.applySecondReverse = ApplySecondReverse;
 
     Initial.stoplossCross = 1.5 * Stoploss;
     Initial.stoplossMain = Stoploss;
 
     Initial.lotsCross = LotsCross;
-
     Initial.lotsMain = LotsMain;
     Initial.lotsMainAux = LotsMainAux;
+
+    Initial.lotsSecondReverse = LotsSecondReverse;
 
     Initial.crossMinutesToWait = 90;
     Initial.mainMinutesToWait = 60;

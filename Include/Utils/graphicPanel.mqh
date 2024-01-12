@@ -55,6 +55,8 @@ private:
   CLabel isMainOrderLabel;
   CLabel isCrossOrderLabel;
   CLabel isMainAuxOrderLabel;
+  CLabel isSecondReverseOrderLabel;
+
   CLabel timeBlockadeCrossLabel;
   CLabel timeBlockadeMainLabel;
 
@@ -161,6 +163,12 @@ void CGraphicalPanel::Update(void)
     timeBlockadeMainLabel.Text("");
   }
 
+  //isSecondReverseOrder
+  
+ if (global.isSecondReverseOrder)
+    isSecondReverseOrderLabel.Color(clrLightSkyBlue);
+  else if (!global.isSecondReverseOrder)
+    isSecondReverseOrderLabel.Color(clrLightCoral);
   //
   type_positionLabel.Text((string)type_position);
   lotsInPositionLabel.Text((string)global.lotsInPosition);
@@ -174,7 +182,7 @@ void CGraphicalPanel::Update(void)
     currentBalanceLabel.Color(clrLightSkyBlue);
   else
     currentBalanceLabel.Color(clrLightCoral);
-  currentBalanceLabel.Text((string)global.currentBalance);
+  currentBalanceLabel.Text((string)initial.testBool);
 
   return;
 }
@@ -296,7 +304,6 @@ bool CGraphicalPanel::CreatePanel(void)
   this.Add(isCrossOrderLabel);
 
   timeBlockadeCrossLabel.Create(NULL, "timeBlockadeCrossLabel", 0, orderX, orderY, 1, 1);
-  // timeBlockadeCrossLabel.Text("timeBlockadeCross: " + (string)crossRemainMinutes);
   timeBlockadeCrossLabel.Color(clrWheat);
   timeBlockadeCrossLabel.FontSize(InpPanelFontSize);
   this.Add(timeBlockadeCrossLabel);
@@ -313,8 +320,13 @@ bool CGraphicalPanel::CreatePanel(void)
   isMainOrderLabel.FontSize(InpPanelFontSize);
   this.Add(isMainOrderLabel);
 
+  isSecondReverseOrderLabel.Create(NULL, "isSecondReverseOrderLabel", 0, orderX, +orderY + 60, 1, 1);
+  isSecondReverseOrderLabel.Text("isSecondReverseOrder");
+  isSecondReverseOrderLabel.Color(clrWheat);
+  isSecondReverseOrderLabel.FontSize(InpPanelFontSize);
+  this.Add(isSecondReverseOrderLabel);
+
   timeBlockadeMainLabel.Create(NULL, "timeBlockadeMainLabel", 0, orderX, orderY + 40, 1, 1);
-  // timeBlockadeMainLabel.Text("timeBlockadeMain: " + (string)mainRemainMinutes);
   timeBlockadeMainLabel.Color(clrWheat);
   timeBlockadeMainLabel.FontSize(InpPanelFontSize);
   this.Add(timeBlockadeMainLabel);

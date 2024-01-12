@@ -1,6 +1,0 @@
-
-void setComments(string &SellComment[])
-{
-
-
-}
