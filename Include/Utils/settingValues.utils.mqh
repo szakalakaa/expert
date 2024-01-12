@@ -25,10 +25,7 @@ int coppyBuffersAndTick(int &Tma_handle, double &TMAbands_downL[], double &TMAba
 
 void updateGlobalOnInit(GlobalStruct &Global)
 {
-    Global.stopExpert = false;
-    Global.timeBlockadeCross = false;
-    Global.timeBlockadeMain = false;
-    Global.timeBlockadeSecondReverse = false;
+    Global.stopExpert = false;  
 }
 
 void updateGlobal(GlobalStruct &Global, InitialStruct &I, double &TMA_down[], double &TMA_up[])
@@ -49,7 +46,7 @@ void updateGlobal(GlobalStruct &Global, InitialStruct &I, double &TMA_down[], do
     Global.isMainAuxOrder = isOrderWithComments(trade, mainAuxOrders, type_position);
     Global.isSecondReverseOrder = isOrderWithComments(trade, isSecondReverseOrders, type_position);
 
-    Print("Global.timeBlockadeCross   in updateGlobal", Global.timeBlockadeCross);
+
 }
 
 void updateInitial(InitialStruct &Initial, double Stoploss, double LotsCross,

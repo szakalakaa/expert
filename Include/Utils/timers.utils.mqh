@@ -5,7 +5,7 @@ bool setTimerBlockadeForOrders(
     string BuyComment,
     string SellComment,
     bool isOrder,
-    double &memoryPrice)
+    double &memoryPrice )
 
 {
     bool shouldBlockCross = false;

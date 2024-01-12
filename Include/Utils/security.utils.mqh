@@ -1,12 +1,12 @@
 #include <Utils\global.variables.mqh>
 
-bool accountGuardian(InitialStruct &I, GlobalStruct &G)
+bool accountGuardian(InitialStruct &I, GlobalStruct &G, double InitialAccount, double &CurrentAccount, double &CurrentBalance, bool &StopExpert)
 {
-    G.currentAccount = AccountInfoDouble(ACCOUNT_BALANCE);
+    CurrentAccount = AccountInfoDouble(ACCOUNT_BALANCE);
 
-    G.currentBalance = NormalizeDouble(100 * G.currentAccount / G.initialAccount, 2);
+    CurrentBalance = NormalizeDouble(100 * CurrentAccount / InitialAccount, 2);
 
-    if ((G.initialAccount * I.insureProcentOfAccount / 100) > G.currentAccount)
+    if ((InitialAccount * I.insureProcentOfAccount / 100) > CurrentAccount)
     {
         G.stopExpert = true;
         Print("Saldo konta spadło " + (string)(100 - I.insureProcentOfAccount) + " % od początku pracy expert advisora!!!");

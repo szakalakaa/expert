@@ -8,7 +8,7 @@ void crossOrder(GlobalStruct &G,
                 string &type_positionL,
                 CTrade &tradeL,
                 int &CrossAmount,
-                string &SellComment[], string &BuyComment[])
+                string &SellComment[], string &BuyComment[],   bool TimeBlockadeCross)
 {
 
     if (!I.applyCross)
@@ -35,7 +35,7 @@ void crossOrder(GlobalStruct &G,
                 CrossAmount += 1;
                 removeOrderWithValue(tradeL, I.lotsCross);
                 Sleep(3000);
-                removeAllOrders(tradeL);
+                removeOrderWithValue(tradeL, I.lotsCross);
             }
         }
 
@@ -52,12 +52,12 @@ void crossOrder(GlobalStruct &G,
                 CrossAmount += 1;
                 removeOrderWithValue(tradeL, I.lotsCross);
                 Sleep(3000);
-                removeAllOrders(tradeL);
+                removeOrderWithValue(tradeL, I.lotsCross);
             }
         }
     }
     // OPEN POSITION
-    if (!G.isCrossOrder && !G.timeBlockadeCross)
+    if (!G.isCrossOrder && !TimeBlockadeCross)
     {
         // OPTIMIZE
         //  buy order when no mainOrder
@@ -94,7 +94,7 @@ void crossOrder(GlobalStruct &G,
                 Print("--ERROR SELLSTOP CROSS 6: " + SellComment[2]);
                 G.stopExpert = true;
             }
-            CrossAmount += 1;      
+            CrossAmount += 1;
             Sleep(1000);
             return;
         }

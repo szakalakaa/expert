@@ -14,13 +14,13 @@ void secondReverseOrder(GlobalStruct &G,
                         string &BuyComment[])
 {
 
-    if (!I.applySecondReverse && !G.timeBlockadeSecondReverse)
+    if (!I.applySecondReverse )//&& !G.timeBlockadeSecondReverse)
     {
         return;
     }
 
     bool isFirstWickLong = isCandleCloseWickLong(Candle[1], type_positionL, 230);
-    bool isSecondWickLong = isCandleCloseWickLong(Candle[2], type_positionL, 230);  // czy jest wiekszy niz 230?
+    bool isSecondWickLong = isCandleCloseWickLong(Candle[2], type_positionL, 230); // czy jest wiekszy niz 230?
 
     datetime time = iTime(_Symbol, PERIOD_M1, 0);
     if (G.isMainOrder && !G.isSecondReverseOrder && !isSecondWickLong && !isFirstWickLong)
@@ -51,6 +51,8 @@ void secondReverseOrder(GlobalStruct &G,
                 G.stopExpert = true;
             }
             createObject(time, G.last, 141, clrBlue, "1");
+            Sleep(1000);
+            return;
         }
 
         // OPEN SHORT POSITION
@@ -76,6 +78,8 @@ void secondReverseOrder(GlobalStruct &G,
                 G.stopExpert = true;
             }
             createObject(time, G.last, 141, clrIndianRed, "1");
+            Sleep(1000);
+            return;
         }
     }
 }

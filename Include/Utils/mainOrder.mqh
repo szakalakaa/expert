@@ -9,7 +9,7 @@ void mainOrder(GlobalStruct &G,
                double lastCandleClose,
                int &MainAmount,
                string &SellComment[],
-               string &BuyComment[])
+               string &BuyComment[], bool TimeBlockadeMain)
 {
 
     if (!I.applyMain)
@@ -49,7 +49,7 @@ void mainOrder(GlobalStruct &G,
         }
     }
     // OPEN POSITION
-    if (!G.isMainOrder && !G.timeBlockadeMain)
+    if (!G.isMainOrder && !TimeBlockadeMain)
     {
         // buy order
         if ((G.last > offsetForBuy) && (G.last < G.lowerBand))
@@ -71,6 +71,8 @@ void mainOrder(GlobalStruct &G,
             }
 
             MainAmount += 1;
+            Sleep(1000);
+            return;
         }
         // sell order
         if ((G.last < offsetForSell) && (G.last > G.upperBand))
@@ -91,6 +93,8 @@ void mainOrder(GlobalStruct &G,
                 G.stopExpert = true;
             }
             MainAmount += 1;
+            Sleep(1000);
+            return;
         }
     }
 }
