@@ -1,6 +1,6 @@
 #include <Utils\global.variables.mqh>
 
-bool accountGuardian(InitialStruct &I, GlobalStruct &G, double InitialAccount, double &CurrentAccount, double &CurrentBalance, bool &StopExpert)
+bool accountGuardian(InitialStruct &I, GlobalStruct &G, CTrade &Trade, double InitialAccount, double &CurrentAccount, double &CurrentBalance, bool &StopExpert)
 {
     CurrentAccount = AccountInfoDouble(ACCOUNT_BALANCE);
 
@@ -17,15 +17,18 @@ bool accountGuardian(InitialStruct &I, GlobalStruct &G, double InitialAccount, d
     {
         if (I.accountGuardianTriggered == 0)
         {
-            I.accountGuardianTriggered+=1;
-            
-            // dodaj SL
+            I.accountGuardianTriggered += 1;
+            I.testInt = I.accountGuardianTriggered;
+            Print("CLOSING ALL ORDERS AND POSITIONS");
+            // Trade.PositionClose(PositionGetTicket(0));
+            // removeAllOrders(Trade);
+            return true;
         }
         else
         {
-            G.stopExpert = true;
+            // G.stopExpert = true;
+            return false;
         }
-        return false;
     }
 
     if (G.stopExpert)
@@ -82,5 +85,35 @@ bool checkPositionAndOrdersAmount()
         return true;
     }
 
+    return true;
+}
+
+bool addNewStopLoss(CTrade &TradeL, GlobalStruct &Global)
+{
+    if (PositionsTotal())
+    {
+        string buyCommentt = "buy stop account guardian";
+        string sellCommentt = "sell stop account guardian";
+        PositionGetSymbol(0);
+        double lotsPosition = NormalizeDouble(PositionGetDouble(POSITION_VOLUME), 4);
+
+        if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_SELL)
+        {
+            if (!TradeL.BuyStop(lotsPosition, Global.buyStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, buyCommentt))
+            {
+                Print("--ERROR BUYSTOP ACCOUNT GUARDIAN 1: " + buyCommentt);
+                return false;
+            }
+        }
+
+        if (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY)
+        {
+            if (!TradeL.SellStop(lotsPosition, Global.sellStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, sellCommentt))
+            {
+                Print("--ERROR SELLSTOP ACCOUNT GUARDIAN 2: " + sellCommentt);
+                return false;
+            }
+        }
+    }
     return true;
 }

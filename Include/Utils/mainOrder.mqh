@@ -30,8 +30,6 @@ void mainOrder(GlobalStruct &G,
             {
                 tradeL.PositionClose(PositionGetTicket(0));
                 removeAllOrders(tradeL);
-                Sleep(3000);
-                removeAllOrders(tradeL);
             }
             return;
         }
@@ -41,8 +39,6 @@ void mainOrder(GlobalStruct &G,
             if (type_positionL == "LONG")
             {
                 tradeL.PositionClose(PositionGetTicket(0));
-                removeAllOrders(tradeL);
-                Sleep(3000);
                 removeAllOrders(tradeL);
             }
             return;

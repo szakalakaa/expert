@@ -177,12 +177,12 @@ void CGraphicalPanel::Update(void)
   PositionSelect(_Symbol);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * global.last, 0)) + " USD");
 
-  // UPPR LEFT CORNER VALUR
+  // UPPR LEFT CORNER VALUE looker
   if (currentBalance > 100)
     currentBalanceLabel.Color(clrLightSkyBlue);
   else
     currentBalanceLabel.Color(clrLightCoral);
-  currentBalanceLabel.Text((string)currentBalance);
+  currentBalanceLabel.Text("ag "+(string) initial.testInt);
 
   return;
 }

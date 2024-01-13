@@ -231,5 +231,10 @@ void removeAllOrders(CTrade &tradeLL)
         if (!tradeLL.OrderDelete(OrderGetTicket(i)))
             Print("--ERROR 9");
     }
-  
+    Sleep(3000);
+    for (int i = 0; i < OrdersTotal(); i++)
+    {
+        if (!tradeLL.OrderDelete(OrderGetTicket(i)))
+            Print("--ERROR 9A");
+    }
 }
