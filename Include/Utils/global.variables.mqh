@@ -45,6 +45,7 @@ struct InitialStruct
 
     int offset;
     int insureProcentOfAccount;
+    int accountGuardianTriggered;
 
 
     bool testBool;

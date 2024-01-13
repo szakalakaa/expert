@@ -14,7 +14,7 @@ void secondReverseOrder(GlobalStruct &G,
                         string &BuyComment[])
 {
 
-    if (!I.applySecondReverse )//&& !G.timeBlockadeSecondReverse)
+    if (!I.applySecondReverse) //&& !G.timeBlockadeSecondReverse)
     {
         return;
     }
@@ -50,7 +50,7 @@ void secondReverseOrder(GlobalStruct &G,
                 Print("--ERROR SELLSTOP SECOND REVERSE: " + sellComment[8]);
                 G.stopExpert = true;
             }
-            createObject(time, G.last, 141, clrBlue, "1");
+            createObject(time, G.last, 141, clrChartreuse, "1");
             Sleep(1000);
             return;
         }
@@ -59,7 +59,7 @@ void secondReverseOrder(GlobalStruct &G,
         if ((G.last > G.upperBand) &&
             (Candle[1].close > G.upperBand) &&
             (Candle[2].close > G.upperBand) &&
-            (Candle[2].close < Candle[1].close) &&
+            (Candle[2].close > Candle[1].close) &&
             (G.last < Candle[1].close) &&
             (isFirstBodyLong) &&
             (type_positionL == "SHORT"))
@@ -77,7 +77,7 @@ void secondReverseOrder(GlobalStruct &G,
                 Print("--ERROR BUYSTOP SECOND REVERSE: " + buyComment[8]);
                 G.stopExpert = true;
             }
-            createObject(time, G.last, 141, clrIndianRed, "1");
+            createObject(time, G.last, 141, clrAqua, "1");
             Sleep(1000);
             return;
         }

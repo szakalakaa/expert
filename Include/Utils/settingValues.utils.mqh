@@ -62,7 +62,6 @@ void updateInitial(InitialStruct &Initial, double Stoploss, double LotsCross,
     Initial.lotsCross = LotsCross;
     Initial.lotsMain = LotsMain;
     Initial.lotsMainAux = LotsMainAux;
-
     Initial.lotsSecondReverse = LotsSecondReverse;
 
     Initial.crossMinutesToWait = 90;
@@ -70,4 +69,6 @@ void updateInitial(InitialStruct &Initial, double Stoploss, double LotsCross,
 
     Initial.offset = 2; // offset buy/sell  1 = 0.000 1%
     Initial.insureProcentOfAccount = 75;
+    Initial.accountGuardianTriggered = 0;
+
 }
