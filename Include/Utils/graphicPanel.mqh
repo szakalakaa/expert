@@ -182,7 +182,7 @@ void CGraphicalPanel::Update(void)
     currentBalanceLabel.Color(clrLightSkyBlue);
   else
     currentBalanceLabel.Color(clrLightCoral);
-  currentBalanceLabel.Text("ag "+(string) initial.testInt);
+  currentBalanceLabel.Text((string) currentBalance);
 
   return;
 }

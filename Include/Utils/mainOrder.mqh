@@ -21,6 +21,45 @@ void mainOrder(GlobalStruct &G,
     double offsetForSell = NormalizeDouble(lastCandleClose * (10000 - I.offset) / 10000, 0);
     datetime time = iTime(_Symbol, PERIOD_M1, 0);
 
+    // ADD MAIN POSITION AUX
+    if (G.isMainOrder && !G.isMainAuxOrder)
+    {
+        if ((G.last > offsetForBuy) && (G.last < G.lowerBand))
+        {
+            if (!tradeL.Buy(I.lotsMainAux, NULL, G.ask, 0, 0, BuyComment[5]))
+            {
+                Print("--ERROR BUY MAIN 1: ", BuyComment[5]);
+                G.stopExpert = true;
+            }
+
+            if (!tradeL.SellStop(I.lotsMainAux, G.sellStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, sellComment[6]))
+            {
+                Print("--ERROR SELLSTOP AUX MAIN 2: " + sellComment[6]);
+                G.stopExpert = true;
+            }
+            MainAmount += 1;
+            Sleep(1000);
+            return;
+        }
+        // sell order
+        if ((G.last < offsetForSell) && (G.last > G.upperBand))
+        {
+            if (!tradeL.Sell(I.lotsMainAux, NULL, G.bid, 0, 0, SellComment[5]))
+            {
+                Print("--ERROR SELL MAIN 3: " + SellComment[5]);
+                G.stopExpert = true;
+            }
+            if (!tradeL.BuyStop(I.lotsMainAux, G.buyStopPriceMain, _Symbol, 0, 0, ORDER_TIME_GTC, 0, buyComment[6]))
+            {
+                Print("--ERROR BUYSTOP MAIN 4: " + buyComment[6]);
+                G.stopExpert = true;
+            }
+            MainAmount += 1;
+            Sleep(1000);
+            return;
+        }
+    }
+
     // CLOSE POSITION ->it will be later in different block with parametrers of close pos
     if (G.isMainOrder || G.isMainAuxOrder)
     {

@@ -77,9 +77,9 @@ bool checkInputs(InitialStruct &I, int Atr_period, double Atr_multiplier)
         Alert("stoplossMain <= 0 || stoplossMain > 0.04");
         return false;
     }
-    if (I.stoplossCross <= 0 || I.stoplossCross > 0.05)
+    if (I.stoplossCross <= 0 || I.stoplossCross > 0.07)
     {
-        Alert("stoplossCross <= 0 || stoplossCross > 0.05");
+        Alert("stoplossCross <= 0 || stoplossCross > 0.07");
         return false;
     }
     if (Atr_period > 300 || Atr_period < 100)

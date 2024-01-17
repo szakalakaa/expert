@@ -81,7 +81,7 @@ void crossOrder(GlobalStruct &G,
         }
 
         // buy additional piece
-        if ((G.last < G.lowerBand) && (type_positionL == "LONG") && (G.isMainOrder && !G.isMainAuxOrder))
+        if ((G.last < G.lowerBand) && (type_positionL == "LONG") && (G.isMainOrder || G.isMainAuxOrder))
         {
             if (!tradeL.Buy(I.lotsCross, NULL, G.ask, 0, 0, BuyComment[1]))
             {
@@ -118,7 +118,7 @@ void crossOrder(GlobalStruct &G,
             return;
         }
         // sell additional piece
-        if ((G.last > G.upperBand) && (type_positionL == "SHORT") && (G.isMainOrder && !G.isMainAuxOrder))
+        if ((G.last > G.upperBand) && (type_positionL == "SHORT") && (G.isMainOrder || G.isMainAuxOrder))
         {
             if (!tradeL.Sell(I.lotsCross, NULL, G.bid, 0, 0, SellComment[1]))
             {
