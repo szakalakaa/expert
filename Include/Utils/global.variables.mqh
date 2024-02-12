@@ -19,6 +19,7 @@ struct GlobalStruct
     bool isMainAuxOrder;
     bool isCrossOrder;
     bool isSecondReverseOrder;
+    bool isManuelOrder;
 
     bool stopExpert;
 
@@ -39,9 +40,12 @@ struct InitialStruct
     double lotsMain;
     double lotsMainAux;
     double lotsSecondReverse;
+    double lotsManuel;
 
     int crossMinutesToWait;
     int mainMinutesToWait;
+    
+    int candlesAmount;
 
     int offset;
     int insureProcentOfAccount;

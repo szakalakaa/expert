@@ -24,6 +24,8 @@
 #include <Controls\Label.mqh>
 #include <Controls\Button.mqh>
 #include <Controls\CheckBox.mqh>
+#include <Utils\candles.utils.mqh>
+#include <Utils\manuelOrder.mqh>
 //+------------------------------------------------------------------+
 //| Inputs                                                             |
 //+------------------------------------------------------------------+
@@ -56,10 +58,10 @@ private:
   CLabel isCrossOrderLabel;
   CLabel isMainAuxOrderLabel;
   CLabel isSecondReverseOrderLabel;
+  CLabel isManuelOrderLabel;
 
   CLabel timeBlockadeCrossLabel;
   CLabel timeBlockadeMainLabel;
-
 
   CLabel currentBalanceLabel;
 
@@ -75,6 +77,8 @@ private:
   CButton setMainTimer;
   CButton startExpertButton;
   CButton stopExpertButton;
+  CButton sellManuelButton;
+  CButton buyManuelButton;
 
   // private methods
   bool CheckInputs();
@@ -121,7 +125,6 @@ void CGraphicalPanel::Update(void)
   mainAmountLabel.Text("mainAmount:  " + (string)mainAmount);
   shiftAmountLabel.Text("shiftAmount:  " + (string)shiftAmount);
 
-
   // isCrossOrder
   if (global.isCrossOrder)
     isCrossOrderLabel.Color(clrLightSkyBlue);
@@ -163,12 +166,20 @@ void CGraphicalPanel::Update(void)
     timeBlockadeMainLabel.Text("");
   }
 
-  //isSecondReverseOrder
-  
- if (global.isSecondReverseOrder)
+  // isSecondReverseOrder
+
+  if (global.isSecondReverseOrder)
     isSecondReverseOrderLabel.Color(clrLightSkyBlue);
   else if (!global.isSecondReverseOrder)
     isSecondReverseOrderLabel.Color(clrLightCoral);
+
+  // isManuellOrder
+
+  if (global.isManuelOrder)
+    isManuelOrderLabel.Color(clrLightSkyBlue);
+  else if (!global.isManuelOrder)
+    isManuelOrderLabel.Color(clrLightCoral);
+
   //
   type_positionLabel.Text((string)type_position);
   lotsInPositionLabel.Text((string)global.lotsInPosition);
@@ -182,7 +193,7 @@ void CGraphicalPanel::Update(void)
     currentBalanceLabel.Color(clrLightSkyBlue);
   else
     currentBalanceLabel.Color(clrLightCoral);
-  currentBalanceLabel.Text((string) currentBalance);
+  currentBalanceLabel.Text((string)currentBalance);
 
   return;
 }
@@ -274,8 +285,7 @@ bool CGraphicalPanel::CreatePanel(void)
   shiftAmountLabel.FontSize(InpPanelFontSize);
   this.Add(shiftAmountLabel);
 
-
-  int posY = 100;
+  int posY = 80;
   type_positionLabel.Create(NULL, "type_positionLabel", 0, 10, posY, 1, 1);
   type_positionLabel.Text((string)type_position);
   type_positionLabel.Color(clrWheat);
@@ -294,7 +304,7 @@ bool CGraphicalPanel::CreatePanel(void)
   positionOpenPriceLabel.FontSize(InpPanelFontSize);
   this.Add(positionOpenPriceLabel);
 
-  int orderY = 120;
+  int orderY = 100;
   int orderX = 10;
 
   isCrossOrderLabel.Create(NULL, "isCrossOrderLabel", 0, orderX, orderY, 1, 1);
@@ -314,17 +324,23 @@ bool CGraphicalPanel::CreatePanel(void)
   isMainAuxOrderLabel.FontSize(InpPanelFontSize);
   this.Add(isMainAuxOrderLabel);
 
-  isMainOrderLabel.Create(NULL, "isMainOrderLabel", 0, orderX, +orderY + 40, 1, 1);
+  isMainOrderLabel.Create(NULL, "isMainOrderLabel", 0, orderX, orderY + 40, 1, 1);
   isMainOrderLabel.Text("isMainOrder");
   isMainOrderLabel.Color(clrWheat);
   isMainOrderLabel.FontSize(InpPanelFontSize);
   this.Add(isMainOrderLabel);
 
-  isSecondReverseOrderLabel.Create(NULL, "isSecondReverseOrderLabel", 0, orderX, +orderY + 60, 1, 1);
+  isSecondReverseOrderLabel.Create(NULL, "isSecondReverseOrderLabel", 0, orderX, orderY + 60, 1, 1);
   isSecondReverseOrderLabel.Text("isSecondReverseOrder");
   isSecondReverseOrderLabel.Color(clrWheat);
   isSecondReverseOrderLabel.FontSize(InpPanelFontSize);
   this.Add(isSecondReverseOrderLabel);
+
+  isManuelOrderLabel.Create(NULL, "isManuelOrderLabel", 0, orderX, orderY + 80, 1, 1);
+  isManuelOrderLabel.Text("isManuelOrder");
+  isManuelOrderLabel.Color(clrWheat);
+  isManuelOrderLabel.FontSize(InpPanelFontSize);
+  this.Add(isManuelOrderLabel);
 
   timeBlockadeMainLabel.Create(NULL, "timeBlockadeMainLabel", 0, orderX, orderY + 40, 1, 1);
   timeBlockadeMainLabel.Color(clrWheat);
@@ -387,6 +403,26 @@ bool CGraphicalPanel::CreatePanel(void)
   stopExpertButton.Text("Stop expert");
   stopExpertButton.FontSize(ButtonFontSize);
   this.Add(stopExpertButton);
+
+  int xBut5 = InpPanelWidth - 120;
+  int yBut5 = btnYRow + 40;
+
+  sellManuelButton.Create(NULL, "sellManuelButton", 0, xBut5, yBut5, xBut5 + btnWidth, yBut5 + btnHeight);
+  sellManuelButton.Color(clrBlack);
+  ObjectSetInteger(NULL, "sellManuelButton", OBJPROP_BGCOLOR, clrTomato);
+  sellManuelButton.Text("Sell manuel");
+  sellManuelButton.FontSize(ButtonFontSize);
+  this.Add(sellManuelButton);
+
+  int xBut6 = InpPanelWidth - 230;
+  int yBut6 = btnYRow + 40;
+
+  buyManuelButton.Create(NULL, "buyManuelButton", 0, xBut6, yBut6, xBut6 + btnWidth, yBut6 + btnHeight);
+  buyManuelButton.Color(clrBlack);
+  ObjectSetInteger(NULL, "buyManuelButton", OBJPROP_BGCOLOR, clrSkyBlue);
+  buyManuelButton.Text("buy manuell");
+  buyManuelButton.FontSize(ButtonFontSize);
+  this.Add(buyManuelButton);
 
   valueLabel.Create(NULL, "valueLabel", 0, 10, InpPanelHeight - 80, 1, 1);
   valueLabel.Text("value: " + (string)(NormalizeDouble(PositionGetDouble(POSITION_VOLUME) * global.last, 0)) + " USD");
@@ -466,6 +502,17 @@ void OnChartEvent(const int id,         // Event identifier
     {
       Print(">>>>  stopExpert clicked!");
       global.stopExpert = true;
+    }
+
+    if (sparam == "buyManuelButton")
+    {
+      Print(">>>>  buyManuelButton!");
+      manuelBuy(global, initial, trade, candle, sellComment, buyComment);
+    }
+    if (sparam == "sellManuelButton")
+    {
+      Print(">>>>  sellManuelButton!");
+      manuelSell(global, initial, trade, candle, sellComment, buyComment);
     }
   }
 }
