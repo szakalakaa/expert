@@ -1,42 +1,54 @@
 #include <Utils\global.variables.mqh>
 
-bool accountGuardian(InitialStruct &I, GlobalStruct &G, CTrade &Trade, double InitialAccount, double &CurrentAccount, double &CurrentBalance, bool &StopExpert)
+void accountGuardian(InitialStruct &I, GlobalStruct &G, CTrade &Trade, double InitialAccount, double &CurrentAccount, double &CurrentBalance, bool &StopExpert)
 {
     CurrentAccount = AccountInfoDouble(ACCOUNT_BALANCE);
 
     CurrentBalance = NormalizeDouble(100 * CurrentAccount / InitialAccount, 2);
 
+
+    // stop when balance is low
     if ((InitialAccount * I.insureProcentOfAccount / 100) > CurrentAccount)
     {
         G.stopExpert = true;
         Print("Saldo konta spadło " + (string)(100 - I.insureProcentOfAccount) + " % od początku pracy expert advisora!!!");
-        return false;
     }
 
+    // stop when no stoplosses
     if (!checkPositionAndOrdersAmount())
     {
-        if (I.accountGuardianTriggered == 0)
-        {
-            I.accountGuardianTriggered += 1;
-            I.testInt = I.accountGuardianTriggered;
-            Print("CLOSING ALL ORDERS AND POSITIONS");
-            // Trade.PositionClose(PositionGetTicket(0));
-            // removeAllOrders(Trade);
-            return true;
-        }
-        else
-        {
-            // G.stopExpert = true;
-            return false;
-        }
+        G.stopExpert = true;
+        // if (I.accountGuardianTriggered == 0)
+        // {
+        //     I.accountGuardianTriggered += 1;
+        //     // I.testInt = I.accountGuardianTriggered;
+        //     Print("CLOSING ALL ORDERS AND POSITIONS");
+        //     // Trade.PositionClose(PositionGetTicket(0));
+        //     // removeAllOrders(Trade);
+
+        // }
+        // else
+        // {
+        //     // G.stopExpert = true;
+
+        // }
     }
 
+
+    // print message when expert is stopped
     if (G.stopExpert)
     {
-        return false;
+        Print("Expert exit");
     }
-    return true;
+
 }
+
+
+
+
+
+
+
 
 bool checkPositionAndOrdersAmount()
 {

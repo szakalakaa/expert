@@ -23,7 +23,7 @@ void secondReverseOrder(GlobalStruct &G,
     bool isSecondWickLong = isCandleCloseWickLong(Candle[2], type_positionL, 230); // czy jest wiekszy niz 230?
 
     datetime time = iTime(_Symbol, PERIOD_M1, 0);
-    if (G.isMainOrder && !G.isSecondReverseOrder && !isSecondWickLong && !isFirstWickLong)
+    if (G.isMainOrder && !G.isSecondReverseOrder && !isSecondWickLong && !isFirstWickLong  && !G.stopExpert)
     {
         int firstBodyMinHeight = 50;
         bool isFirstBodyLong = MathAbs(NormalizeDouble((Candle[1].open - Candle[1].close), 0)) > firstBodyMinHeight;

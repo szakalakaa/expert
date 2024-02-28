@@ -1,14 +1,14 @@
 #include <Utils\global.variables.mqh>
 #include <Utils\ordersUtils.mqh>
 
-int coppyBuffersAndTick(int &Tma_handle, double &TMAbands_downL[], double &TMAbands_upL[],
+void coppyBuffersAndTick(GlobalStruct &G,int &Tma_handle, double &TMAbands_downL[], double &TMAbands_upL[],
                         MqlTick &Tick)
 {
 
     if (!SymbolInfoTick(_Symbol, Tick))
     {
         Print("Failed to get tick");
-        return false;
+        G.stopExpert = true;
     }
 
     int values = CopyBuffer(Tma_handle, 3, 0, 2, TMAbands_downL) +
@@ -17,11 +17,10 @@ int coppyBuffersAndTick(int &Tma_handle, double &TMAbands_downL[], double &TMAba
     if (values != 4)
     {
         Alert("Failed to get indicator values! ", values);
-        return false;
+        G.stopExpert = true;
     }
-
-    return true;
 }
+
 
 void updateGlobalOnInit(GlobalStruct &Global)
 {

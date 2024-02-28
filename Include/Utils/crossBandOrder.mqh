@@ -57,7 +57,7 @@ void crossOrder(GlobalStruct &G,
         }
     }
     // OPEN POSITION
-    if (!G.isCrossOrder && !TimeBlockadeCross)
+    if (!G.isCrossOrder && !TimeBlockadeCross && !G.stopExpert)
     {
         // OPTIMIZE
         //  buy order when no mainOrder

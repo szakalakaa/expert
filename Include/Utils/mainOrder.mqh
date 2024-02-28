@@ -22,7 +22,7 @@ void mainOrder(GlobalStruct &G,
     datetime time = iTime(_Symbol, PERIOD_M1, 0);
 
     // ADD MAIN POSITION AUX
-    if (G.isMainOrder && !G.isMainAuxOrder)
+    if (G.isMainOrder && !G.isMainAuxOrder && !G.stopExpert)
     {
         if ((G.last > offsetForBuy) && (G.last < G.lowerBand))
         {
@@ -84,7 +84,7 @@ void mainOrder(GlobalStruct &G,
         }
     }
     // OPEN POSITION
-    if (!G.isMainOrder && !TimeBlockadeMain)
+    if (!G.isMainOrder && !TimeBlockadeMain  && !G.stopExpert)
     {
         // buy order
         if ((G.last > offsetForBuy) && (G.last < G.lowerBand))

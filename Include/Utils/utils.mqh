@@ -126,13 +126,12 @@ bool shouldProcess2(ENUM_TIMEFRAMES ProcessPeriod)
     return false;
 }
 
-bool shouldProcess()
+bool shouldProcess(int interval)
 {
-    int interfalInSecond = 5;
     MqlDateTime mqlTime;
     TimeToStruct(TimeCurrent(), mqlTime);
 
-    if (!MathMod(mqlTime.sec, interfalInSecond))
+    if (!MathMod(mqlTime.sec, interval))
     {
         return true;
     }
